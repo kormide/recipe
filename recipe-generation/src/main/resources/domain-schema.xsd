@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="domain">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="entity">
+                    <xs:complexType>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="property">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                    <xs:attribute name="type" type="xs:string" use="required"/>
+                                    <xs:attribute name="required" type="xs:boolean" default="true"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="enum">
+                    <xs:complexType>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="value" type="xs:string"/>
+                        </xs:choice>
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                    </xs:complexType>
+                    <!-- Enum values unique per enum -->
+                    <xs:unique name="UniqueEnumValue">
+                        <xs:selector xpath="value"/>
+                        <xs:field xpath="."/>
+                    </xs:unique>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+
+        <!-- Entity names unique -->
+        <xs:unique name="UniqueEntityName">
+            <xs:selector xpath="entity"/>
+            <xs:field xpath="@name" />
+        </xs:unique>
+        <!-- Property names unique per entity -->
+        <xs:unique name="UniquePropertyName">
+            <xs:selector xpath="entity/property"/>
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+</xs:schema>
