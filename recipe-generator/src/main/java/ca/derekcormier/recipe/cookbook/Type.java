@@ -17,4 +17,13 @@ public enum Type {
     public String getAlias() {
         return alias;
     }
+
+    public static Type fromAlias(String alias) {
+        for (Type type: Type.values()) {
+            if (type.getAlias().equals(alias)) {
+                return type;
+            }
+        }
+        throw new RuntimeException("cannot create Type from alias '" + alias + "'");
+    }
 }

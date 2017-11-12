@@ -1,0 +1,33 @@
+{%- if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
+{%- else -%}
+    {%- assign superclass = 'Ingredient' -%}
+{%- endif -%}
+
+import ca.derekcormier.recipe.{{superclass}};
+
+class {{ingredient.name}} extends {{superclass}} {
+    {% for required in ingredient.required -%}
+    private final {{required.type | javatype}} {{required.name}};
+    {% endfor %}
+
+    {%- for initializer in ingredient.initializers %}
+    public {{ingredient.name}}(
+        {%- for param in initializer.params -%}
+            {%- for required in ingredient.required -%}
+                {%- if param == required.name -%}
+                    {%- assign type = required.type | javatype -%}
+                    {%- assign typeWithSpace = type | append: ' ' -%}
+                    {%- assign argument = typeWithSpace | append: param -%}
+                {%- endif -%}
+            {%- endfor -%}
+            {{- argument -}}
+            {%- unless forloop.last -%}, {% endunless -%}
+        {%- endfor -%}
+    ) {
+        {%- for param in initializer.params %}
+        this.{{param}} = {{param}};
+        {%- endfor %}
+    }
+    {%- endfor %}
+}
