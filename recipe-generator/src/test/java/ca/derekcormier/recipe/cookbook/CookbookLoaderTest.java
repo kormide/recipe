@@ -462,6 +462,98 @@ public class CookbookLoaderTest {
         loader.load(toStream(ingredients));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEnumWithoutName() {
+        String input = String.join("\n",
+            "enums:",
+            "    values:",
+            "      - 'A'",
+            "      - 'B'",
+            "      - 'C'"
+        );
+
+        loader.load(toStream(input));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEnumWithoutValues() {
+        String input = String.join("\n",
+            "enums:",
+            "    name: 'fooEnum'"
+        );
+
+        loader.load(toStream(input));
+    }
+
+    @Test
+    public void testLoad_emptyEnums() {
+        String input = String.join("\n",
+            "enums: []"
+        );
+
+        Cookbook cookbook = loader.load(toStream(input));
+        assertEquals(0, cookbook.getEnums().size());
+    }
+
+    @Test
+    public void testLoad_singleEnum() {
+        String input = String.join("\n",
+            "enums:",
+            "  - name: 'fooEnum'",
+            "    values:",
+            "      - 'A'",
+            "      - 'B'",
+            "      - 'C'"
+        );
+
+        Cookbook cookbook = loader.load(toStream(input));
+        assertEquals(1, cookbook.getEnums().size());
+        assertEquals("fooEnum", cookbook.getEnums().get(0).getName());
+        assertEquals(3, cookbook.getEnums().get(0).getValues().size());
+        assertEquals("A", cookbook.getEnums().get(0).getValues().get(0));
+        assertEquals("B", cookbook.getEnums().get(0).getValues().get(1));
+        assertEquals("C", cookbook.getEnums().get(0).getValues().get(2));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEmptyEnumValues() {
+        String input = String.join("\n",
+            "enums:",
+            "  - name: 'fooEnum'",
+            "    values: []"
+        );
+
+        loader.load(toStream(input));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnDuplicateEnumNames() {
+        String input = String.join("\n",
+            "enums:",
+            "  - name: 'fooEnum'",
+            "    values:",
+            "      - 'A'",
+            "  - name: 'fooEnum'",
+            "    values:",
+            "      - 'B'"
+        );
+
+        loader.load(toStream(input));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEnumWithDuplicateValues() {
+        String input = String.join("\n",
+            "enums:",
+            "  - name: 'fooEnum'",
+            "    values:",
+            "      - 'A'",
+            "      - 'A'"
+        );
+
+        loader.load(toStream(input));
+    }
+
     private InputStream toStream(String str) {
         return new ByteArrayInputStream(str.getBytes());
     }

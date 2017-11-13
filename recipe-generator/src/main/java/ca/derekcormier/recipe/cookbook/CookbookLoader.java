@@ -26,11 +26,22 @@ public class CookbookLoader {
     }
 
     private void validate(Cookbook cookbook) {
+        validateIngredients(cookbook);
+        validateEnums(cookbook);
+    }
+
+    private void validateIngredients(Cookbook cookbook) {
         validateNoDuplicateIngredientNames(cookbook);
         validateNoDuplicateFieldNames(cookbook);
         validateInitializersContainRequiredFields(cookbook);
         validateCompoundOptionalsHaveAtLeastTwoParams(cookbook);
         validateInitializerSignaturesUnique(cookbook);
+    }
+
+    private void validateEnums(Cookbook cookbook) {
+        validateNoDuplicateEnumNames(cookbook);
+        validateNoEmptyEnumValues(cookbook);
+        validateNoDuplicateEnumValues(cookbook);
     }
 
     private void validateInitializersContainRequiredFields(Cookbook cookbook) {
@@ -88,6 +99,27 @@ public class CookbookLoader {
                 if (compoundOptional.getParams().size() < 2) {
                     throw new RuntimeException("compound optional '" + compoundOptional.getName() + "' has less than two params; use optional instead");
                 }
+            }
+        }
+    }
+
+    private void validateNoDuplicateEnumNames(Cookbook cookbook) {
+        Set<String> enumNames = cookbook.getEnums().stream().map(Enum::getName).collect(Collectors.toSet());
+        if (enumNames.size() != cookbook.getEnums().size()) {
+            throw new RuntimeException("found duplicate enum names");
+        }
+    }
+
+    private void validateNoEmptyEnumValues(Cookbook cookbook) {
+        if (cookbook.getEnums().stream().anyMatch(e -> e.getValues().isEmpty())) {
+            throw new RuntimeException("found enum with no values");
+        }
+    }
+
+    private void validateNoDuplicateEnumValues(Cookbook cookbook) {
+        for (Enum e: cookbook.getEnums()) {
+            if (e.getValues().stream().distinct().count() != e.getValues().size()) {
+                throw new RuntimeException("enum '" + e.getName() + "' has duplicate values");
             }
         }
     }
