@@ -13,7 +13,7 @@ public class Main {
         try(FileInputStream ingredients = new FileInputStream(args[0])) {
             Cookbook domain = new CookbookLoader().load(ingredients);
             CookbookGenerator generator = CookbookGeneratorFactory.getGenerator(Flavour.JAVA_CLIENT);
-            generator.generate(domain);
+            generator.generate(domain, args[1]);
         }
         catch (Exception e) {
             throw new RuntimeException(e);

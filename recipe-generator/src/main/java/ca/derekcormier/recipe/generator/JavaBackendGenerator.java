@@ -4,6 +4,6 @@ import ca.derekcormier.recipe.cookbook.Cookbook;
 
 public class JavaBackendGenerator extends CookbookGenerator {
     @Override
-    public void generate(Cookbook cookbook) {
+    public void generate(Cookbook cookbook, String targetDir) {
     }
 }

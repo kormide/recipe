@@ -1,19 +1,17 @@
 package ca.derekcormier.recipe.generator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.Ingredient;
 import ca.derekcormier.recipe.cookbook.Type;
-import liqp.Template;
 import liqp.filters.Filter;
 
 public class JavaClientGenerator extends CookbookGenerator {
     @Override
-    public void generate(Cookbook cookbook) {
+    public void generate(Cookbook cookbook, String targetDir) {
         Filter.registerFilter(new Filter("javatype") {
             @Override
             public Object apply(Object value, Object... params) {
@@ -28,19 +26,14 @@ public class JavaClientGenerator extends CookbookGenerator {
             }
         });
 
-        Template template = loadTemplate("templates/java-client/ingredient.liquid");
+        String directory = createDirectories(targetDir);
 
         for (Ingredient ingredient: cookbook.getIngredients()) {
-            String rendered = null;
-            try {
-                Map<String,Object> data = new HashMap<>();
-                data.put("ingredient", ingredient);
-                rendered = template.render(new ObjectMapper().writeValueAsString(data));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            System.out.println(rendered);
+            Map<String,Object> data = new HashMap<>();
+            data.put("ingredient", ingredient);
+            String rendered = rendered = renderTemplate("templates/java-client/ingredient.liquid", data);
+            String filepath = directory + File.separator + ingredient.getName() + ".java";
+            writeToFile(filepath, rendered);
         }
     }
 }
