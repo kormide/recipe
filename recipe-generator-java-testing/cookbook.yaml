@@ -1,0 +1,11 @@
+ingredients:
+  - name: "TestIngredient"
+    required:
+      - name: "stringProperty"
+        type: "string"
+      - name: "booleanProperty"
+        type: "boolean"
+    initializers:
+      - params:
+        - "stringProperty"
+        - "booleanProperty"
