@@ -1,11 +1,10 @@
 ingredients:
-  - name: "TestIngredient"
+  - name: "EmptyIngredient"
+
+  - name: "IngredientWithRequiredProperty"
     required:
-      - name: "stringProperty"
+      - name: "required"
         type: "string"
-      - name: "booleanProperty"
-        type: "boolean"
     initializers:
       - params:
-        - "stringProperty"
-        - "booleanProperty"
+        - "required"
