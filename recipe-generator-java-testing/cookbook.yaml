@@ -1,10 +1,26 @@
 ingredients:
   - name: "EmptyIngredient"
 
-  - name: "IngredientWithRequiredProperty"
+  - name: "IngredientWithRequired"
     required:
       - name: "required"
         type: "string"
     initializers:
       - params:
         - "required"
+
+  - name: "IngredientWithOptional"
+    optionals:
+      - name: "optional"
+        type: "boolean"
+
+  - name: "IngredientWithRequiredAndOptional"
+    required:
+      - name: "required"
+        type: "string"
+    initializers:
+      - params:
+        - "required"
+    optionals:
+      - name: "optional"
+        type: "boolean"

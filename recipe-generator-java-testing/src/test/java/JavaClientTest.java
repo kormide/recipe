@@ -7,7 +7,19 @@ public class JavaClientTest {
     }
 
     @Test
-    public void testGeneration_ingredientWithRequiredProperty() {
-        new IngredientWithRequiredProperty("foo");
+    public void testGeneration_ingredientWithRequired() {
+        new IngredientWithRequired("foo");
+    }
+
+    @Test
+    public void testGeneration_ingredientWithOptional() {
+        new IngredientWithOptional()
+            .withOptional(true);
+    }
+
+    @Test
+    public void testGeneration_ingredientWithRequiredAndOptional() {
+        new IngredientWithRequiredAndOptional("foo")
+            .withOptional(false);
     }
 }
