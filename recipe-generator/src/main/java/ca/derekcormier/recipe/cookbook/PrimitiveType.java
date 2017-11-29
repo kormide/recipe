@@ -1,8 +1,9 @@
 package ca.derekcormier.recipe.cookbook;
 
 public enum PrimitiveType {
-    STRING("string"),
-    BOOLEAN("boolean");
+    BOOLEAN("boolean"),
+    INTEGER("int"),
+    STRING("string");
 
     private String alias;
 
