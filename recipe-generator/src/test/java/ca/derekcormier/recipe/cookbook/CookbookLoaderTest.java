@@ -202,6 +202,22 @@ public class CookbookLoaderTest {
     }
 
     @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnRequiredParamWithTypeFlag() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    required:",
+            "      - name: 'param'",
+            "        type: 'flag'",
+            "    initializers:",
+            "      - params:",
+            "        - 'param'"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test(expected = RuntimeException.class)
     public void testLoad_throwsOnOptionalWithoutName() {
         String ingredients = String.join("\n",
             "ingredients:",
@@ -351,6 +367,39 @@ public class CookbookLoaderTest {
         );
 
         loader.load(toStream(ingredients));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnCompoundOptionalWithParamOfTypeFlag() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    compoundOptionals:",
+            "      - name: 'fooOptional'",
+            "        params:",
+            "          - name: 'param1'",
+            "            type: 'string'",
+            "          - name: 'param2'",
+            "            type: 'flag'"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test
+    public void testLoad_ingredientWithOptionalOfTypeFlag() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    keyed: true",
+            "    optionals:",
+            "      - name: 'optionalField'",
+            "        type: 'flag'"
+        );
+
+        Cookbook cookbook = loader.load(toStream(ingredients));
+        assertEquals("optionalField", cookbook.getIngredients().get(0).getOptionals().get(0).getName());
+        assertEquals("flag", cookbook.getIngredients().get(0).getOptionals().get(0).getType());
     }
 
     @Test

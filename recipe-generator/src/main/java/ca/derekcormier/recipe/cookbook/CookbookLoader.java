@@ -66,15 +66,25 @@ public class CookbookLoader {
 
     private void validateParamTypes(Cookbook cookbook) {
         List<String> types = new ArrayList<>();
+        List<String> nonOptionalTypes = new ArrayList<>();
         for (Ingredient ingredient: cookbook.getIngredients()) {
             types.addAll(ingredient.getRequired().stream().map(Required::getType).collect(Collectors.toList()));
-            types.addAll(ingredient.getOptionals().stream().map(Optional::getType).collect(Collectors.toList()));
             types.addAll(ingredient.getCompoundOptionals().stream().flatMap(co -> co.getParams().stream()).map(Param::getType).collect(Collectors.toList()));
+            nonOptionalTypes.addAll(types);
+            types.addAll(ingredient.getOptionals().stream().map(Optional::getType).collect(Collectors.toList()));
         }
 
+        // All types are known types
         for (String type: types) {
             if (!CookbookUtils.isKnownType(cookbook, type)) {
                 throw new RuntimeException("unknown param type '" + type + "'");
+            }
+        }
+
+        // Only optionals contain the flag type
+        for (String type: nonOptionalTypes) {
+            if (CookbookUtils.isFlagType(type)) {
+                throw new RuntimeException("only optionals can have a 'flag' param");
             }
         }
     }

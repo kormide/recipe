@@ -11,8 +11,12 @@ public class CookbookUtils {
         }
     }
 
+    public static boolean isFlagType(String flag) {
+        return "flag".equals(flag);
+    }
+
     public static boolean isKnownType(Cookbook cookbook, String type) {
-        return CookbookUtils.isPrimitiveType(type) || CookbookUtils.hasEnum(cookbook, type);
+        return CookbookUtils.isPrimitiveType(type) || CookbookUtils.isFlagType(type) || CookbookUtils.hasEnum(cookbook, type);
     }
 
     private static boolean hasEnum(Cookbook cookbook, String name) {

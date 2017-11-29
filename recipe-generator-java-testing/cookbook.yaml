@@ -31,6 +31,8 @@ ingredients:
         type: "string"
       - name: "booleanArg"
         type: "boolean"
+      - name: "flagArg"
+        type: "flag"
       - name: "enumArg"
         type: "TestEnum"
 

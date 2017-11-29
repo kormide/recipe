@@ -43,6 +43,12 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_flagType() {
+        new AllParamsIngredient()
+            .withFlagArg();
+    }
+
+    @Test
     public void testGeneration_enumType() {
         new AllParamsIngredient()
             .withEnumArg(TestEnum.B);

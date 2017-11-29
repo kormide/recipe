@@ -30,7 +30,11 @@ class {{ingredient.name}} extends {{superclass}} {
     }{% endfor %}
     {%- for optional in ingredient.optionals %}
 
-    public {{ingredient.name}} with{{optional.name | capitalize}}({{optional.type | javatype}} {{optional.name}}) {
+    public {{ingredient.name}} with{{optional.name | capitalize}}(
+        {%- if optional.type != 'flag' -%}
+            {{optional.type | javatype}} {{optional.name}}
+        {%- endif -%}
+    ) {
         return this;
     }{% endfor %}
 }
