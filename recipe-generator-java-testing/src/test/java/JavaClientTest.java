@@ -43,6 +43,12 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_intType() {
+        new AllParamsIngredient()
+            .withIntArg(-5);
+    }
+
+    @Test
     public void testGeneration_flagType() {
         new AllParamsIngredient()
             .withFlagArg();

@@ -19,10 +19,13 @@ public class JavaClientGenerator extends CookbookGenerator {
                 if (CookbookUtils.isPrimitiveType(super.asString(value))) {
                     PrimitiveType type = PrimitiveType.fromAlias(super.asString(value));
                     switch(type) {
-                        case STRING:
-                            return "String";
                         case BOOLEAN:
                             return "boolean";
+                        case INTEGER:
+                            return "int";
+                        case STRING:
+                            return "String";
+
                         default:
                             throw new RuntimeException("unknown data type '" + super.asString(value) + "'");
                     }
