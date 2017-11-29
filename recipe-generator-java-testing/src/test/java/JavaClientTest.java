@@ -59,4 +59,15 @@ public class JavaClientTest {
         new AllParamsIngredient()
             .withEnumArg(TestEnum.B);
     }
+
+    @Test
+    public void testGeneration_compoundOptional() {
+        new IngredientWithCompoundOptional()
+            .withCompoundOptional(5, true);
+    }
+
+    @Test
+    public void testGeneration_compoundOptionalReturnsInstanceOfSameType() {
+        assertTrue(new IngredientWithCompoundOptional().withCompoundOptional(0, false) instanceof IngredientWithCompoundOptional);
+    }
 }
