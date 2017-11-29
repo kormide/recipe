@@ -1,0 +1,5 @@
+enum {{enum.name}} {
+    {%- capture commaNewLine %},
+    {% endcapture %}
+    {{ enum.values | join: commaNewLine}}
+}

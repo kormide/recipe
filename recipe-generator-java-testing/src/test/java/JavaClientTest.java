@@ -1,3 +1,5 @@
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 public class JavaClientTest {
@@ -18,8 +20,31 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_ingredientOptionalReturnsSameClass() {
+        assertTrue(new IngredientWithOptional().withOptional(true) instanceof IngredientWithOptional);
+    }
+
+    @Test
     public void testGeneration_ingredientWithRequiredAndOptional() {
         new IngredientWithRequiredAndOptional("foo")
             .withOptional(false);
+    }
+
+    @Test
+    public void testGeneration_stringType() {
+        new AllParamsIngredient()
+            .withStringArg("foo");
+    }
+
+    @Test
+    public void testGeneration_booleanType() {
+        new AllParamsIngredient()
+            .withBooleanArg(true);
+    }
+
+    @Test
+    public void testGeneration_enumType() {
+        new AllParamsIngredient()
+            .withEnumArg(TestEnum.B);
     }
 }

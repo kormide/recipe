@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Param {
     private final String name;
-    private final Type type;
+    private final String type;
 
     @JsonCreator
     public Param(
         @JsonProperty(value = "name", required = true) String name,
-        @JsonProperty(value = "type", required = true) Type type
+        @JsonProperty(value = "type", required = true) String type
     ) {
         this.name = name;
         this.type = type;
@@ -20,7 +20,7 @@ public class Param {
         return name;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 }

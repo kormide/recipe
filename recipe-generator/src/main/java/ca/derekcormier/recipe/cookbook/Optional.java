@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Optional {
     private final String name;
-    private final Type type;
+    private final String type;
     private final boolean repeatable;
 
     @JsonCreator
     public Optional(
         @JsonProperty(value = "name", required = true) String name,
-        @JsonProperty(value = "type", required = true) Type type,
+        @JsonProperty(value = "type", required = true) String type,
         @JsonProperty(value = "repeatable") boolean repeatable
     ) {
         this.name = name;
@@ -23,7 +23,7 @@ public class Optional {
         return name;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 

@@ -33,6 +33,7 @@ public class CookbookLoader {
     private void validateIngredients(Cookbook cookbook) {
         validateNoDuplicateIngredientNames(cookbook);
         validateNoDuplicateFieldNames(cookbook);
+        validateParamTypes(cookbook);
         validateInitializersContainRequiredFields(cookbook);
         validateCompoundOptionalsHaveAtLeastTwoParams(cookbook);
         validateInitializerSignaturesUnique(cookbook);
@@ -63,6 +64,21 @@ public class CookbookLoader {
         }
     }
 
+    private void validateParamTypes(Cookbook cookbook) {
+        List<String> types = new ArrayList<>();
+        for (Ingredient ingredient: cookbook.getIngredients()) {
+            types.addAll(ingredient.getRequired().stream().map(Required::getType).collect(Collectors.toList()));
+            types.addAll(ingredient.getOptionals().stream().map(Optional::getType).collect(Collectors.toList()));
+            types.addAll(ingredient.getCompoundOptionals().stream().flatMap(co -> co.getParams().stream()).map(Param::getType).collect(Collectors.toList()));
+        }
+
+        for (String type: types) {
+            if (!CookbookUtils.isKnownType(cookbook, type)) {
+                throw new RuntimeException("unknown param type '" + type + "'");
+            }
+        }
+    }
+
     private void validateNoDuplicateFieldNames(Cookbook cookbook) {
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Set<String> names = new HashSet<>();
@@ -78,12 +94,12 @@ public class CookbookLoader {
 
     private void validateInitializerSignaturesUnique(Cookbook cookbook) {
         for (Ingredient ingredient: cookbook.getIngredients()) {
-            Map<String,Type> requiredParams = ingredient.getRequired().stream().collect(Collectors.toMap(Required::getName, Required::getType));
+            Map<String,String> requiredParams = ingredient.getRequired().stream().collect(Collectors.toMap(Required::getName, Required::getType));
 
-            List<List<Type>> signatures = new ArrayList<>();
+            List<List<String>> signatures = new ArrayList<>();
 
             for (Initializer initializer: ingredient.getInitializers()) {
-                List<Type> params = initializer.getParams().stream().map(requiredParams::get).collect(Collectors.toList());
+                List<String> params = initializer.getParams().stream().map(requiredParams::get).collect(Collectors.toList());
                 signatures.add(params);
             }
 

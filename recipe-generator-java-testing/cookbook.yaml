@@ -24,3 +24,19 @@ ingredients:
     optionals:
       - name: "optional"
         type: "boolean"
+
+  - name: "AllParamsIngredient"
+    optionals:
+      - name: "stringArg"
+        type: "string"
+      - name: "booleanArg"
+        type: "boolean"
+      - name: "enumArg"
+        type: "TestEnum"
+
+enums:
+  - name: "TestEnum"
+    values:
+      - "A"
+      - "B"
+      - "C"

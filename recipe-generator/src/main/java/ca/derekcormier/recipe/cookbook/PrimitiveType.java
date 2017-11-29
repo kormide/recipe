@@ -1,16 +1,12 @@
 package ca.derekcormier.recipe.cookbook;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public enum Type {
-    @JsonProperty("string")
+public enum PrimitiveType {
     STRING("string"),
-    @JsonProperty("boolean")
     BOOLEAN("boolean");
 
     private String alias;
 
-    Type(String alias) {
+    PrimitiveType(String alias) {
         this.alias = alias;
     }
 
@@ -18,8 +14,8 @@ public enum Type {
         return alias;
     }
 
-    public static Type fromAlias(String alias) {
-        for (Type type: Type.values()) {
+    public static PrimitiveType fromAlias(String alias) {
+        for (PrimitiveType type: PrimitiveType.values()) {
             if (type.getAlias().equals(alias)) {
                 return type;
             }
