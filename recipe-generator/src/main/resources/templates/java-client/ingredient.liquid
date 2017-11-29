@@ -37,4 +37,18 @@ class {{ingredient.name}} extends {{superclass}} {
     ) {
         return this;
     }{% endfor %}
+
+    {%- for compoundOptional in ingredient.compoundOptionals %}
+
+    public {{ingredient.name}} with{{compoundOptional.name | capitalize}}(
+        {%- for param in compoundOptional.params -%}
+            {%- assign type = param.type | javatype -%}
+            {%- assign typeWithSpace = type | append: ' ' -%}
+            {%- assign argument = typeWithSpace | append: param.name -%}
+            {{- argument -}}
+            {%- unless forloop.last -%}, {% endunless -%}
+        {%- endfor -%}
+    ) {
+        return this;
+    }{% endfor %}
 }
