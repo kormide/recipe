@@ -15,8 +15,9 @@ public class JavaClientTest {
 
     @Test
     public void testGeneration_ingredientWithDefaultRequired() {
-        new IngredientWithDefaultRequired(false);
         new IngredientWithDefaultRequired("foobar");
+        new IngredientWithDefaultRequired(false);
+        new IngredientWithDefaultRequired(TestEnum.B);
     }
 
     @Test

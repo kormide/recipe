@@ -65,21 +65,26 @@ public class JavaClientGenerator extends CookbookGenerator {
             public Object apply(Object value, Object... params) {
                 String strType = super.asString(params[0]);
 
-                if (CookbookUtils.isPrimitiveType(strType)) {
-                    PrimitiveType type = PrimitiveType.fromAlias(strType);
-                    switch(type) {
-                        case BOOLEAN:
-                            return super.asString(value);
-                        case INTEGER:
-                            return super.asString(value);
-                        case STRING:
-                            return "\"" + super.asString(value) + "\"";
-                        default:
-                            throw new RuntimeException("unknown data type '" + strType + "'");
+                if (CookbookUtils.isKnownType(cookbook, strType)) {
+                    if (CookbookUtils.isPrimitiveType(strType)) {
+                        PrimitiveType type = PrimitiveType.fromAlias(strType);
+                        switch (type) {
+                            case BOOLEAN:
+                                return super.asString(value);
+                            case INTEGER:
+                                return super.asString(value);
+                            case STRING:
+                                return "\"" + super.asString(value) + "\"";
+                            default:
+                                throw new RuntimeException("unknown data type '" + strType + "'");
+                        }
+                    } else if (CookbookUtils.isEnumType(cookbook, strType)) {
+                        if (CookbookUtils.enumHasValue(cookbook, strType, super.asString(value))) {
+                            return strType + "." + super.asString(value);
+                        }
+
+                        throw new RuntimeException("value '" + super.asString(value) + "' is not a member of enum '" + strType + "'");
                     }
-                }
-                else if (CookbookUtils.isKnownType(cookbook,super.asString(value))) {
-                    return super.asString(value);
                 }
 
                 throw new RuntimeException("unknown data type '" + super.asString(value) + "'");

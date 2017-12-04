@@ -30,6 +30,49 @@ public class CookbookUtilsTest {
     }
 
     @Test
+    public void testIsEnumType_enumType() {
+        List<Enum> enums = new ArrayList<>();
+        List<String> enumValues = new ArrayList<>();
+        enumValues.add("A");
+        enumValues.add("B");
+        enums.add(new Enum("MyEnum", enumValues));
+
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), enums);
+        assertTrue(CookbookUtils.isEnumType(cookbook, "MyEnum"));
+    }
+
+    @Test
+    public void testIsEnumType_unknownType() {
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+
+        assertFalse(CookbookUtils.isEnumType(cookbook, "foo"));
+    }
+
+    @Test
+    public void testEnumHasValue_hasValue() {
+        List<Enum> enums = new ArrayList<>();
+        List<String> enumValues = new ArrayList<>();
+        enumValues.add("A");
+        enumValues.add("B");
+        enums.add(new Enum("MyEnum", enumValues));
+
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), enums);
+        assertTrue(CookbookUtils.enumHasValue(cookbook, "MyEnum", "A"));
+    }
+
+    @Test
+    public void testEnumHasValue_unknownValue() {
+        List<Enum> enums = new ArrayList<>();
+        List<String> enumValues = new ArrayList<>();
+        enumValues.add("A");
+        enumValues.add("B");
+        enums.add(new Enum("MyEnum", enumValues));
+
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), enums);
+        assertFalse(CookbookUtils.enumHasValue(cookbook, "MyEnum", "C"));
+    }
+
+    @Test
     public void testIsKnownType_primitive() {
         Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
         assertTrue(CookbookUtils.isKnownType(cookbook, "boolean"));

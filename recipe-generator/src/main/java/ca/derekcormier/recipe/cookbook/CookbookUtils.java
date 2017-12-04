@@ -1,5 +1,7 @@
 package ca.derekcormier.recipe.cookbook;
 
+import java.util.stream.Collectors;
+
 public class CookbookUtils {
     public static boolean isPrimitiveType(String type) {
         try {
@@ -16,10 +18,20 @@ public class CookbookUtils {
     }
 
     public static boolean isKnownType(Cookbook cookbook, String type) {
-        return CookbookUtils.isPrimitiveType(type) || CookbookUtils.isFlagType(type) || CookbookUtils.hasEnum(cookbook, type);
+        return CookbookUtils.isPrimitiveType(type) || CookbookUtils.isFlagType(type) || CookbookUtils.isEnumType(cookbook, type);
     }
 
-    private static boolean hasEnum(Cookbook cookbook, String name) {
+    public static boolean isEnumType(Cookbook cookbook, String name) {
         return cookbook.getEnums().stream().anyMatch(e -> e.getName().equals(name));
+    }
+
+    public static boolean enumHasValue(Cookbook cookbook, String enumName, String value) {
+        return CookbookUtils.isEnumType(cookbook, enumName) &&
+            cookbook.getEnums().stream()
+                .filter(e -> e.getName().equals(enumName))
+                .collect(Collectors.toList())
+                .get(0)
+                .getValues()
+                .contains(value);
     }
 }

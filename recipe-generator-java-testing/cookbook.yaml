@@ -17,9 +17,13 @@ ingredients:
       - name: "param2"
         type: "boolean"
         default: true
+      - name: "param3"
+        type: "TestEnum"
+        default: "A"
     initializers:
-      - params: ["param2"]
       - params: ["param1"]
+      - params: ["param2"]
+      - params: ["param3"]
 
   - name: "IngredientWithOptional"
     optionals:
