@@ -1,22 +1,29 @@
 package ca.derekcormier.recipe.cookbook;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
 
 public class Required {
     private final String name;
     private final String type;
+    private final boolean defaultProvided;
     private final Object defaultValue;
 
     @JsonCreator
-    public Required(
-        @JsonProperty(value = "name", required = true) String name,
-        @JsonProperty(value = "type", required = true) String type,
-        @JsonProperty(value = "defaultValue") Object defaultValue
-    ) {
-        this.name = name;
-        this.type = type;
-        this.defaultValue = defaultValue;
+    public Required(Map<String,Object> properties) {
+        if (!properties.containsKey("name")) {
+            throw new RuntimeException("required is missing name");
+        }
+        this.name = (String)properties.get("name");
+
+        if (!properties.containsKey("type")) {
+            throw new RuntimeException("required is missing type");
+        }
+        this.type = (String)properties.get("type");
+
+        this.defaultProvided = properties.containsKey("default");
+        this.defaultValue = properties.getOrDefault("default", null);
 
         if (CookbookUtils.isFlagType(type)) {
             throw new RuntimeException("required params cannot be of type flag");
@@ -31,7 +38,11 @@ public class Required {
         return type;
     }
 
-    public Object getDefaultValue() {
+    public Object getDefault() {
         return defaultValue;
+    }
+
+    public boolean hasDefault() {
+        return defaultProvided;
     }
 }

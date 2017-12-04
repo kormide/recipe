@@ -2,7 +2,6 @@ package ca.derekcormier.recipe.cookbook;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -105,20 +104,6 @@ public class CookbookLoaderTest {
     }
 
     @Test
-    public void testLoad_requiredUnspecifiedFieldsGetDefaultValues() {
-        String ingredients = String.join("\n",
-            "ingredients:",
-            "  - name: 'fooIngredient'",
-            "    required:",
-            "      - name: 'foo'",
-            "        type: 'string'"
-        );
-
-        Cookbook cookbook = loader.load(toStream(ingredients));
-        assertNull(cookbook.getIngredients().get(0).getRequired().get(0).getDefaultValue());
-    }
-
-    @Test
     public void testLoad_ingredientWithNoInitializers() {
         String ingredients = String.join("\n",
             "ingredients:",
@@ -211,6 +196,66 @@ public class CookbookLoaderTest {
             "    initializers:",
             "      - params:",
             "        - 'param'"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsWhenRequiredHasNoDefaultAndNotInAnyInitializer() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    required:",
+            "      - name: 'param'",
+            "        type: 'string'"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsWhenRequiredHasNoDefaultAndNotInOneInitializer() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    required:",
+            "      - name: 'param1'",
+            "        type: 'string'",
+            "      - name: 'param2'",
+            "        type: 'boolean'",
+            "    initializers:",
+            "      - params: ['param1', 'param2']",
+            "      - params: ['param2']"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test
+    public void testLoad_requiredWithDefaultValueNotInInitializerDoesNotThrow() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    required:",
+            "      - name: 'param'",
+            "        type: 'boolean'",
+            "        default: true"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test
+    public void testLoad_requiredInInitializerWithNoDefaultValueDoesNotThrow() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    required:",
+            "      - name: 'param'",
+            "        type: 'boolean'",
+            "    initializers:",
+            "      - params: ['param']"
         );
 
         loader.load(toStream(ingredients));
@@ -421,7 +466,7 @@ public class CookbookLoaderTest {
             "    required:",
             "      - name: 'requiredField'",
             "        type: 'string'",
-            "        defaultValue: ''",
+            "        default: 'foobar'",
             "    initializers:",
             "      - params: []",
             "      - params:",
@@ -454,6 +499,7 @@ public class CookbookLoaderTest {
         assertTrue(cookbook.getIngredients().get(0).isKeyed());
         assertEquals(1, cookbook.getIngredients().get(0).getRequired().size());
         assertEquals("requiredField", cookbook.getIngredients().get(0).getRequired().get(0).getName());
+        assertEquals("foobar", cookbook.getIngredients().get(0).getRequired().get(0).getDefault());
         assertEquals("string", cookbook.getIngredients().get(0).getRequired().get(0).getType());
         assertEquals(2, cookbook.getIngredients().get(0).getInitializers().size());
         assertEquals(0, cookbook.getIngredients().get(0).getInitializers().get(0).getParams().size());
