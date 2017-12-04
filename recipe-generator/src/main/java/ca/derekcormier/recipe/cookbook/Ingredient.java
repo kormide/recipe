@@ -12,7 +12,6 @@ public class Ingredient {
     private final List<Required> required;
     private final List<Initializer> initializers;
     private final List<Optional> optionals;
-    private final List<CompoundOptional> compoundOptionals;
 
     @JsonCreator
     public Ingredient(
@@ -20,15 +19,13 @@ public class Ingredient {
         @JsonProperty(value = "keyed") boolean keyed,
         @JsonProperty(value = "required") List<Required> required,
         @JsonProperty(value = "initializers") List<Initializer> initializers,
-        @JsonProperty(value = "optionals") List<Optional> optionals,
-        @JsonProperty(value = "compoundOptionals") List<CompoundOptional> compoundOptionals
+        @JsonProperty(value = "optionals") List<Optional> optionals
     ) {
         this.name = name;
         this.keyed = keyed;
         this.required = required == null ? new ArrayList<>() : required;
         this.initializers = initializers == null ? new ArrayList<>() : initializers;
         this.optionals = optionals == null ? new ArrayList<>() : optionals;
-        this.compoundOptionals = compoundOptionals == null ? new ArrayList<>() : compoundOptionals;
     }
 
     public String getName() {
@@ -49,9 +46,5 @@ public class Ingredient {
 
     public List<Optional> getOptionals() {
         return optionals;
-    }
-
-    public List<CompoundOptional> getCompoundOptionals() {
-        return compoundOptionals;
     }
 }

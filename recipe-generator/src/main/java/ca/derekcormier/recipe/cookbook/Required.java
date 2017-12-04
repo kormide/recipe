@@ -17,6 +17,10 @@ public class Required {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
+
+        if (CookbookUtils.isFlagType(type)) {
+            throw new RuntimeException("required params cannot be of type flag");
+        }
     }
 
     public String getName() {

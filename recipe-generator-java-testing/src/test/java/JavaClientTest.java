@@ -67,6 +67,12 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_compoundOptionalWithOneParam() {
+        new IngredientWithCompoundOptionalWithOneParam()
+            .withCompoundOptional(3);
+    }
+
+    @Test
     public void testGeneration_compoundOptionalReturnsInstanceOfSameType() {
         assertTrue(new IngredientWithCompoundOptional().withCompoundOptional(0, false) instanceof IngredientWithCompoundOptional);
     }

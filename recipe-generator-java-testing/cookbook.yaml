@@ -26,13 +26,20 @@ ingredients:
         type: "boolean"
 
   - name: "IngredientWithCompoundOptional"
-    compoundOptionals:
+    optionals:
       - name: "compoundOptional"
         params:
           - name: "param1"
             type: "int"
           - name: "param2"
             type: "boolean"
+
+  - name: "IngredientWithCompoundOptionalWithOneParam"
+    optionals:
+      - name: "compoundOptional"
+        params:
+          - name: "param1"
+            type: "int"
 
   - name: "AllParamsIngredient"
     optionals:
