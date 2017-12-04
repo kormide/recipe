@@ -36,6 +36,7 @@ public class CookbookLoader {
         validateParamTypes(cookbook);
         validateInitializersContainRequiredFields(cookbook);
         validateInitializerSignaturesUnique(cookbook);
+        validateRequiredHaveDefaultOrAppearInAllInitializers(cookbook);
     }
 
     private void validateEnums(Cookbook cookbook) {
@@ -104,6 +105,16 @@ public class CookbookLoader {
 
             if (signatures.stream().distinct().count() != signatures.size()) {
                 throw new RuntimeException("initializer signatures for ingredient '" + ingredient.getName() + "' are ambiguous");
+            }
+        }
+    }
+
+    private void validateRequiredHaveDefaultOrAppearInAllInitializers(Cookbook cookbook) {
+        for (Ingredient ingredient : cookbook.getIngredients()) {
+            for (Required required: ingredient.getRequired()) {
+                if (!required.hasDefault() && (ingredient.getInitializers().isEmpty() || !ingredient.getInitializers().stream().allMatch(i -> i.getParams().contains(required.getName())))) {
+                    throw new RuntimeException("required '" + required.getName() + "' must either have a default or appear in all initializers");
+                }
             }
         }
     }
