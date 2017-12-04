@@ -20,7 +20,7 @@ public class JavaClientGenerator extends CookbookGenerator {
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
-            String rendered = rendered = renderTemplate("templates/java-client/ingredient.liquid", data);
+            String rendered = renderTemplate("templates/java-client/ingredient.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + ".java";
             writeToFile(filepath, rendered);
         }
@@ -28,7 +28,7 @@ public class JavaClientGenerator extends CookbookGenerator {
         for (ca.derekcormier.recipe.cookbook.Enum enumeration: cookbook.getEnums()) {
             Map<String,Object> data = new HashMap<>();
             data.put("enum", enumeration);
-            String rendered = rendered = renderTemplate("templates/java-client/enum.liquid", data);
+            String rendered = renderTemplate("templates/java-client/enum.liquid", data);
             String filepath = directory + File.separator + enumeration.getName() + ".java";
             writeToFile(filepath, rendered);
         }
