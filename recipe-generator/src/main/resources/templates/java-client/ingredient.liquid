@@ -31,23 +31,19 @@ class {{ingredient.name}} extends {{superclass}} {
     {%- for optional in ingredient.optionals %}
 
     public {{ingredient.name}} with{{optional.name | capitalize}}(
-        {%- if optional.type != 'flag' -%}
+        {%- if optional.compound != true -%}
+            {%- if optional.type != 'flag' -%}
             {{optional.type | javatype}} {{optional.name}}
+            {%- endif -%}
+        {%- else -%}
+            {%- for param in optional.params -%}
+                {%- assign type = param.type | javatype -%}
+                {%- assign typeWithSpace = type | append: ' ' -%}
+                {%- assign argument = typeWithSpace | append: param.name -%}
+                {{- argument -}}
+                {%- unless forloop.last -%}, {% endunless -%}
+            {%- endfor -%}
         {%- endif -%}
-    ) {
-        return this;
-    }{% endfor %}
-
-    {%- for compoundOptional in ingredient.compoundOptionals %}
-
-    public {{ingredient.name}} with{{compoundOptional.name | capitalize}}(
-        {%- for param in compoundOptional.params -%}
-            {%- assign type = param.type | javatype -%}
-            {%- assign typeWithSpace = type | append: ' ' -%}
-            {%- assign argument = typeWithSpace | append: param.name -%}
-            {{- argument -}}
-            {%- unless forloop.last -%}, {% endunless -%}
-        {%- endfor -%}
     ) {
         return this;
     }{% endfor %}

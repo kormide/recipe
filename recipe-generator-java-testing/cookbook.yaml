@@ -26,7 +26,7 @@ ingredients:
         type: "boolean"
 
   - name: "IngredientWithCompoundOptional"
-    compoundOptionals:
+    optionals:
       - name: "compoundOptional"
         params:
           - name: "param1"

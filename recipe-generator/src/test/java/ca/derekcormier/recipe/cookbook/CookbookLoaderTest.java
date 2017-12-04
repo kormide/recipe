@@ -54,7 +54,6 @@ public class CookbookLoaderTest {
         assertEquals(0, cookbook.getIngredients().get(0).getRequired().size());
         assertEquals(0, cookbook.getIngredients().get(0).getInitializers().size());
         assertEquals(0, cookbook.getIngredients().get(0).getOptionals().size());
-        assertEquals(0, cookbook.getIngredients().get(0).getCompoundOptionals().size());
     }
 
     @Test(expected = RuntimeException.class)
@@ -230,12 +229,43 @@ public class CookbookLoaderTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testLoad_throwsOnOptionalWithoutType() {
+    public void testLoad_throwsOnOptionalWithoutTypeOrParams() {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
-            "      - name: 'fooIngredient'"
+            "      - name: 'optional'"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnOptionalWithEmptyParams() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    optionals:",
+            "      - name: 'optional'",
+            "        params: []"
+        );
+
+        loader.load(toStream(ingredients));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnOptionalWithTypeAndParams() {
+        String ingredients = String.join("\n",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    optionals:",
+            "      - name: 'optional'",
+            "        type: 'boolean'",
+            "        params:",
+            "          - name: 'param1",
+            "            type: 'boolean'",
+            "          - name: 'param2",
+            "            type: 'string'"
         );
 
         loader.load(toStream(ingredients));
@@ -247,7 +277,7 @@ public class CookbookLoaderTest {
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
-            "      - name: 'fooParam'",
+            "      - name: 'optional'",
             "        type: 'something'"
         );
 
@@ -255,12 +285,12 @@ public class CookbookLoaderTest {
     }
 
     @Test
-    public void testLoad_optionalUnspecifiedFieldsGetDefaultValues() {
+    public void testLoad_optionalRepeatableDefaultsToFalse() {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
-            "      - name: 'fooIngredient'",
+            "      - name: 'optional'",
             "        type: 'string'"
         );
 
@@ -269,38 +299,14 @@ public class CookbookLoaderTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testLoad_throwsOnCompoundOptionalWithoutName() {
-        String ingredients = String.join("\n",
-            "ingredients:",
-            "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - params: []"
-        );
-
-        loader.load(toStream(ingredients));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void testLoad_throwsOnCompoundOptionalWithoutParams() {
-        String ingredients = String.join("\n",
-            "ingredients:",
-            "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'"
-            );
-
-        loader.load(toStream(ingredients));
-    }
-
-    @Test(expected = RuntimeException.class)
     public void testLoad_throwsOnCompoundOptionalParamWithoutName() {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'",
+            "    optionals:",
+            "      - name: 'optional'",
             "        params:",
-            "          - name: 'fooParam'",
+            "          - name: 'param1'",
             "            type: 'string'",
             "          - type: 'string'"
         );
@@ -313,12 +319,12 @@ public class CookbookLoaderTest {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'",
+            "    optionals:",
+            "      - name: 'optional'",
             "        params:",
-            "          - name: 'fooParam'",
+            "          - name: 'param1'",
             "            type: 'string'",
-            "          - name: 'fooParam2'"
+            "          - name: 'param2'"
         );
 
         loader.load(toStream(ingredients));
@@ -329,12 +335,12 @@ public class CookbookLoaderTest {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'",
+            "    optionals:",
+            "      - name: 'optional'",
             "        params:",
-            "          - name: 'fooParam'",
+            "          - name: 'param1'",
             "            type: 'string'",
-            "          - name: 'fooParam2'",
+            "          - name: 'param2'",
             "            type: 'something'"
         );
 
@@ -346,27 +352,31 @@ public class CookbookLoaderTest {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'",
+            "    optionals:",
+            "      - name: 'optional'",
             "        params: []"
         );
 
         loader.load(toStream(ingredients));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testLoad_throwsOnCompoundOptionalWithOneParam() {
+    @Test
+    public void testLoad_compoundOptionalWithOneParam() {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'",
+            "    optionals:",
+            "      - name: 'optional'",
             "        params:",
             "          - name: 'param'",
             "            type: 'string'"
         );
 
-        loader.load(toStream(ingredients));
+        Cookbook cookbook = loader.load(toStream(ingredients));
+
+        assertEquals("optional", cookbook.getIngredients().get(0).getOptionals().get(0).getName());
+        assertEquals("param", cookbook.getIngredients().get(0).getOptionals().get(0).getParams().get(0).getName());
+        assertEquals("string", cookbook.getIngredients().get(0).getOptionals().get(0).getParams().get(0).getType());
     }
 
     @Test(expected = RuntimeException.class)
@@ -374,8 +384,8 @@ public class CookbookLoaderTest {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    compoundOptionals:",
-            "      - name: 'fooOptional'",
+            "    optionals:",
+            "      - name: 'optional'",
             "        params:",
             "          - name: 'param1'",
             "            type: 'string'",
@@ -387,7 +397,7 @@ public class CookbookLoaderTest {
     }
 
     @Test
-    public void testLoad_ingredientWithOptionalOfTypeFlag() {
+    public void testLoad_optionalWithTypeFlag() {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
@@ -422,7 +432,6 @@ public class CookbookLoaderTest {
             "      - name: 'repeatableOptionalField'",
             "        type: 'string'",
             "        repeatable: true",
-            "    compoundOptionals:",
             "      - name: 'compoundOptionalField'",
             "        params:",
             "          - name: 'compoundOptionalParam1'",
@@ -450,29 +459,27 @@ public class CookbookLoaderTest {
         assertEquals(0, cookbook.getIngredients().get(0).getInitializers().get(0).getParams().size());
         assertEquals(1, cookbook.getIngredients().get(0).getInitializers().get(1).getParams().size());
         assertEquals("requiredField", cookbook.getIngredients().get(0).getInitializers().get(1).getParams().get(0));
-        assertEquals(2, cookbook.getIngredients().get(0).getOptionals().size());
+        assertEquals(4, cookbook.getIngredients().get(0).getOptionals().size());
         assertEquals("optionalField", cookbook.getIngredients().get(0).getOptionals().get(0).getName());
         assertEquals("boolean", cookbook.getIngredients().get(0).getOptionals().get(0).getType());
         assertFalse(cookbook.getIngredients().get(0).getOptionals().get(0).isRepeatable());
         assertEquals("repeatableOptionalField", cookbook.getIngredients().get(0).getOptionals().get(1).getName());
         assertEquals("string", cookbook.getIngredients().get(0).getOptionals().get(1).getType());
         assertTrue(cookbook.getIngredients().get(0).getOptionals().get(1).isRepeatable());
-        assertEquals(2, cookbook.getIngredients().get(0).getCompoundOptionals().size());
-        assertEquals("compoundOptionalField", cookbook.getIngredients().get(0).getCompoundOptionals().get(0).getName());
-        assertEquals(2, cookbook.getIngredients().get(0).getCompoundOptionals().get(0).getParams().size());
-        assertEquals("compoundOptionalParam1", cookbook.getIngredients().get(0).getCompoundOptionals().get(0).getParams().get(0).getName());
-        assertEquals("string", cookbook.getIngredients().get(0).getCompoundOptionals().get(0).getParams().get(0).getType());
-        assertEquals("compoundOptionalParam2", cookbook.getIngredients().get(0).getCompoundOptionals().get(0).getParams().get(1).getName());
-        assertEquals("boolean", cookbook.getIngredients().get(0).getCompoundOptionals().get(0).getParams().get(1).getType());
-        assertFalse(cookbook.getIngredients().get(0).getCompoundOptionals().get(0).isRepeatable());
-        assertEquals("repeatableCompoundOptionalField", cookbook.getIngredients().get(0).getCompoundOptionals().get(1).getName());
-        assertEquals(2, cookbook.getIngredients().get(0).getCompoundOptionals().get(1).getParams().size());
-        assertEquals("compoundOptionalParam1", cookbook.getIngredients().get(0).getCompoundOptionals().get(1).getParams().get(0).getName());
-        assertEquals("string", cookbook.getIngredients().get(0).getCompoundOptionals().get(1).getParams().get(0).getType());
-        assertEquals("compoundOptionalParam2", cookbook.getIngredients().get(0).getCompoundOptionals().get(1).getParams().get(1).getName());
-        assertEquals("string", cookbook.getIngredients().get(0).getCompoundOptionals().get(1).getParams().get(1).getType());
-
-        assertTrue(cookbook.getIngredients().get(0).getCompoundOptionals().get(1).isRepeatable());
+        assertEquals("compoundOptionalField", cookbook.getIngredients().get(0).getOptionals().get(2).getName());
+        assertEquals(2, cookbook.getIngredients().get(0).getOptionals().get(2).getParams().size());
+        assertEquals("compoundOptionalParam1", cookbook.getIngredients().get(0).getOptionals().get(2).getParams().get(0).getName());
+        assertEquals("string", cookbook.getIngredients().get(0).getOptionals().get(2).getParams().get(0).getType());
+        assertEquals("compoundOptionalParam2", cookbook.getIngredients().get(0).getOptionals().get(2).getParams().get(1).getName());
+        assertEquals("boolean", cookbook.getIngredients().get(0).getOptionals().get(2).getParams().get(1).getType());
+        assertFalse(cookbook.getIngredients().get(0).getOptionals().get(2).isRepeatable());
+        assertEquals("repeatableCompoundOptionalField", cookbook.getIngredients().get(0).getOptionals().get(3).getName());
+        assertEquals(2, cookbook.getIngredients().get(0).getOptionals().get(3).getParams().size());
+        assertEquals("compoundOptionalParam1", cookbook.getIngredients().get(0).getOptionals().get(3).getParams().get(0).getName());
+        assertEquals("string", cookbook.getIngredients().get(0).getOptionals().get(3).getParams().get(0).getType());
+        assertEquals("compoundOptionalParam2", cookbook.getIngredients().get(0).getOptionals().get(3).getParams().get(1).getName());
+        assertEquals("string", cookbook.getIngredients().get(0).getOptionals().get(3).getParams().get(1).getType());
+        assertTrue(cookbook.getIngredients().get(0).getOptionals().get(3).isRepeatable());
     }
 
     @Test(expected = RuntimeException.class)
@@ -492,20 +499,17 @@ public class CookbookLoaderTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testLoad_optionalAndCompoundOptionalHaveSameName() {
+    public void testLoad_twoOptionalAndCompoundOptionalHaveSameName() {
         String ingredients = String.join("\n",
             "ingredients:",
             "  - name: 'fooIngredient'",
-            "    required:",
+            "    optional:",
             "      - name: 'foo'",
-            "        type: 'string'",
-            "    compoundOptionals:",
+            "        type: 'boolean'",
             "      - name: 'foo'",
             "        params:",
-            "          - name: 'fooParam'",
-            "            type: 'string'",
-            "          - name: 'fooParam2'",
-            "            type: 'boolean'"
+            "          - name: 'param1'",
+            "            type: 'string'"
         );
 
         loader.load(toStream(ingredients));

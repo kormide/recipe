@@ -35,7 +35,6 @@ public class CookbookLoader {
         validateNoDuplicateFieldNames(cookbook);
         validateParamTypes(cookbook);
         validateInitializersContainRequiredFields(cookbook);
-        validateCompoundOptionalsHaveAtLeastTwoParams(cookbook);
         validateInitializerSignaturesUnique(cookbook);
     }
 
@@ -66,25 +65,16 @@ public class CookbookLoader {
 
     private void validateParamTypes(Cookbook cookbook) {
         List<String> types = new ArrayList<>();
-        List<String> nonOptionalTypes = new ArrayList<>();
         for (Ingredient ingredient: cookbook.getIngredients()) {
             types.addAll(ingredient.getRequired().stream().map(Required::getType).collect(Collectors.toList()));
-            types.addAll(ingredient.getCompoundOptionals().stream().flatMap(co -> co.getParams().stream()).map(Param::getType).collect(Collectors.toList()));
-            nonOptionalTypes.addAll(types);
-            types.addAll(ingredient.getOptionals().stream().map(Optional::getType).collect(Collectors.toList()));
+            types.addAll(ingredient.getOptionals().stream().filter(o -> !o.isCompound()).map(Optional::getType).collect(Collectors.toList()));
+            types.addAll(ingredient.getOptionals().stream().filter(Optional::isCompound).flatMap(o -> o.getParams().stream()).map(Param::getType).collect(Collectors.toList()));
         }
 
         // All types are known types
         for (String type: types) {
             if (!CookbookUtils.isKnownType(cookbook, type)) {
                 throw new RuntimeException("unknown param type '" + type + "'");
-            }
-        }
-
-        // Only optionals contain the flag type
-        for (String type: nonOptionalTypes) {
-            if (CookbookUtils.isFlagType(type)) {
-                throw new RuntimeException("only optionals can have a 'flag' param");
             }
         }
     }
@@ -94,9 +84,8 @@ public class CookbookLoader {
             Set<String> names = new HashSet<>();
             names.addAll(ingredient.getRequired().stream().map(Required::getName).collect(Collectors.toSet()));
             names.addAll(ingredient.getOptionals().stream().map(Optional::getName).collect(Collectors.toSet()));
-            names.addAll(ingredient.getCompoundOptionals().stream().map(CompoundOptional::getName).collect(Collectors.toSet()));
 
-            if (names.size() != (ingredient.getRequired().size() + ingredient.getOptionals().size() + ingredient.getCompoundOptionals().size())) {
+            if (names.size() != (ingredient.getRequired().size() + ingredient.getOptionals().size())) {
                 throw new RuntimeException("detected duplicate field names for ingredient '" + ingredient.getName() + "'");
             }
         }
@@ -115,16 +104,6 @@ public class CookbookLoader {
 
             if (signatures.stream().distinct().count() != signatures.size()) {
                 throw new RuntimeException("initializer signatures for ingredient '" + ingredient.getName() + "' are ambiguous");
-            }
-        }
-    }
-
-    private void validateCompoundOptionalsHaveAtLeastTwoParams(Cookbook cookbook) {
-        for (Ingredient ingredient: cookbook.getIngredients()) {
-            for (CompoundOptional compoundOptional: ingredient.getCompoundOptionals()) {
-                if (compoundOptional.getParams().size() < 2) {
-                    throw new RuntimeException("compound optional '" + compoundOptional.getName() + "' has less than two params; use optional instead");
-                }
             }
         }
     }
