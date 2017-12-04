@@ -24,8 +24,12 @@ class {{ingredient.name}} extends {{superclass}} {
             {%- unless forloop.last -%}, {% endunless -%}
         {%- endfor -%}
     ) {
-        {%- for param in initializer.params %}
-        this.{{param}} = {{param}};
+        {%- for required in ingredient.required %}
+            {%- if initializer.params contains required.name %}
+        this.{{required.name}} = {{required.name}};
+            {%- else %}
+        this.{{required.name}} = {{required.default | javavalue:required.type}};
+            {%- endif -%}
         {%- endfor %}
     }{% endfor %}
     {%- for optional in ingredient.optionals %}

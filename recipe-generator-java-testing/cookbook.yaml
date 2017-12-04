@@ -9,6 +9,18 @@ ingredients:
       - params:
         - "required"
 
+  - name: "IngredientWithDefaultRequired"
+    required:
+      - name: "param1"
+        type: "string"
+        default: "foobar"
+      - name: "param2"
+        type: "boolean"
+        default: true
+    initializers:
+      - params: ["param2"]
+      - params: ["param1"]
+
   - name: "IngredientWithOptional"
     optionals:
       - name: "optional"

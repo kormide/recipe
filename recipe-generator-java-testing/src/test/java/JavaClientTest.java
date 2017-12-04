@@ -14,6 +14,12 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithDefaultRequired() {
+        new IngredientWithDefaultRequired(false);
+        new IngredientWithDefaultRequired("foobar");
+    }
+
+    @Test
     public void testGeneration_ingredientWithOptional() {
         new IngredientWithOptional()
             .withOptional(true);
