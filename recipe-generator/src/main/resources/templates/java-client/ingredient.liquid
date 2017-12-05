@@ -6,10 +6,10 @@
 
 import ca.derekcormier.recipe.{{superclass}};
 
+import java.util.HashMap;
+import java.util.Map;
+
 class {{ingredient.name}} extends {{superclass}} {
-    {% for required in ingredient.required -%}
-    private final {{required.type | javatype}} {{required.name}};
-    {% endfor %}
     {%- for initializer in ingredient.initializers %}
     public {{ingredient.name}}(
         {%- for param in initializer.params -%}
@@ -24,16 +24,22 @@ class {{ingredient.name}} extends {{superclass}} {
             {%- unless forloop.last -%}, {% endunless -%}
         {%- endfor -%}
     ) {
+        super("{{ingredient.name}}");
         {%- for required in ingredient.required %}
             {%- if initializer.params contains required.name %}
-        this.{{required.name}} = {{required.name}};
+        setProperty("{{required.name}}", {{required.name}});
             {%- else %}
-        this.{{required.name}} = {{required.default | javavalue:required.type}};
+        setProperty("{{required.name}}", {{required.default | javavalue:required.type}});
             {%- endif -%}
         {%- endfor %}
     }{% endfor %}
-    {%- for optional in ingredient.optionals %}
 
+    {%- if ingredient.initializers.size == 0 %}
+    public {{ingredient.name}}() {
+        super("{{ingredient.name}}");
+    }{%- endif -%}
+
+    {%- for optional in ingredient.optionals %}
     public {{ingredient.name}} with{{optional.name | capitalize}}(
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' -%}
@@ -49,6 +55,18 @@ class {{ingredient.name}} extends {{superclass}} {
             {%- endfor -%}
         {%- endif -%}
     ) {
+        {%- if optional.compound != true -%}
+            {%- if optional.type != 'flag' %}
+        setProperty("{{optional.name}}", {{optional.name}});
+            {%- else %}
+        setProperty("{{optional.name}}", true);
+            {%- endif -%}
+        {%- else %}
+        setProperty("{{optional.name}}", new HashMap<String,Object>());
+            {%- for param in optional.params %}
+        ((Map<String,Object>)getProperty("{{optional.name}}")).put("{{param.name}}", {{param.name}});
+            {%- endfor -%}
+        {%- endif %}
         return this;
     }{% endfor %}
 }
