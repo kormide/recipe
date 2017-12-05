@@ -57,12 +57,12 @@ class {{ingredient.name}} extends {{superclass}} {
     ) {
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' %}
-        setOptional("{{optional.name}}", {{optional.name}});
+        setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name}});
             {%- else %}
-        setOptional("{{optional.name}}", true);
+        setOptional("{{optional.name}}", {{optional.repeatable}}, true);
             {%- endif -%}
         {%- else %}
-        setCompoundOptional("{{optional.name}}"
+        setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
         {%- for param in optional.params -%}
         , "{{param.name}}", {{param.name}}
         {%- endfor -%});

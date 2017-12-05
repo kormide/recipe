@@ -36,6 +36,13 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithRepeatableOptional() {
+        new IngredientWithRepeatableOptional()
+            .withOptional(true)
+            .withOptional(false);
+    }
+
+    @Test
     public void testGeneration_ingredientOptionalReturnsSameClass() {
         assertTrue(new IngredientWithOptional().withOptional(true) instanceof IngredientWithOptional);
     }
@@ -89,6 +96,13 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testGeneration_repeatableCompoundOptional() {
+        new IngredientWithRepeatableCompoundOptional()
+            .withCompoundOptional(1, false)
+            .withCompoundOptional(2, true);
+    }
+
+    @Test
     public void testGeneration_compoundOptionalReturnsInstanceOfSameType() {
         assertTrue(new IngredientWithCompoundOptional().withCompoundOptional(0, false) instanceof IngredientWithCompoundOptional);
     }
@@ -122,10 +136,30 @@ public class JavaClientTest {
     }
 
     @Test
+    public void testJson_ingredientWithRepeatableOptional() {
+        Recipe recipe = Recipe.prepare(new IngredientWithRepeatableOptional()
+            .withOptional(true)
+            .withOptional(false)
+        );
+
+        assertJsonEquals("{\"Recipe\":{\"ingredients\":[{\"IngredientWithRepeatableOptional\":{\"optional\":[true,false]}}]}}", recipe.toJson());
+    }
+
+    @Test
     public void testJson_ingredientWithCompoundOptional() {
         Recipe recipe = Recipe.prepare(new IngredientWithCompoundOptional().withCompoundOptional(5, false));
 
         assertJsonEquals("{\"Recipe\":{\"ingredients\":[{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}}]}}", recipe.toJson());
+    }
+
+    @Test
+    public void testJson_ingredientWithRepeatableCompoundOptional() {
+        Recipe recipe = Recipe.prepare(new IngredientWithRepeatableCompoundOptional()
+            .withCompoundOptional(5, false)
+            .withCompoundOptional(-2, true)
+        );
+
+        assertJsonEquals("{\"Recipe\":{\"ingredients\":[{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":{\"param1\":[5,-2],\"param2\":[false,true]}}}]}}", recipe.toJson());
     }
 
     @Test

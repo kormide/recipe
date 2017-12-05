@@ -32,25 +32,65 @@ public class RecipeTest {
     @Test
     public void testToJson_ingredientWithOptional() {
         Ingredient ingredient = new Ingredient("TestIngredient") {};
-        ingredient.setRequired("optional", false);
+        ingredient.setOptional("optional", false, false);
         Recipe recipe = Recipe.prepare(ingredient);
 
         assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":false}}]}}", recipe.toJson());
     }
 
     @Test
+    public void testToJson_ingredientWithRepeatableOptional() {
+        Ingredient ingredient = new Ingredient("TestIngredient") {};
+        ingredient.setOptional("optional", true, false);
+        Recipe recipe = Recipe.prepare(ingredient);
+
+        assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":[false]}}]}}", recipe.toJson());
+    }
+
+    @Test
+    public void testToJson_ingredientWithRepeatableOptional_multipleValues() {
+        Ingredient ingredient = new Ingredient("TestIngredient") {};
+        ingredient.setOptional("optional", true, false);
+        ingredient.setOptional("optional", true, true);
+
+        Recipe recipe = Recipe.prepare(ingredient);
+
+        assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":[false,true]}}]}}", recipe.toJson());
+    }
+
+    @Test
     public void testToJson_ingredientWithCompoundOptional() {
         Ingredient ingredient = new Ingredient("TestIngredient") {};
-        ingredient.setCompoundOptional("optional", "a", 1, "b", "foo");
+        ingredient.setCompoundOptional("optional", false, "a", 1, "b", "foo");
         Recipe recipe = Recipe.prepare(ingredient);
 
         assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":{\"a\":1,\"b\":\"foo\"}}}]}}", recipe.toJson());
     }
 
     @Test
+    public void testToJson_ingredientWithRepeatableCompoundOptional() {
+        Ingredient ingredient = new Ingredient("TestIngredient") {};
+        ingredient.setCompoundOptional("optional", true, "a", 1, "b", "foo");
+        Recipe recipe = Recipe.prepare(ingredient);
+
+        assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":{\"a\":[1],\"b\":[\"foo\"]}}}]}}", recipe.toJson());
+    }
+
+    @Test
+    public void testToJson_ingredientWithRepeatableCompoundOptional_multipleValues() {
+        Ingredient ingredient = new Ingredient("TestIngredient") {};
+        ingredient.setCompoundOptional("optional", true, "a", 1, "b", "foo");
+        ingredient.setCompoundOptional("optional", true, "a", 2, "b", "bar");
+
+        Recipe recipe = Recipe.prepare(ingredient);
+
+        assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":{\"a\":[1,2],\"b\":[\"foo\",\"bar\"]}}}]}}", recipe.toJson());
+    }
+
+    @Test
     public void testToJson_ingredientWithIntParam() {
         Ingredient ingredient = new Ingredient("TestIngredient") {};
-        ingredient.setOptional("optional", 10);
+        ingredient.setOptional("optional", false, 10);
         Recipe recipe = Recipe.prepare(ingredient);
 
         assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":10}}]}}", recipe.toJson());
@@ -59,7 +99,7 @@ public class RecipeTest {
     @Test
     public void testToJson_ingredientWithBooleanParam() {
         Ingredient ingredient = new Ingredient("TestIngredient") {};
-        ingredient.setOptional("optional", true);
+        ingredient.setOptional("optional", false, true);
         Recipe recipe = Recipe.prepare(ingredient);
 
         assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":true}}]}}", recipe.toJson());
@@ -68,7 +108,7 @@ public class RecipeTest {
     @Test
     public void testToJson_ingredientWithStringParam() {
         Ingredient ingredient = new Ingredient("TestIngredient") {};
-        ingredient.setOptional("optional", "foobar");
+        ingredient.setOptional("optional", false, "foobar");
         Recipe recipe = Recipe.prepare(ingredient);
 
         assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":\"foobar\"}}]}}", recipe.toJson());
@@ -77,7 +117,7 @@ public class RecipeTest {
     @Test
     public void testToJson_ingredientWithEnumParam() {
         Ingredient ingredient = new Ingredient("TestIngredient") {};
-        ingredient.setOptional("optional", TestEnum.C);
+        ingredient.setOptional("optional", false, TestEnum.C);
         Recipe recipe = Recipe.prepare(ingredient);
 
         assertEquals("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{\"optional\":\"C\"}}]}}", recipe.toJson());
@@ -86,9 +126,9 @@ public class RecipeTest {
     @Test
     public void testToJson_multipleIngredients() {
         Ingredient ingredient1 = new Ingredient("TestIngredient1") {};
-        ingredient1.setOptional("optional", true);
+        ingredient1.setOptional("optional", false, true);
         Ingredient ingredient2 = new Ingredient("TestIngredient2") {};
-        ingredient2.setOptional("optional", -2);
+        ingredient2.setOptional("optional", false, -2);
 
         Recipe recipe = Recipe.prepare(ingredient1, ingredient2);
 
