@@ -30,6 +30,12 @@ ingredients:
       - name: "optional"
         type: "boolean"
 
+  - name: "IngredientWithRepeatableOptional"
+    optionals:
+      - name: "optional"
+        type: "boolean"
+        repeatable: true
+
   - name: "IngredientWithRequiredAndOptional"
     required:
       - name: "required"
@@ -49,6 +55,16 @@ ingredients:
             type: "int"
           - name: "param2"
             type: "boolean"
+
+  - name: "IngredientWithRepeatableCompoundOptional"
+    optionals:
+      - name: "compoundOptional"
+        params:
+          - name: "param1"
+            type: "int"
+          - name: "param2"
+            type: "boolean"
+        repeatable: true
 
   - name: "IngredientWithCompoundOptionalWithOneParam"
     optionals:

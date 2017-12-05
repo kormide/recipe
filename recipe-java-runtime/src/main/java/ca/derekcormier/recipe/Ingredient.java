@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonTypeInfo(
@@ -28,12 +30,18 @@ public abstract class Ingredient {
         setProperty(name, value);
     }
 
-    protected void setOptional(String name, Object value) {
-        setProperty(name, value);
+    protected void setOptional(String name, boolean repeatable, Object value) {
+        if (!repeatable) {
+            setProperty(name, value);
+        } else {
+            List values = (List)properties.getOrDefault(name, new ArrayList());
+            values.add(value);
+            setProperty(name, values);
+        }
     }
 
-    protected void setCompoundOptional(String name, Object...keyValuePairs) {
-        Map map = new HashMap();
+    protected void setCompoundOptional(String name, boolean repeatable, Object...keyValuePairs) {
+        Map map = (Map)properties.getOrDefault(name, new HashMap());
 
         if (keyValuePairs.length % 2 != 0) {
             throw new IllegalArgumentException("must have an even number of key-value pairs for compound optional");
@@ -44,7 +52,13 @@ public abstract class Ingredient {
                 throw new IllegalArgumentException("key in compound optional is not a string");
             }
 
-            map.put(keyValuePairs[i], keyValuePairs[i+1]);
+            if (!repeatable) {
+                map.put(keyValuePairs[i], keyValuePairs[i+1]);
+            } else {
+                List values = (List)map.getOrDefault(keyValuePairs[i], new ArrayList<>());
+                values.add(keyValuePairs[i+1]);
+                map.put(keyValuePairs[i], values);
+            }
         }
 
         setProperty(name, map);
