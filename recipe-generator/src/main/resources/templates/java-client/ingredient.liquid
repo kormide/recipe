@@ -27,9 +27,9 @@ class {{ingredient.name}} extends {{superclass}} {
         super("{{ingredient.name}}");
         {%- for required in ingredient.required %}
             {%- if initializer.params contains required.name %}
-        setProperty("{{required.name}}", {{required.name}});
+        setRequired("{{required.name}}", {{required.name}});
             {%- else %}
-        setProperty("{{required.name}}", {{required.default | javavalue:required.type}});
+        setRequired("{{required.name}}", {{required.default | javavalue:required.type}});
             {%- endif -%}
         {%- endfor %}
     }{% endfor %}
@@ -57,15 +57,15 @@ class {{ingredient.name}} extends {{superclass}} {
     ) {
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' %}
-        setProperty("{{optional.name}}", {{optional.name}});
+        setOptional("{{optional.name}}", {{optional.name}});
             {%- else %}
-        setProperty("{{optional.name}}", true);
+        setOptional("{{optional.name}}", true);
             {%- endif -%}
         {%- else %}
-        setProperty("{{optional.name}}", new HashMap<String,Object>());
-            {%- for param in optional.params %}
-        ((Map<String,Object>)getProperty("{{optional.name}}")).put("{{param.name}}", {{param.name}});
-            {%- endfor -%}
+        setCompoundOptional("{{optional.name}}"
+        {%- for param in optional.params -%}
+        , "{{param.name}}", {{param.name}}
+        {%- endfor -%});
         {%- endif %}
         return this;
     }{% endfor %}
