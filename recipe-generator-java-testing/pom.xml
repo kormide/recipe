@@ -43,6 +43,7 @@
                         <configuration>
                             <mainClass>ca.derekcormier.recipe.Main</mainClass>
                             <arguments>
+                                <argument>java-client</argument>
                                 <argument>${project.basedir}/cookbook.yaml</argument>
                                 <argument>${project.basedir}/target/generated-test-sources/recipe</argument>
                             </arguments>

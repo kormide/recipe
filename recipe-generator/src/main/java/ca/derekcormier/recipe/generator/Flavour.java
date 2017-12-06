@@ -1,6 +1,23 @@
 package ca.derekcormier.recipe.generator;
 
+import ca.derekcormier.recipe.cookbook.PrimitiveType;
+
 public enum Flavour {
-    JAVA_BACKEND,
-    JAVA_CLIENT
+    JAVA_BACKEND("java-backend"),
+    JAVA_CLIENT("java-client");
+
+    private String alias;
+
+    Flavour(String alias) {
+        this.alias = alias;
+    }
+
+    public static Flavour fromAlias(String alias) {
+        for (Flavour flavour: Flavour.values()) {
+            if (flavour.alias.equals(alias)) {
+                return flavour;
+            }
+        }
+        throw new IllegalArgumentException("invalid flavour '" + alias + "'");
+    }
 }
