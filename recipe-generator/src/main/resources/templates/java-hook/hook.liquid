@@ -1,0 +1,14 @@
+import ca.derekcormier.recipe.AbstractIngredientHook;
+
+{% assign className = 'Abstract' | append: ingredient.name -%}
+{%- assign className = className | append: 'Hook' -%}
+
+{%- assign dataClassName = ingredient.name | append: 'Data' -%}
+
+public abstract class {{className}} extends AbstractIngredientHook<{{dataClassName}}> {
+    public {{className}}() {
+        super("{{ingredient.name}}");
+    }
+
+    public abstract void bake({{dataClassName}} data);
+}

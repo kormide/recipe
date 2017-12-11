@@ -1,6 +1,7 @@
 package ca.derekcormier.recipe;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
@@ -19,11 +20,13 @@ import java.util.Map;
 )
 @JsonTypeIdResolver(Ingredient.IngredientTypeIdResolver.class)
 public abstract class Ingredient {
+    protected static final Map<String, Class<? extends Ingredient>> ingredientRegister = new HashMap<>();
     private final String type;
     private final Map<String,Object> properties = new HashMap<>();
 
     public Ingredient(String type) {
         this.type = type;
+        Ingredient.ingredientRegister.put(type, this.getClass());
     }
 
     protected void setRequired(String name, Object value) {
@@ -64,8 +67,17 @@ public abstract class Ingredient {
         setProperty(name, map);
     }
 
+    @JsonAnySetter
     private void setProperty(String key, Object value) {
         properties.put(key, value);
+    }
+
+    protected <T> T getProperty(String key) {
+        return (T)properties.get(key);
+    }
+
+    protected boolean hasProperty(String key) {
+        return properties.containsKey(key);
     }
 
     @JsonAnyGetter
@@ -74,13 +86,23 @@ public abstract class Ingredient {
     }
 
     static protected class IngredientTypeIdResolver implements TypeIdResolver {
+        private JavaType superType;
+
         @Override
         public void init(JavaType javaType) {
+            superType = javaType;
         }
 
         @Override
         public String idFromValue(Object o) {
             return ((Ingredient)o).type;
+        }
+
+        @Override
+        public JavaType typeFromId(DatabindContext databindContext, String s) throws IOException {
+            // TODO: Deserialization here
+            // return databindContext.constructSpecializedType(superType, /*class*/);
+            return null;
         }
 
         @Override
@@ -90,11 +112,6 @@ public abstract class Ingredient {
 
         @Override
         public String idFromBaseType() {
-            return null;
-        }
-
-        @Override
-        public JavaType typeFromId(DatabindContext databindContext, String s) throws IOException {
             return null;
         }
 

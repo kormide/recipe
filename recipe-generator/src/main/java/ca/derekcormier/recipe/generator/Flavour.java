@@ -1,10 +1,8 @@
 package ca.derekcormier.recipe.generator;
 
-import ca.derekcormier.recipe.cookbook.PrimitiveType;
-
 public enum Flavour {
-    JAVA_BACKEND("java-backend"),
-    JAVA_CLIENT("java-client");
+    JAVA_HOOK("java-hook"),
+    JAVA_INGREDIENT("java-ingredient");
 
     private String alias;
 

@@ -7,12 +7,12 @@ import org.junit.Test;
 public class CookbookGeneratorFactoryTest {
 
     @Test
-    public void testGetGenerator_forJavaClient() {
-        assertTrue(CookbookGeneratorFactory.getGenerator(Flavour.JAVA_CLIENT) instanceof JavaClientGenerator);
+    public void testGetGenerator_forJavaIngredients() {
+        assertTrue(CookbookGeneratorFactory.getGenerator(Flavour.JAVA_INGREDIENT) instanceof JavaIngredientGenerator);
     }
 
     @Test
-    public void testGetGenerator_forJavaBackend() {
-        assertTrue(CookbookGeneratorFactory.getGenerator(Flavour.JAVA_BACKEND) instanceof JavaBackendGenerator);
+    public void testGetGenerator_forJavaHooks() {
+        assertTrue(CookbookGeneratorFactory.getGenerator(Flavour.JAVA_HOOK) instanceof JavaHookGenerator);
     }
 }
