@@ -11,7 +11,7 @@ import java.util.Map;
 
 import ca.derekcormier.recipe.Recipe;
 
-public class JavaClientTest {
+public class JavaIngredientTest {
     @Test
     public void testGeneration_emptyIngredient() {
         new EmptyIngredient();

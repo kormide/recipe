@@ -1,0 +1,43 @@
+{%- if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
+{%- else -%}
+    {%- assign superclass = 'Ingredient' -%}
+{%- endif -%}
+
+import ca.derekcormier.recipe.{{superclass}};
+
+{%- assign dataClassName = ingredient.name | append: 'Data' -%}
+
+public class {{dataClassName}} extends {{superclass}}{
+    public {{dataClassName}}() {
+        super("{{dataClassName}}");
+    }
+
+    {%- for required in ingredient.required %}
+    public {{required.type | javatype}} get{{required.name | capitalize}}() {
+        return getProperty("{{required.name}}");
+    }
+    {%- endfor %}
+    {%- for optional in ingredient.optionals %}
+    public boolean has{{optional.name | capitalize}}() {
+        return hasProperty("{{optional.name}}");
+    }
+        {%- if optional.compound != true %}
+    public {{optional.type | javatype}}{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
+        return getProperty("{{optional.name}}");
+    }
+        {%- else -%}
+    public {{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
+        return getProperty("{{optional.name}}");
+    }
+        {% endif %}
+    {%- endfor %}
+    {%- for optional in ingredient.optionals %}
+        {%- if optional.compound %}
+    public class {{optional.name | capitalize}}Params {
+            {%- for param in optional.params %}
+        public {{param.type | javatype}} {{param.name}};
+            {%- endfor %}
+    }{%- endif %}
+    {%- endfor %}
+}
