@@ -18,6 +18,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
+            data.put("domain", cookbook.getDomain());
             String rendered = renderTemplate("templates/java-ingredient/ingredient.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + ".java";
             writeToFile(filepath, rendered);
