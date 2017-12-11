@@ -2,9 +2,12 @@ package ca.derekcormier.recipe;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 
@@ -83,6 +86,14 @@ public abstract class Ingredient {
     @JsonAnyGetter
     protected Map<String,Object> getProperties() {
         return properties;
+    }
+
+    public String toJson() {
+        try {
+            return new ObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("could not serialize recipe to json", e);
+        }
     }
 
     static protected class IngredientTypeIdResolver implements TypeIdResolver {
