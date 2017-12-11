@@ -25,11 +25,23 @@ import java.util.Map;
 public abstract class Ingredient {
     protected static final Map<String, Class<? extends Ingredient>> ingredientRegister = new HashMap<>();
     private final String type;
+    @JsonIgnore
+    private final String domain;
     private final Map<String,Object> properties = new HashMap<>();
 
     public Ingredient(String type) {
+        this(type, "");
+    }
+
+    public Ingredient(String type, String domain) {
         this.type = type;
+        this.domain = domain;
+
         Ingredient.ingredientRegister.put(type, this.getClass());
+    }
+
+    public String getDomain() {
+        return domain;
     }
 
     protected void setRequired(String name, Object value) {

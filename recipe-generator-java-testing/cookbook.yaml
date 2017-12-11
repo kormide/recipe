@@ -1,3 +1,4 @@
+domain: "TestDomain"
 ingredients:
   - name: "EmptyIngredient"
 

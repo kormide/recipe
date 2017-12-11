@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
@@ -8,7 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
+import ca.derekcormier.recipe.Ingredient;
+import ca.derekcormier.recipe.Oven;
 import ca.derekcormier.recipe.Recipe;
 
 public class JavaIngredientTest {
@@ -100,6 +105,17 @@ public class JavaIngredientTest {
         new IngredientWithRepeatableCompoundOptional()
             .withCompoundOptional(1, false)
             .withCompoundOptional(2, true);
+    }
+
+    @Test
+    public void testGeneration_ingredientsHaveCorrectDomain() {
+        Oven oven = new Oven();
+        BiConsumer<String,String> spy = spy(BiConsumer.class);
+        oven.addDispatcher(spy);
+        Ingredient ingredient = new IngredientWithRequired("foo");
+        oven.bake(Recipe.prepare(ingredient));
+
+        verify(spy).accept("TestDomain", ingredient.toJson());
     }
 
     @Test
