@@ -7,7 +7,7 @@ import ca.derekcormier.recipe.AbstractIngredientHook;
 
 public abstract class {{className}} extends AbstractIngredientHook<{{dataClassName}}> {
     public {{className}}() {
-        super("{{ingredient.name}}");
+        super("{{ingredient.name}}", {{dataClassName}}.class);
     }
 
     public abstract void bake({{dataClassName}} data);

@@ -1,8 +1,14 @@
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
 import ca.derekcormier.recipe.AbstractIngredientHook;
+import ca.derekcormier.recipe.BackendOven;
 
 public class JavaHookTest {
     @Test
@@ -117,5 +123,320 @@ public class JavaHookTest {
         new AllParamsIngredientData();
         AllParamsIngredientData.class.getMethod("getEnumArg");
         assertEquals(TestEnum.class, AllParamsIngredientData.class.getMethod("getEnumArg").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_backendOvenInvokesHook() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"intArg\":5}}]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredienWithRequired() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRequiredHook() {
+            @Override
+            public void bake(IngredientWithRequiredData data) {
+                assertEquals("foobar", data.getRequired());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRequired\":{\"required\":\"foobar\"}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRequiredAndOptional() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRequiredAndOptionalHook() {
+            @Override
+            public void bake(IngredientWithRequiredAndOptionalData data) {
+                assertEquals("foobar", data.getRequired());
+                assertEquals(true, data.getOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithOptional_valuePresent() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithOptionalHook() {
+            @Override
+            public void bake(IngredientWithOptionalData data) {
+                assertTrue(data.hasOptional());
+                assertEquals(true, data.getOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithOptional\":{\"optional\":true}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredienWithOptional_valueMissing() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithOptionalHook() {
+            @Override
+            public void bake(IngredientWithOptionalData data) {
+                assertFalse(data.hasOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithOptional\":{}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableOptional_singleValuePresent() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableOptionalData data) {
+                assertTrue(data.hasOptional());
+                assertArrayEquals(new boolean[]{true}, data.getOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableOptional\":{\"optional\":[true]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableOptional_multipleValuesPresent() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableOptionalData data) {
+                assertTrue(data.hasOptional());
+                assertArrayEquals(new boolean[]{true, false, true}, data.getOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableOptional\":{\"optional\":[true, false, true]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableOptional_valueMissing() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableOptionalData data) {
+                assertFalse(data.hasOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableOptional\":{}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithCompoundOptional_valuePresent() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithCompoundOptionalHook() {
+            @Override
+            public void bake(IngredientWithCompoundOptionalData data) {
+                assertTrue(data.hasCompoundOptional());
+                assertEquals(5, data.getCompoundOptional().param1);
+                assertEquals(false, data.getCompoundOptional().param2);
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithCompoundOptional_valueMissing() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithCompoundOptionalHook() {
+            @Override
+            public void bake(IngredientWithCompoundOptionalData data) {
+                assertFalse(data.hasCompoundOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithCompoundOptional\":{}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableCompoundOptional_singleValuePresent() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableCompoundOptionalData data) {
+                assertTrue(data.hasCompoundOptional());
+                assertEquals(5, data.getCompoundOptional()[0].param1);
+                assertEquals(false, data.getCompoundOptional()[0].param2);
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false}]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableCompoundOptional_multipleValuesPresent() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableCompoundOptionalData data) {
+                assertTrue(data.hasCompoundOptional());
+                assertEquals(5, data.getCompoundOptional()[0].param1);
+                assertEquals(false, data.getCompoundOptional()[0].param2);
+                assertEquals(-1, data.getCompoundOptional()[1].param1);
+                assertEquals(true, data.getCompoundOptional()[1].param2);
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false},{\"param1\":-1,\"param2\":true}]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableCompoundOptional_valueMissing() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableCompoundOptionalData data) {
+                assertFalse(data.hasCompoundOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableCompoundOptional\":{}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithStringParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals("foobar", data.getStringArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"stringArg\":\"foobar\"}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithStringParam_null() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(null, data.getStringArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"stringArg\":null}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithIntParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(100, data.getIntArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"intArg\":100}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithBooleanParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(true, data.getBooleanArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"booleanArg\":true}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithFlagParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(false, data.getFlagArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"flagArg\":false}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithEnumParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(TestEnum.B, data.getEnumArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"enumArg\":\"B\"}}");
+        verify(spy).run();
     }
 }
