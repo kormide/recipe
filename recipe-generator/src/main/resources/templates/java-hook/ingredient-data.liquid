@@ -1,7 +1,7 @@
 {%- assign dataClassName = ingredient.name | append: 'Data' -%}
-import ca.derekcormier.recipe.IngredientData;
+import ca.derekcormier.recipe.IngredientSnapshot;
 
-public class {{dataClassName}} extends IngredientData {
+public class {{dataClassName}} extends IngredientSnapshot {
     public {{dataClassName}}() {
         super("{{ingredient.name}}");
     }

@@ -1,6 +1,5 @@
 package ca.derekcormier.recipe;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
@@ -13,27 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Wrap the ingredient name around serialized ingredients
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.CUSTOM,
     include = JsonTypeInfo.As.WRAPPER_OBJECT
 )
 @JsonTypeIdResolver(Ingredient.IngredientTypeIdResolver.class)
-public abstract class Ingredient extends PropertyMap {
-    private final String type;
-    @JsonIgnore
-    private final String domain;
-
+public abstract class Ingredient extends BaseIngredient {
     public Ingredient(String type) {
         this(type, "");
     }
 
     public Ingredient(String type, String domain) {
-        this.type = type;
-        this.domain = domain;
-    }
-
-    public String getDomain() {
-        return domain;
+        super(type, domain);
     }
 
     protected void setRequired(String name, Object value) {
@@ -81,7 +72,7 @@ public abstract class Ingredient extends PropertyMap {
 
         @Override
         public String idFromValue(Object o) {
-            return ((Ingredient)o).type;
+            return ((Ingredient)o).getType();
         }
 
         @Override
