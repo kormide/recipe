@@ -1,13 +1,9 @@
 package ca.derekcormier.recipe;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 
@@ -22,12 +18,10 @@ import java.util.Map;
     include = JsonTypeInfo.As.WRAPPER_OBJECT
 )
 @JsonTypeIdResolver(Ingredient.IngredientTypeIdResolver.class)
-public abstract class Ingredient {
-    protected static final Map<String, Class<? extends Ingredient>> ingredientRegister = new HashMap<>();
+public abstract class Ingredient extends PropertyMap {
     private final String type;
     @JsonIgnore
     private final String domain;
-    private final Map<String,Object> properties = new HashMap<>();
 
     public Ingredient(String type) {
         this(type, "");
@@ -36,8 +30,6 @@ public abstract class Ingredient {
     public Ingredient(String type, String domain) {
         this.type = type;
         this.domain = domain;
-
-        Ingredient.ingredientRegister.put(type, this.getClass());
     }
 
     public String getDomain() {
@@ -52,14 +44,14 @@ public abstract class Ingredient {
         if (!repeatable) {
             setProperty(name, value);
         } else {
-            List values = (List)properties.getOrDefault(name, new ArrayList());
+            List values = (List)getProperties().getOrDefault(name, new ArrayList());
             values.add(value);
             setProperty(name, values);
         }
     }
 
     protected void setCompoundOptional(String name, boolean repeatable, Object...keyValuePairs) {
-        Map map = (Map)properties.getOrDefault(name, new HashMap());
+        Map map = (Map)getProperties().getOrDefault(name, new HashMap());
 
         if (keyValuePairs.length % 2 != 0) {
             throw new IllegalArgumentException("must have an even number of key-value pairs for compound optional");
@@ -82,38 +74,9 @@ public abstract class Ingredient {
         setProperty(name, map);
     }
 
-    @JsonAnySetter
-    private void setProperty(String key, Object value) {
-        properties.put(key, value);
-    }
-
-    protected <T> T getProperty(String key) {
-        return (T)properties.get(key);
-    }
-
-    protected boolean hasProperty(String key) {
-        return properties.containsKey(key);
-    }
-
-    @JsonAnyGetter
-    protected Map<String,Object> getProperties() {
-        return properties;
-    }
-
-    public String toJson() {
-        try {
-            return new ObjectMapper().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("could not serialize recipe to json", e);
-        }
-    }
-
     static protected class IngredientTypeIdResolver implements TypeIdResolver {
-        private JavaType superType;
-
         @Override
         public void init(JavaType javaType) {
-            superType = javaType;
         }
 
         @Override
@@ -123,8 +86,6 @@ public abstract class Ingredient {
 
         @Override
         public JavaType typeFromId(DatabindContext databindContext, String s) throws IOException {
-            // TODO: Deserialization here
-            // return databindContext.constructSpecializedType(superType, /*class*/);
             return null;
         }
 

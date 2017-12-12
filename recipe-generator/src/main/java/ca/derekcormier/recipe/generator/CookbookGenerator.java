@@ -16,6 +16,7 @@ import liqp.RenderSettings;
 import liqp.Template;
 
 public abstract class CookbookGenerator {
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public abstract void generate(Cookbook cookbook, String targetDir);
 
@@ -25,7 +26,7 @@ public abstract class CookbookGenerator {
         String templateContent = scanner.hasNext() ? scanner.next() : "";
         Template template = Template.parse(templateContent).withRenderSettings(new RenderSettings.Builder().withStrictVariables(true).build());
         try {
-            return template.render(new ObjectMapper().writeValueAsString(data));
+            return template.render(objectMapper.writeValueAsString(data));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

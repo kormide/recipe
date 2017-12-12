@@ -206,11 +206,12 @@ public class JavaIngredientTest {
         assertJsonEquals("{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10}}]}}", recipe.toJson());
     }
 
+    private ObjectMapper objectMapper = new ObjectMapper();
     public void assertJsonEquals(String expected, String actual) {
         try {
             assertEquals(
-                new ObjectMapper().readValue(expected, new TypeReference<Map<String, Object>>() {}),
-                (Map<String, Object>)new ObjectMapper().readValue(actual, new TypeReference<Map<String, Object>>() {})
+                objectMapper.readValue(expected, new TypeReference<Map<String, Object>>() {}),
+                (Map<String, Object>)objectMapper.readValue(actual, new TypeReference<Map<String, Object>>() {})
             );
         } catch (IOException e) {
             throw new RuntimeException(e);

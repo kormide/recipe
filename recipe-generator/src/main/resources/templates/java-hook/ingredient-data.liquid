@@ -1,21 +1,17 @@
-{%- if ingredient.keyed -%}
-    {%- assign superclass = 'KeyedIngredient' -%}
-{%- else -%}
-    {%- assign superclass = 'Ingredient' -%}
-{%- endif -%}
-
-import ca.derekcormier.recipe.{{superclass}};
-
 {%- assign dataClassName = ingredient.name | append: 'Data' -%}
+import ca.derekcormier.recipe.IngredientData;
 
-public class {{dataClassName}} extends {{superclass}}{
+public class {{dataClassName}} extends IngredientData {
     public {{dataClassName}}() {
-        super("{{dataClassName}}");
+        super("{{ingredient.name}}");
     }
 
     {%- for required in ingredient.required %}
     public {{required.type | javatype}} get{{required.name | capitalize}}() {
         return getProperty("{{required.name}}");
+    }
+    public void set{{required.name | capitalize}}({{required.type | javatype}} {{required.name}}) {
+        setProperty("{{required.name}}", {{required.name}});
     }
     {%- endfor %}
     {%- for optional in ingredient.optionals %}
@@ -26,15 +22,21 @@ public class {{dataClassName}} extends {{superclass}}{
     public {{optional.type | javatype}}{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
         return getProperty("{{optional.name}}");
     }
+    private void set{{optional.name | capitalize}}({{optional.type | javatype}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
+        setProperty("{{optional.name}}", {{optional.name}});
+    }
         {%- else -%}
     public {{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
         return getProperty("{{optional.name}}");
+    }
+    private void set{{optional.name | capitalize}}({{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
+        setProperty("{{optional.name}}", {{optional.name}});
     }
         {% endif %}
     {%- endfor %}
     {%- for optional in ingredient.optionals %}
         {%- if optional.compound %}
-    public class {{optional.name | capitalize}}Params {
+    public static class {{optional.name | capitalize}}Params {
             {%- for param in optional.params %}
         public {{param.type | javatype}} {{param.name}};
             {%- endfor %}
