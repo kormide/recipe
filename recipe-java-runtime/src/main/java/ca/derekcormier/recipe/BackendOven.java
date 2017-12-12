@@ -16,7 +16,7 @@ public class BackendOven {
 
     public BackendOven() {
         objectMapper.setSubtypeResolver(subtypeResolver);
-        subtypeResolver.registerSubtypes(new NamedType(RecipeData.class, "Recipe"));
+        subtypeResolver.registerSubtypes(new NamedType(RecipeSnapshot.class, "Recipe"));
     }
 
     public void bake(String json) {
@@ -34,8 +34,8 @@ public class BackendOven {
     }
 
     private void bakeIngredient(IngredientSnapshot ingredient) {
-        if (ingredient instanceof RecipeData) {
-            ((RecipeData)ingredient).getIngredients().forEach(this::bakeIngredient);
+        if (ingredient instanceof RecipeSnapshot) {
+            ((RecipeSnapshot)ingredient).getIngredients().forEach(this::bakeIngredient);
         }
         else {
             if (hooks.containsKey(ingredient.getType())) {

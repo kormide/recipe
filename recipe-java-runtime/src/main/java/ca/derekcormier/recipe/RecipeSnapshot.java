@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeData extends IngredientSnapshot {
+public class RecipeSnapshot extends IngredientSnapshot {
     @JsonProperty("ingredients")
     private final List<IngredientSnapshot> ingredients = new ArrayList<>();
 
-    public RecipeData() {
+    public RecipeSnapshot() {
         super("Recipe");
     }
 

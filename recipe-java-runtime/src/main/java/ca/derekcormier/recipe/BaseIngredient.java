@@ -3,14 +3,16 @@ package ca.derekcormier.recipe;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.WRAPPER_OBJECT
+)
 public abstract class BaseIngredient {
-    private final static ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String,Object> properties = new HashMap<>();
 
     @JsonIgnore
@@ -33,14 +35,6 @@ public abstract class BaseIngredient {
 
     public String getType() {
         return type;
-    }
-
-    public String toJson() {
-        try {
-            return objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("could not serialize recipe to json", e);
-        }
     }
 
     @JsonAnySetter

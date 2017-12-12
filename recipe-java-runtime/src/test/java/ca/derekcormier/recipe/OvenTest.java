@@ -44,7 +44,7 @@ public class OvenTest {
 
         Ingredient ingredient = new Ingredient("TestIngredient", "TestDomain") {};
         oven.bake(Recipe.prepare(ingredient));
-        verify(spy).accept("TestDomain", ingredient.toJson());
+        verify(spy).accept("TestDomain", "{\"TestIngredient\":{}}");
     }
 
     @Test
@@ -62,8 +62,8 @@ public class OvenTest {
         Ingredient ingredient2 = new Ingredient("TestIngredient2", "DomainB") {};
 
         oven.bake(Recipe.prepare(ingredient1, ingredient2));
-        verify(spy).accept("DomainA", ingredient1.toJson());
-        verify(spy).accept("DomainB", ingredient2.toJson());
+        verify(spy).accept("DomainA", "{\"TestIngredient1\":{}}");
+        verify(spy).accept("DomainB", "{\"TestIngredient2\":{}}");
         verify(spy, times(2)).accept(anyString(), anyString());
     }
 
@@ -84,27 +84,25 @@ public class OvenTest {
             )
         ));
 
-        verify(spy).accept("DomainA", ingredient1.toJson());
-        verify(spy).accept("DomainB", ingredient2.toJson());
-        verify(spy).accept("DomainB", ingredient3.toJson());
-
+        verify(spy).accept("DomainA", "{\"TestIngredient1\":{}}");
+        verify(spy).accept("DomainB", "{\"TestIngredient2\":{}}");
+        verify(spy).accept("DomainB", "{\"TestIngredient3\":{}}");
         verify(spy, times(3)).accept(anyString(), anyString());
     }
 
     @Test
-    public void testBake_callsMultipleDispatchers() {
+    public void testBake_callsMultipleDispatchersForSameIngredient() {
         BiConsumer<String,String> spy1 = Mockito.spy(BiConsumer.class);
         BiConsumer<String,String> spy2 = Mockito.spy(BiConsumer.class);
 
         oven.addDispatcher(spy1);
         oven.addDispatcher(spy2);
 
-
         Ingredient ingredient = new Ingredient("TestIngredient", "DomainA") {};
 
         oven.bake(Recipe.prepare(ingredient));
 
-        verify(spy1).accept("DomainA", ingredient.toJson());
-        verify(spy2).accept("DomainA", ingredient.toJson());
+        verify(spy1).accept("DomainA", "{\"TestIngredient\":{}}");
+        verify(spy2).accept("DomainA", "{\"TestIngredient\":{}}");
     }
 }

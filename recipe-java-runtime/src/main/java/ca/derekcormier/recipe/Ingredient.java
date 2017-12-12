@@ -1,23 +1,10 @@
 package ca.derekcormier.recipe;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.DatabindContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Wrap the ingredient name around serialized ingredients
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.CUSTOM,
-    include = JsonTypeInfo.As.WRAPPER_OBJECT
-)
-@JsonTypeIdResolver(Ingredient.IngredientTypeIdResolver.class)
 public abstract class Ingredient extends BaseIngredient {
     public Ingredient(String type) {
         this(type, "");
@@ -63,41 +50,5 @@ public abstract class Ingredient extends BaseIngredient {
         }
 
         setProperty(name, map);
-    }
-
-    static protected class IngredientTypeIdResolver implements TypeIdResolver {
-        @Override
-        public void init(JavaType javaType) {
-        }
-
-        @Override
-        public String idFromValue(Object o) {
-            return ((Ingredient)o).getType();
-        }
-
-        @Override
-        public JavaType typeFromId(DatabindContext databindContext, String s) throws IOException {
-            return null;
-        }
-
-        @Override
-        public String idFromValueAndType(Object o, Class<?> aClass) {
-            return null;
-        }
-
-        @Override
-        public String idFromBaseType() {
-            return null;
-        }
-
-        @Override
-        public String getDescForKnownTypeIds() {
-            return null;
-        }
-
-        @Override
-        public JsonTypeInfo.Id getMechanism() {
-            return JsonTypeInfo.Id.CUSTOM;
-        }
     }
 }
