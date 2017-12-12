@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
-import ca.derekcormier.recipe.AbstractIngredientHook;
+import ca.derekcormier.recipe.BaseIngredientHook;
 import ca.derekcormier.recipe.BackendOven;
 
 public class JavaHookTest {
@@ -29,7 +29,7 @@ public class JavaHookTest {
 
     @Test
     public void testGeneration_generatedHookHasCorrectSuperclass() {
-        assertEquals(AbstractIngredientHook.class, AbstractAllParamsIngredientHook.class.getSuperclass());
+        assertEquals(BaseIngredientHook.class, AbstractAllParamsIngredientHook.class.getSuperclass());
     }
 
     @Test

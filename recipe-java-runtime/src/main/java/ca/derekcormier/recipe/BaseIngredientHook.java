@@ -1,10 +1,10 @@
 package ca.derekcormier.recipe;
 
-public abstract class AbstractIngredientHook<T> {
+public abstract class BaseIngredientHook<T> {
     private final String ingredientName;
     private final Class<T> dataClass;
 
-    public AbstractIngredientHook(String ingredientName, Class<T> dataClass) {
+    public BaseIngredientHook(String ingredientName, Class<T> dataClass) {
         this.ingredientName = ingredientName;
         this.dataClass = dataClass;
     }

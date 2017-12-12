@@ -70,7 +70,7 @@ public class BackendOvenTest {
         verify(hook2).bake(any());
     }
 
-    public static class TestIngredientHook extends AbstractIngredientHook<TestIngredientData> {
+    public static class TestIngredientHook extends BaseIngredientHook<TestIngredientData> {
         public TestIngredientData ingredient;
         public TestIngredientHook() {
             super("TestIngredient", TestIngredientData.class);
@@ -82,13 +82,13 @@ public class BackendOvenTest {
         }
     }
 
-    public static class TestIngredientData extends IngredientData {
+    public static class TestIngredientData extends IngredientSnapshot {
         public TestIngredientData() {
             super("TestIngredient");
         }
     }
 
-    public static class TestIngredientHook2 extends AbstractIngredientHook<TestIngredientData2> {
+    public static class TestIngredientHook2 extends BaseIngredientHook<TestIngredientData2> {
         public TestIngredientHook2() {
             super("TestIngredient2", TestIngredientData2.class);
         }
@@ -98,7 +98,7 @@ public class BackendOvenTest {
         }
     }
 
-    public static class TestIngredientData2 extends IngredientData {
+    public static class TestIngredientData2 extends IngredientSnapshot {
         public TestIngredientData2() {
             super("TestIngredient2");
         }

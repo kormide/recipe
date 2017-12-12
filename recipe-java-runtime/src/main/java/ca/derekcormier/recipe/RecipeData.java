@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeData extends IngredientData {
+public class RecipeData extends IngredientSnapshot {
     @JsonProperty("ingredients")
-    private final List<IngredientData> ingredients = new ArrayList<>();
+    private final List<IngredientSnapshot> ingredients = new ArrayList<>();
 
     public RecipeData() {
         super("Recipe");
     }
 
-    List<IngredientData> getIngredients() {
+    List<IngredientSnapshot> getIngredients() {
         return ingredients;
     }
 }
