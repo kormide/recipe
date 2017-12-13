@@ -61,6 +61,13 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithRepeatableVarargOptional() {
+        new IngredientWithRepeatableVarargOptional()
+            .withOptional(1, 2)
+            .withOptional(3, 4);
+    }
+
+    @Test
     public void testGeneration_ingredientOptionalReturnsSameClass() {
         assertTrue(new IngredientWithOptional().withOptional(true) instanceof IngredientWithOptional);
     }
@@ -99,6 +106,30 @@ public class JavaIngredientTest {
     public void testGeneration_enumType() {
         new AllParamsIngredient()
             .withEnumArg(TestEnum.B);
+    }
+
+    @Test
+    public void testGeneration_primitiveArrayType() {
+        new AllParamsIngredient()
+            .withStringArrayArg(new String[]{"foo", "bar"});
+    }
+
+    @Test
+    public void testGeneration_enumArrayType() {
+        new AllParamsIngredient()
+            .withEnumArrayArg(new TestEnum[]{TestEnum.A, TestEnum.C});
+    }
+
+    @Test
+    public void testGeneration_varargType() {
+        new AllParamsIngredient()
+            .withVarargArg("foo", "bar");
+    }
+
+    @Test
+    public void testGeneration_varargArrayType() {
+        new AllParamsIngredient()
+            .withVarargArrayArg(new int[]{1, 2}, new int[]{3, 4});
     }
 
     @Test
@@ -180,6 +211,17 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testBake_ingredientWithRepeatableVarargOptional() {
+        setupDispatcherSpy();
+        oven.bake(Recipe.prepare(new IngredientWithRepeatableVarargOptional()
+            .withOptional(1, 2)
+            .withOptional(3, 4)
+        ));
+
+        assertDispatchedJson("{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}}");
+    }
+
+    @Test
     public void testBake_ingredientWithCompoundOptional() {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithCompoundOptional().withCompoundOptional(5, false)));
@@ -224,9 +266,12 @@ public class JavaIngredientTest {
                 .withFlagArg()
                 .withStringArg("foobar")
                 .withIntArg(-10)
+                .withEnumArrayArg(new TestEnum[]{TestEnum.A, TestEnum.B})
+                .withVarargArg("foo", "bar")
+                .withVarargArrayArg(new int[]{1, 2}, new int[]{3, 4})
         ));
 
-        assertDispatchedJson("{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10}}");
+        assertDispatchedJson("{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}}");
     }
 
     private ObjectMapper objectMapper = new ObjectMapper();

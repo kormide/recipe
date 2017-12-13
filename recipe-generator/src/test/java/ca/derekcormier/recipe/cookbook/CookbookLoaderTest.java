@@ -669,6 +669,184 @@ public class CookbookLoaderTest {
         loader.load(toStream(input));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEnumNameThatStartsWithDigit() {
+        String yaml = String.join("\n",
+            "enums:",
+            "  - name: '1myEnum'",
+            "    values:",
+            "      - 'A'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEnumNameWithSpecialCharacter() {
+        String yaml = String.join("\n",
+            "enums:",
+            "  - name: 'My@Enum'",
+            "    values:",
+            "      - 'A'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithPrimitiveArrayType_doesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'arg'",
+            "        type: 'string[]'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithPrimitiveVararg_doesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'arg'",
+            "        type: 'int...'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithPrimitiveArrayVararg_doesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'arg'",
+            "        type: 'int[]...'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithEnumArray_doesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'arg'",
+            "        type: 'MyEnum[]'",
+            "enums:",
+            "  - name: 'MyEnum'",
+            "    values:",
+            "      - 'A'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithEnumVararg_doesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'arg'",
+            "        type: 'MyEnum...'",
+            "enums:",
+            "  - name: 'MyEnum'",
+            "    values:",
+            "      - 'A'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnIngredientRequiredVarargParamNotLastParamInInitializer() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    required:",
+            "      - name: 'param1'",
+            "        type: 'string...'",
+            "      - name: 'param2'",
+            "        type: 'int'",
+            "    initializers:",
+            "      - params: ['param1', 'param2']"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_doesNotThrowOnIngredientRequiredVarargParamLastParamInInitializer() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    required:",
+            "      - name: 'param1'",
+            "        type: 'string...'",
+            "      - name: 'param2'",
+            "        type: 'int'",
+            "    initializers:",
+            "      - params: ['param2', 'param1']"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnIngredientCompoundOptionalVarargParamNotLastParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'optional'",
+            "        params:",
+            "          - name: 'param1'",
+            "            type: 'int...'",
+            "          - name: 'param2'",
+            "            type: 'boolean'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_doesNotThrowOnIngredientCompoundOptionalVarargParamIsLastParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'optional'",
+            "        params:",
+            "          - name: 'param1'",
+            "            type: 'boolean'",
+            "          - name: 'param2'",
+            "            type: 'int...'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnIngredientVarargFlagType() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'optional'",
+            "        type: 'flag...'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
     private InputStream toStream(String str) {
         return new ByteArrayInputStream(str.getBytes());
     }

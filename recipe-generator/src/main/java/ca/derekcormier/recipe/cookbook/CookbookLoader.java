@@ -37,6 +37,7 @@ public class CookbookLoader {
         validateInitializersContainRequiredFields(cookbook);
         validateInitializerSignaturesUnique(cookbook);
         validateRequiredHaveDefaultOrAppearInAllInitializers(cookbook);
+        validateVaragParamsAppearLastInParamLists(cookbook);
     }
 
     private void validateEnums(Cookbook cookbook) {
@@ -72,11 +73,8 @@ public class CookbookLoader {
             types.addAll(ingredient.getOptionals().stream().filter(Optional::isCompound).flatMap(o -> o.getParams().stream()).map(Param::getType).collect(Collectors.toList()));
         }
 
-        // All types are known types
         for (String type: types) {
-            if (!CookbookUtils.isKnownType(cookbook, type)) {
-                throw new RuntimeException("unknown param type '" + type + "'");
-            }
+            CookbookUtils.parseType(type, cookbook);
         }
     }
 
@@ -114,6 +112,30 @@ public class CookbookLoader {
             for (Required required: ingredient.getRequired()) {
                 if (!required.hasDefault() && (ingredient.getInitializers().isEmpty() || !ingredient.getInitializers().stream().allMatch(i -> i.getParams().contains(required.getName())))) {
                     throw new RuntimeException("required '" + required.getName() + "' must either have a default or appear in all initializers");
+                }
+            }
+        }
+    }
+
+    private void validateVaragParamsAppearLastInParamLists(Cookbook cookbook) {
+        for (Ingredient ingredient : cookbook.getIngredients()) {
+            Set<String> requiredVarargParams = ingredient.getRequired().stream().filter(r -> CookbookUtils.parseType(r.getType(), cookbook).isVararg()).map(Required::getName).collect(Collectors.toSet());
+
+            for (Initializer initializer: ingredient.getInitializers()) {
+                for (int i = 0; i < initializer.getParams().size() - 1; i++) {
+                    if (requiredVarargParams.contains(initializer.getParams().get(i))) {
+                        throw new RuntimeException("vararg param can only be last param in initializer");
+                    }
+                }
+            }
+
+            for (Optional optional: ingredient.getOptionals()) {
+                if (optional.isCompound()) {
+                    for (int i = 0; i < optional.getParams().size() - 1; i++) {
+                        if (CookbookUtils.parseType(optional.getParams().get(i).getType(), cookbook).isVararg()) {
+                            throw new RuntimeException("vararg param can only be last param in compound optional");
+                        }
+                    }
                 }
             }
         }

@@ -66,6 +66,14 @@ public class JavaHookTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithRepeatableVarargOptionalData() throws NoSuchMethodException {
+        new IngredientWithRepeatableVarargOptionalData();
+
+        IngredientWithRepeatableVarargOptionalData.class.getMethod("getOptional");
+        assertEquals(int[][].class, IngredientWithRepeatableVarargOptionalData.class.getMethod("getOptional").getReturnType());
+    }
+
+    @Test
     public void testGeneration_ingredientWithCompoundOptionalData() throws NoSuchMethodException, NoSuchFieldException {
         new IngredientWithCompoundOptionalData();
 
@@ -123,6 +131,34 @@ public class JavaHookTest {
         new AllParamsIngredientData();
         AllParamsIngredientData.class.getMethod("getEnumArg");
         assertEquals(TestEnum.class, AllParamsIngredientData.class.getMethod("getEnumArg").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_ingredientWithPrimitiveArrayParam() throws NoSuchMethodException {
+        new AllParamsIngredientData();
+        AllParamsIngredientData.class.getMethod("getStringArrayArg");
+        assertEquals(String[].class, AllParamsIngredientData.class.getMethod("getStringArrayArg").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_ingredientWithEnumArrayParam() throws NoSuchMethodException {
+        new AllParamsIngredientData();
+        AllParamsIngredientData.class.getMethod("getEnumArrayArg");
+        assertEquals(TestEnum[].class, AllParamsIngredientData.class.getMethod("getEnumArrayArg").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_ingredientWithVarargParam() throws NoSuchMethodException {
+        new AllParamsIngredientData();
+        AllParamsIngredientData.class.getMethod("getVarargArg");
+        assertEquals(String[].class, AllParamsIngredientData.class.getMethod("getVarargArg").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_ingredientWithVarargArrayParam() throws NoSuchMethodException {
+        new AllParamsIngredientData();
+        AllParamsIngredientData.class.getMethod("getVarargArrayArg");
+        assertEquals(int[][].class, AllParamsIngredientData.class.getMethod("getVarargArrayArg").getReturnType());
     }
 
     @Test
@@ -237,6 +273,23 @@ public class JavaHookTest {
         });
 
         oven.bake("{\"IngredientWithRepeatableOptional\":{\"optional\":[true, false, true]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithRepeatableVarargOptional() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithRepeatableVarargOptionalHook() {
+            @Override
+            public void bake(IngredientWithRepeatableVarargOptionalData data) {
+                assertTrue(data.hasOptional());
+                assertArrayEquals(new int[][]{new int[]{1, 2}, new int[]{3, 4}}, data.getOptional());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}}");
         verify(spy).run();
     }
 
@@ -437,6 +490,70 @@ public class JavaHookTest {
         });
 
         oven.bake("{\"AllParamsIngredient\":{\"enumArg\":\"B\"}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithPrimitiveArrayParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(new String[]{"foo", "bar"}, data.getStringArrayArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"stringArrayArg\":[\"foo\",\"bar\"]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithEnumArrayParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(new TestEnum[]{TestEnum.B, TestEnum.C}, data.getEnumArrayArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"enumArrayArg\":[\"B\",\"C\"]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithVarargParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(new String[]{"foo", "bar"}, data.getVarargArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"varargArg\":[\"foo\",\"bar\"]}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testGeneration_deserializesIngredientWithVarargArrayParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data) {
+                assertEquals(new int[][]{new int[]{1, 2}, new int[]{3,4}}, data.getVarargArrayArg());
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}}");
         verify(spy).run();
     }
 }
