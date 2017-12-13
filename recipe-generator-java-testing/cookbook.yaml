@@ -74,6 +74,12 @@ ingredients:
           - name: "param1"
             type: "int"
 
+  - name: "IngredientWithRepeatableVarargOptional"
+    optionals:
+      - name: "optional"
+        type: "int..."
+        repeatable: true
+
   - name: "AllParamsIngredient"
     optionals:
       - name: "stringArg"
@@ -86,6 +92,14 @@ ingredients:
         type: "flag"
       - name: "enumArg"
         type: "TestEnum"
+      - name: "stringArrayArg"
+        type: "string[]"
+      - name: "enumArrayArg"
+        type: "TestEnum[]"
+      - name: "varargArg"
+        type: "string..."
+      - name: "varargArrayArg"
+        type: "int[]..."
 
 enums:
   - name: "TestEnum"

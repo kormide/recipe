@@ -2,10 +2,17 @@ package ca.derekcormier.recipe.cookbook;
 
 import java.util.stream.Collectors;
 
+import ca.derekcormier.recipe.cookbook.type.ArrayType;
+import ca.derekcormier.recipe.cookbook.type.EnumType;
+import ca.derekcormier.recipe.cookbook.type.FlagType;
+import ca.derekcormier.recipe.cookbook.type.ParamType;
+import ca.derekcormier.recipe.cookbook.type.PrimitiveType;
+import ca.derekcormier.recipe.cookbook.type.Type;
+
 public class CookbookUtils {
     public static boolean isPrimitiveType(String type) {
         try {
-            PrimitiveType.fromAlias(type);
+            Primitive.fromAlias(type);
             return true;
         }
         catch (RuntimeException e) {
@@ -33,5 +40,33 @@ public class CookbookUtils {
                 .get(0)
                 .getValues()
                 .contains(value);
+    }
+
+    public static ParamType parseType(String type, Cookbook cookbook) {
+        if (type.endsWith("...")) {
+            Type parsed = _parseType(type.substring(0, type.length() - 3), cookbook);
+            if (parsed instanceof FlagType) {
+                throw new RuntimeException("flag types cannot be varargs");
+            }
+            return new ParamType(parsed, true);
+        }
+        return new ParamType(_parseType(type, cookbook), false);
+    }
+
+    private static Type _parseType(String type, Cookbook cookbook) {
+        if (CookbookUtils.isPrimitiveType(type)) {
+            return new PrimitiveType(Primitive.fromAlias(type));
+        }
+        else if (CookbookUtils.isFlagType(type)) {
+            return new FlagType();
+        }
+        else if (CookbookUtils.isEnumType(cookbook, type)) {
+            return new EnumType(type);
+        }
+        else if (type.endsWith("[]")) {
+            return new ArrayType(_parseType(type.substring(0, type.length() - 2), cookbook));
+        }
+
+        throw new RuntimeException("unknown type '" + type + "'");
     }
 }

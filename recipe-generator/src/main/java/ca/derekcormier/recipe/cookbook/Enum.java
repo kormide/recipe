@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+import javax.lang.model.SourceVersion;
+
 public class Enum {
     private final String name;
     private final List<String> values;
@@ -16,6 +18,10 @@ public class Enum {
     ) {
         this.name = name;
         this.values = values;
+
+        if (!SourceVersion.isIdentifier(name) || SourceVersion.isKeyword(name)) {
+            throw new RuntimeException("invalid enum name '" + name + "'");
+        }
     }
 
     public String getName() {

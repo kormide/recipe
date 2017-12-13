@@ -7,7 +7,7 @@ public class {{dataClassName}} extends IngredientSnapshot {
     }
 
     {%- for required in ingredient.required %}
-    public {{required.type | javatype}} get{{required.name | capitalize}}() {
+    public {{required.type | javatype:true}} get{{required.name | capitalize}}() {
         return getProperty("{{required.name}}");
     }
     public void set{{required.name | capitalize}}({{required.type | javatype}} {{required.name}}) {
@@ -19,10 +19,10 @@ public class {{dataClassName}} extends IngredientSnapshot {
         return hasProperty("{{optional.name}}");
     }
         {%- if optional.compound != true %}
-    public {{optional.type | javatype}}{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
+    public {{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
         return getProperty("{{optional.name}}");
     }
-    private void set{{optional.name | capitalize}}({{optional.type | javatype}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
+    private void set{{optional.name | capitalize}}({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
         setProperty("{{optional.name}}", {{optional.name}});
     }
         {%- else -%}
@@ -38,7 +38,7 @@ public class {{dataClassName}} extends IngredientSnapshot {
         {%- if optional.compound %}
     public static class {{optional.name | capitalize}}Params {
             {%- for param in optional.params %}
-        public {{param.type | javatype}} {{param.name}};
+        public {{param.type | javatype:true}} {{param.name}};
             {%- endfor %}
     }{%- endif %}
     {%- endfor %}

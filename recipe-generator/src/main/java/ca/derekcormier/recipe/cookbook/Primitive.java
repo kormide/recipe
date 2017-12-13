@@ -1,13 +1,13 @@
 package ca.derekcormier.recipe.cookbook;
 
-public enum PrimitiveType {
+public enum Primitive {
     BOOLEAN("boolean"),
     INTEGER("int"),
     STRING("string");
 
     private String alias;
 
-    PrimitiveType(String alias) {
+    Primitive(String alias) {
         this.alias = alias;
     }
 
@@ -15,12 +15,12 @@ public enum PrimitiveType {
         return alias;
     }
 
-    public static PrimitiveType fromAlias(String alias) {
-        for (PrimitiveType type: PrimitiveType.values()) {
+    public static Primitive fromAlias(String alias) {
+        for (Primitive type: Primitive.values()) {
             if (type.getAlias().equals(alias)) {
                 return type;
             }
         }
-        throw new RuntimeException("cannot create Type from alias '" + alias + "'");
+        throw new RuntimeException("cannot create primitive from alias '" + alias + "'");
     }
 }
