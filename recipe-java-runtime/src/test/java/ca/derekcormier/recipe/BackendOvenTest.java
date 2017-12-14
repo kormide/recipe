@@ -20,41 +20,41 @@ public class BackendOvenTest {
     public void testBake_invokesHookForIngredient() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"TestIngredient\":{}}");
+        oven.bake("{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
 
-        verify(hook).bake(any());
+        verify(hook).bake(any(), any());
     }
 
     @Test(expected = RuntimeException.class)
     public void testBake_throwsOnMissingIngredientHook() {
-        oven.bake("{\"TestIngredient\":{}}");
+        oven.bake("{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
     }
 
     @Test
     public void testBake_invokesHookForIngredientInRecipe() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}}");
+        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}},\"cake\":{}}");
 
-        verify(hook).bake(any());
+        verify(hook).bake(any(), any());
     }
 
     @Test
     public void testBake_invokesHookForIngredientInNestedRecipe() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"Recipe\":{\"ingredients\":[{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}}]}}");
+        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}}]}},\"cake\":{}}");
 
-        verify(hook).bake(any());
+        verify(hook).bake(any(), any());
     }
 
     @Test
     public void testBake_invokesHookMultipleTimesForRepeatedIngredient() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}},{\"TestIngredient\":{}}]}}");
+        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}},{\"TestIngredient\":{}}]}},\"cake\":{}}");
 
-        verify(hook, times(2)).bake(any());
+        verify(hook, times(2)).bake(any(), any());
     }
 
     @Test
@@ -64,10 +64,10 @@ public class BackendOvenTest {
 
         oven.registerHook(hook1);
         oven.registerHook(hook2);
-        oven.bake("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}},{\"TestIngredient2\":{}}]}}");
+        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}},{\"TestIngredient2\":{}}]}},\"cake\":{}}");
 
-        verify(hook1).bake(any());
-        verify(hook2).bake(any());
+        verify(hook1).bake(any(), any());
+        verify(hook2).bake(any(), any());
     }
 
     public static class TestIngredientHook extends BaseIngredientHook<TestIngredientData> {
@@ -77,7 +77,7 @@ public class BackendOvenTest {
         }
 
         @Override
-        public void bake(TestIngredientData ingredient) {
+        public void bake(TestIngredientData ingredient, Cake cake) {
             this.ingredient = ingredient;
         }
     }
@@ -94,7 +94,7 @@ public class BackendOvenTest {
         }
 
         @Override
-        public void bake(TestIngredientData2 ingredient) {
+        public void bake(TestIngredientData2 ingredient, Cake cake) {
         }
     }
 

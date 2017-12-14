@@ -9,13 +9,14 @@ import org.junit.Test;
 
 import ca.derekcormier.recipe.BaseIngredientHook;
 import ca.derekcormier.recipe.BackendOven;
+import ca.derekcormier.recipe.Cake;
 
 public class JavaHookTest {
     @Test
     public void testGeneration_generatesIngredientHook_emptyIngredient() {
         new AbstractEmptyIngredientHook() {
             @Override
-            public void bake(EmptyIngredientData data) {}
+            public void bake(EmptyIngredientData data, Cake cake) {}
         };
     }
 
@@ -23,7 +24,7 @@ public class JavaHookTest {
     public void testGeneration_generatesIngredientHook_multipleParamsIngredient() {
         new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {}
+            public void bake(AllParamsIngredientData data, Cake cake) {}
         };
     }
 
@@ -167,12 +168,12 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 spy.run();
             }
         });
 
-        oven.bake("{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"intArg\":5}}]}}");
+        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"intArg\":5}}]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -182,13 +183,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRequiredHook() {
             @Override
-            public void bake(IngredientWithRequiredData data) {
+            public void bake(IngredientWithRequiredData data, Cake cake) {
                 assertEquals("foobar", data.getRequired());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRequired\":{\"required\":\"foobar\"}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRequired\":{\"required\":\"foobar\"}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -198,14 +199,14 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRequiredAndOptionalHook() {
             @Override
-            public void bake(IngredientWithRequiredAndOptionalData data) {
+            public void bake(IngredientWithRequiredAndOptionalData data, Cake cake) {
                 assertEquals("foobar", data.getRequired());
                 assertEquals(true, data.getOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -215,14 +216,14 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithOptionalHook() {
             @Override
-            public void bake(IngredientWithOptionalData data) {
+            public void bake(IngredientWithOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
                 assertEquals(true, data.getOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithOptional\":{\"optional\":true}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithOptional\":{\"optional\":true}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -232,13 +233,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithOptionalHook() {
             @Override
-            public void bake(IngredientWithOptionalData data) {
+            public void bake(IngredientWithOptionalData data, Cake cake) {
                 assertFalse(data.hasOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithOptional\":{}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithOptional\":{}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -248,14 +249,14 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableOptionalData data) {
+            public void bake(IngredientWithRepeatableOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
                 assertArrayEquals(new boolean[]{true}, data.getOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableOptional\":{\"optional\":[true]}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{\"optional\":[true]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -265,14 +266,14 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableOptionalData data) {
+            public void bake(IngredientWithRepeatableOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
                 assertArrayEquals(new boolean[]{true, false, true}, data.getOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableOptional\":{\"optional\":[true, false, true]}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{\"optional\":[true, false, true]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -282,14 +283,14 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableVarargOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableVarargOptionalData data) {
+            public void bake(IngredientWithRepeatableVarargOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
                 assertArrayEquals(new int[][]{new int[]{1, 2}, new int[]{3, 4}}, data.getOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -299,13 +300,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableOptionalData data) {
+            public void bake(IngredientWithRepeatableOptionalData data, Cake cake) {
                 assertFalse(data.hasOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableOptional\":{}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -315,7 +316,7 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithCompoundOptionalHook() {
             @Override
-            public void bake(IngredientWithCompoundOptionalData data) {
+            public void bake(IngredientWithCompoundOptionalData data, Cake cake) {
                 assertTrue(data.hasCompoundOptional());
                 assertEquals(5, data.getCompoundOptional().param1);
                 assertEquals(false, data.getCompoundOptional().param2);
@@ -323,7 +324,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -333,13 +334,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithCompoundOptionalHook() {
             @Override
-            public void bake(IngredientWithCompoundOptionalData data) {
+            public void bake(IngredientWithCompoundOptionalData data, Cake cake) {
                 assertFalse(data.hasCompoundOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithCompoundOptional\":{}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithCompoundOptional\":{}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -349,7 +350,7 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableCompoundOptionalData data) {
+            public void bake(IngredientWithRepeatableCompoundOptionalData data, Cake cake) {
                 assertTrue(data.hasCompoundOptional());
                 assertEquals(5, data.getCompoundOptional()[0].param1);
                 assertEquals(false, data.getCompoundOptional()[0].param2);
@@ -357,7 +358,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false}]}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false}]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -367,7 +368,7 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableCompoundOptionalData data) {
+            public void bake(IngredientWithRepeatableCompoundOptionalData data, Cake cake) {
                 assertTrue(data.hasCompoundOptional());
                 assertEquals(5, data.getCompoundOptional()[0].param1);
                 assertEquals(false, data.getCompoundOptional()[0].param2);
@@ -377,7 +378,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false},{\"param1\":-1,\"param2\":true}]}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false},{\"param1\":-1,\"param2\":true}]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -387,13 +388,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
             @Override
-            public void bake(IngredientWithRepeatableCompoundOptionalData data) {
+            public void bake(IngredientWithRepeatableCompoundOptionalData data, Cake cake) {
                 assertFalse(data.hasCompoundOptional());
                 spy.run();
             }
         });
 
-        oven.bake("{\"IngredientWithRepeatableCompoundOptional\":{}}");
+        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -403,13 +404,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals("foobar", data.getStringArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"stringArg\":\"foobar\"}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"stringArg\":\"foobar\"}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -419,13 +420,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(null, data.getStringArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"stringArg\":null}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"stringArg\":null}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -435,13 +436,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(100, data.getIntArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"intArg\":100}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"intArg\":100}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -451,13 +452,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(true, data.getBooleanArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"booleanArg\":true}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"booleanArg\":true}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -467,13 +468,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(false, data.getFlagArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"flagArg\":false}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"flagArg\":false}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -483,13 +484,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(TestEnum.B, data.getEnumArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"enumArg\":\"B\"}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"enumArg\":\"B\"}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -499,13 +500,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(new String[]{"foo", "bar"}, data.getStringArrayArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"stringArrayArg\":[\"foo\",\"bar\"]}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"stringArrayArg\":[\"foo\",\"bar\"]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -515,13 +516,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(new TestEnum[]{TestEnum.B, TestEnum.C}, data.getEnumArrayArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"enumArrayArg\":[\"B\",\"C\"]}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"enumArrayArg\":[\"B\",\"C\"]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -531,13 +532,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(new String[]{"foo", "bar"}, data.getVarargArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"varargArg\":[\"foo\",\"bar\"]}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"varargArg\":[\"foo\",\"bar\"]}},\"cake\":{}}");
         verify(spy).run();
     }
 
@@ -547,13 +548,13 @@ public class JavaHookTest {
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data) {
+            public void bake(AllParamsIngredientData data, Cake cake) {
                 assertEquals(new int[][]{new int[]{1, 2}, new int[]{3,4}}, data.getVarargArrayArg());
                 spy.run();
             }
         });
 
-        oven.bake("{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}}");
+        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}},\"cake\":{}}");
         verify(spy).run();
     }
 }

@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.jsontype.SubtypeResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.StdSubtypeResolver;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class Oven {
-    private List<BiConsumer<String,String>> dispatchers = new ArrayList<>();
+    private List<Dispatcher> dispatchers = new ArrayList<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SubtypeResolver subtypeResolver = new StdSubtypeResolver();
 
@@ -19,30 +19,58 @@ public class Oven {
         objectMapper.setSubtypeResolver(subtypeResolver);
     }
 
-    public void bake(Recipe recipe) {
+    public Cake bake(Recipe recipe) {
+        Cake cake = new Cake();
+        registerSubtypes(recipe);
+        _bake(recipe, cake);
+        return cake;
+    }
+
+    private Cake _bake(Recipe recipe, Cake cake) {
         for (Ingredient ingredient: recipe.getIngredients()) {
             if (ingredient instanceof Recipe) {
-                bake((Recipe)ingredient);
+                cake = _bake((Recipe)ingredient, cake);
             }
             else {
-                for (BiConsumer<String,String> dispatcher: dispatchers) {
-                    dispatcher.accept(ingredient.getDomain(), deserializeIngredient(ingredient));
+                String payload = serializePayload(ingredient, cake);
+                for (Dispatcher dispatcher: dispatchers) {
+                    String jsonCake = dispatcher.dispatch(ingredient.getDomain(), payload);
+                    cake = deserializeCake(jsonCake);
                 }
             }
         }
+        return cake;
     }
 
-    public void addDispatcher(BiConsumer<String,String> dispatcher) {
+    public void addDispatcher(Dispatcher dispatcher) {
         dispatchers.add(dispatcher);
     }
 
-    private String deserializeIngredient(Ingredient ingredient) {
-        subtypeResolver.registerSubtypes(new NamedType(ingredient.getClass(), ingredient.getType()));
-
+    private String serializePayload(Ingredient ingredient, Cake cake) {
         try {
-            return objectMapper.writeValueAsString(ingredient);
+            Payload payload = new Payload(ingredient, cake);
+            return objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("could not serialize recipe to json", e);
+        }
+    }
+
+    private Cake deserializeCake(String json) {
+        try {
+            return objectMapper.readValue(json, Cake.class);
+        } catch (IOException e) {
+            throw new RuntimeException("could not deserialize cake");
+        }
+    }
+
+    private void registerSubtypes(Recipe recipe) {
+        for (Ingredient ingredient: recipe.getIngredients()) {
+            if (ingredient instanceof Recipe) {
+                registerSubtypes((Recipe)ingredient);
+            }
+            else {
+                subtypeResolver.registerSubtypes(new NamedType(ingredient.getClass(), ingredient.getType()));
+            }
         }
     }
 }
