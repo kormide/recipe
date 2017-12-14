@@ -4,12 +4,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import java.util.function.BiConsumer;
 
 public class OvenTest {
     private Oven oven;
@@ -21,30 +20,31 @@ public class OvenTest {
 
     @Test
     public void testBake_doesNotCallDispatcherForEmptyRecipe() {
-        BiConsumer<String,String> spy = Mockito.spy(BiConsumer.class);
+        Dispatcher spy = Mockito.spy(Dispatcher.class);
         oven.addDispatcher(spy);
 
         oven.bake(Recipe.prepare());
-        verify(spy, never()).accept(anyString(), anyString());
+        verify(spy, never()).dispatch(anyString(), anyString());
     }
 
     @Test
     public void testBake_doesNotCallDispatcherForNestedEmptyRecipes() {
-        BiConsumer<String,String> spy = Mockito.spy(BiConsumer.class);
+        Dispatcher spy = Mockito.spy(Dispatcher.class);
         oven.addDispatcher(spy);
 
         oven.bake(Recipe.prepare(Recipe.prepare()));
-        verify(spy, never()).accept(anyString(), anyString());
+        verify(spy, never()).dispatch(anyString(), anyString());
     }
 
     @Test
     public void testBake_callsDispatcherForSingleIngredient() {
-        BiConsumer<String,String> spy = Mockito.spy(BiConsumer.class);
+        Dispatcher spy = Mockito.spy(Dispatcher.class);
+        when(spy.dispatch(anyString(), anyString())).thenReturn("{}");
         oven.addDispatcher(spy);
 
         Ingredient ingredient = new Ingredient("TestIngredient", "TestDomain") {};
         oven.bake(Recipe.prepare(ingredient));
-        verify(spy).accept("TestDomain", "{\"TestIngredient\":{}}");
+        verify(spy).dispatch("TestDomain", "{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
     }
 
     @Test
@@ -55,21 +55,23 @@ public class OvenTest {
 
     @Test
     public void testBake_callsDispatcherForMultipleIngredients() {
-        BiConsumer<String,String> spy = Mockito.spy(BiConsumer.class);
+        Dispatcher spy = Mockito.spy(Dispatcher.class);
+        when(spy.dispatch(anyString(), anyString())).thenReturn("{}");
         oven.addDispatcher(spy);
 
         Ingredient ingredient1 = new Ingredient("TestIngredient1", "DomainA") {};
         Ingredient ingredient2 = new Ingredient("TestIngredient2", "DomainB") {};
 
         oven.bake(Recipe.prepare(ingredient1, ingredient2));
-        verify(spy).accept("DomainA", "{\"TestIngredient1\":{}}");
-        verify(spy).accept("DomainB", "{\"TestIngredient2\":{}}");
-        verify(spy, times(2)).accept(anyString(), anyString());
+        verify(spy).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient1\":{}},\"cake\":{}}");
+        verify(spy).dispatch("DomainB", "{\"ingredient\":{\"TestIngredient2\":{}},\"cake\":{}}");
+        verify(spy, times(2)).dispatch(anyString(), anyString());
     }
 
     @Test
     public void testBake_callsDispatcherForIngredientsInNestedRecipe() {
-        BiConsumer<String,String> spy = Mockito.spy(BiConsumer.class);
+        Dispatcher spy = Mockito.spy(Dispatcher.class);
+        when(spy.dispatch(anyString(), anyString())).thenReturn("{}");
         oven.addDispatcher(spy);
 
         Ingredient ingredient1 = new Ingredient("TestIngredient1", "DomainA") {};
@@ -84,16 +86,18 @@ public class OvenTest {
             )
         ));
 
-        verify(spy).accept("DomainA", "{\"TestIngredient1\":{}}");
-        verify(spy).accept("DomainB", "{\"TestIngredient2\":{}}");
-        verify(spy).accept("DomainB", "{\"TestIngredient3\":{}}");
-        verify(spy, times(3)).accept(anyString(), anyString());
+        verify(spy).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient1\":{}},\"cake\":{}}");
+        verify(spy).dispatch("DomainB", "{\"ingredient\":{\"TestIngredient2\":{}},\"cake\":{}}");
+        verify(spy).dispatch("DomainB", "{\"ingredient\":{\"TestIngredient3\":{}},\"cake\":{}}");
+        verify(spy, times(3)).dispatch(anyString(), anyString());
     }
 
     @Test
     public void testBake_callsMultipleDispatchersForSameIngredient() {
-        BiConsumer<String,String> spy1 = Mockito.spy(BiConsumer.class);
-        BiConsumer<String,String> spy2 = Mockito.spy(BiConsumer.class);
+        Dispatcher spy1 = Mockito.spy(Dispatcher.class);
+        Dispatcher spy2 = Mockito.spy(Dispatcher.class);
+        when(spy1.dispatch(anyString(), anyString())).thenReturn("{}");
+        when(spy2.dispatch(anyString(), anyString())).thenReturn("{}");
 
         oven.addDispatcher(spy1);
         oven.addDispatcher(spy2);
@@ -102,7 +106,7 @@ public class OvenTest {
 
         oven.bake(Recipe.prepare(ingredient));
 
-        verify(spy1).accept("DomainA", "{\"TestIngredient\":{}}");
-        verify(spy2).accept("DomainA", "{\"TestIngredient\":{}}");
+        verify(spy1).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
+        verify(spy2).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
     }
 }

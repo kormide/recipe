@@ -17,5 +17,5 @@ public abstract class BaseIngredientHook<T> {
         return dataClass;
     }
 
-    public abstract void bake(T ingredient);
+    public abstract void bake(T ingredient, Cake cake);
 }

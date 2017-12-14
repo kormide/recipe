@@ -1,5 +1,6 @@
 package ca.derekcormier.recipe;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.jsontype.SubtypeResolver;
@@ -19,12 +20,22 @@ public class BackendOven {
         subtypeResolver.registerSubtypes(new NamedType(RecipeSnapshot.class, "Recipe"));
     }
 
-    public void bake(String json) {
+    public String bake(String json) {
+        BackendPayload payload;
+
         try {
-            IngredientSnapshot ingredient = objectMapper.readValue(json, IngredientSnapshot.class);
-            bakeIngredient(ingredient);
+            payload = objectMapper.readValue(json, BackendPayload.class);
         } catch (IOException e) {
-            throw new RuntimeException("could not deserialize json ingredient", e);
+            throw new RuntimeException("could not deserialize json payload", e);
+        }
+
+        Cake cake = payload.getCake();
+        bakeIngredient(payload.getIngredient(), cake);
+
+        try {
+            return objectMapper.writeValueAsString(cake);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("could not serialize cake", e);
         }
     }
 
@@ -33,18 +44,19 @@ public class BackendOven {
         subtypeResolver.registerSubtypes(new NamedType(hook.getDataClass(), hook.getIngredientName()));
     }
 
-    private void bakeIngredient(IngredientSnapshot ingredient) {
+    private void bakeIngredient(IngredientSnapshot ingredient, Cake cake) {
         if (ingredient instanceof RecipeSnapshot) {
-            ((RecipeSnapshot)ingredient).getIngredients().forEach(this::bakeIngredient);
+            for (IngredientSnapshot i: ((RecipeSnapshot)ingredient).getIngredients()) {
+                bakeIngredient(i, cake);
+            }
         }
         else {
             if (hooks.containsKey(ingredient.getType())) {
-                hooks.get(ingredient.getType()).bake(ingredient);
+                hooks.get(ingredient.getType()).bake(ingredient, cake);
             }
             else {
                 throw new RuntimeException("could not find hook for ingredient " + ingredient.getType());
             }
         }
-
     }
 }
