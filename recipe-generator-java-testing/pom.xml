@@ -48,7 +48,7 @@
                         </goals>
                         <phase>generate-test-resources</phase>
                         <configuration>
-                            <mainClass>ca.derekcormier.recipe.Main</mainClass>
+                            <mainClass>ca.derekcormier.recipe.generator.Main</mainClass>
                             <arguments>
                                 <argument>java-ingredient</argument>
                                 <argument>${project.basedir}/cookbook.yaml</argument>
@@ -64,7 +64,7 @@
                         </goals>
                         <phase>generate-test-resources</phase>
                         <configuration>
-                            <mainClass>ca.derekcormier.recipe.Main</mainClass>
+                            <mainClass>ca.derekcormier.recipe.generator.Main</mainClass>
                             <arguments>
                                 <argument>java-hook</argument>
                                 <argument>${project.basedir}/cookbook.yaml</argument>

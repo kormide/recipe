@@ -47,7 +47,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ca.derekcormier.recipe.Main</mainClass>
+                            <mainClass>ca.derekcormier.recipe.generator.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
