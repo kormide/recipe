@@ -273,6 +273,21 @@ public class JavaIngredientTest {
         assertDispatchedJson("{\"ingredient\":{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}},\"cake\":{}}");
     }
 
+    @Test
+    public void testBake_propagatesCakeUpdatesToSubsequentDispatches() {
+        dispatcherSpy = spy(Dispatcher.class);
+        when(dispatcherSpy.dispatch(anyString(), anyString())).thenReturn("{\"someKey\":\"someValue\"}");
+        oven.addDispatcher(dispatcherSpy);
+
+        oven.bake(Recipe.prepare(
+            new EmptyIngredient(),
+            new EmptyIngredient()
+        ));
+
+        verify(dispatcherSpy).dispatch(anyString(), eq("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{}}"));
+        verify(dispatcherSpy).dispatch(anyString(), eq("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{\"someKey\":\"someValue\"}}"));
+    }
+
     private ObjectMapper objectMapper = new ObjectMapper();
     public void assertJsonEquals(String expected, String actual) {
         try {

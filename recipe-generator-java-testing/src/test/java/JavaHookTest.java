@@ -557,4 +557,21 @@ public class JavaHookTest {
         oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}},\"cake\":{}}");
         verify(spy).run();
     }
+
+    @Test
+    public void testBake_deserializesCake() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractEmptyIngredientHook() {
+            @Override
+            public void bake(EmptyIngredientData data, Cake cake) {
+                String value = cake.get("someKey");
+                assertEquals("someValue", value);
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{\"someKey\":\"someValue\"}}");
+        verify(spy).run();
+    }
 }
