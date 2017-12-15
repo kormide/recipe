@@ -20,9 +20,8 @@ public class Oven {
     }
 
     public Cake bake(Recipe recipe) {
-        Cake cake = new Cake();
         registerSubtypes(recipe);
-        _bake(recipe, cake);
+        Cake cake = _bake(recipe, new Cake());
         return cake;
     }
 

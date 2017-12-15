@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 
+import ca.derekcormier.recipe.Cake;
 import ca.derekcormier.recipe.Dispatcher;
 import ca.derekcormier.recipe.Ingredient;
 import ca.derekcormier.recipe.Oven;
@@ -274,18 +275,33 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testBake_deserializesCake() {
+        dispatcherSpy = spy(Dispatcher.class);
+        when(dispatcherSpy.dispatch(anyString(), anyString())).thenReturn("{\"someKey\":\"someValue\"}");
+        oven.addDispatcher(dispatcherSpy);
+
+        Cake cake = oven.bake(Recipe.prepare(
+            new EmptyIngredient()
+        ));
+
+        assertEquals("someValue", cake.get("someKey"));
+    }
+
+    @Test
     public void testBake_propagatesCakeUpdatesToSubsequentDispatches() {
         dispatcherSpy = spy(Dispatcher.class);
         when(dispatcherSpy.dispatch(anyString(), anyString())).thenReturn("{\"someKey\":\"someValue\"}");
         oven.addDispatcher(dispatcherSpy);
 
-        oven.bake(Recipe.prepare(
+        Cake cake = oven.bake(Recipe.prepare(
             new EmptyIngredient(),
             new EmptyIngredient()
         ));
 
         verify(dispatcherSpy).dispatch(anyString(), eq("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{}}"));
         verify(dispatcherSpy).dispatch(anyString(), eq("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{\"someKey\":\"someValue\"}}"));
+
+        assertEquals("someValue", cake.get("someKey"));
     }
 
     private ObjectMapper objectMapper = new ObjectMapper();
