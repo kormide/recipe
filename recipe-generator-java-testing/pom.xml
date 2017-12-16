@@ -37,50 +37,31 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <groupId>ca.derekcormier.recipe</groupId>
+                <artifactId>recipe-generator-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>generate-ingredients</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>generate</goal>
                         </goals>
-                        <phase>generate-test-resources</phase>
                         <configuration>
-                            <mainClass>ca.derekcormier.recipe.generator.Main</mainClass>
-                            <arguments>
-                                <argument>java-ingredient</argument>
-                                <argument>${project.basedir}/cookbook.yaml</argument>
-                                <argument>${project.basedir}/target/generated-test-sources/recipe</argument>
-                            </arguments>
-                            <includePluginDependencies>true</includePluginDependencies>
+                            <flavour>java-ingredient</flavour>
+                            <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
                         </configuration>
                     </execution>
                     <execution>
                         <id>generate-hooks</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>generate</goal>
                         </goals>
-                        <phase>generate-test-resources</phase>
                         <configuration>
-                            <mainClass>ca.derekcormier.recipe.generator.Main</mainClass>
-                            <arguments>
-                                <argument>java-hook</argument>
-                                <argument>${project.basedir}/cookbook.yaml</argument>
-                                <argument>${project.basedir}/target/generated-test-sources/recipe</argument>
-                            </arguments>
-                            <includePluginDependencies>true</includePluginDependencies>
+                            <flavour>java-hook</flavour>
+                            <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
                         </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>ca.derekcormier.recipe</groupId>
-                        <artifactId>recipe-generator</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
