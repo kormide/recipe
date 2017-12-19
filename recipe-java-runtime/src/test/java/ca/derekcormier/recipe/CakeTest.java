@@ -104,7 +104,7 @@ public class CakeTest {
                 throw new RuntimeException();
             });
         }
-        catch (RuntimeException e ) {}
+        catch (RuntimeException e) {}
 
         cake.publish("b", "c");
         assertEquals("c", cake.get("b"));
@@ -117,7 +117,8 @@ public class CakeTest {
                 cake.inNamespace("b", () -> {
                     throw new RuntimeException();
                 });
-            } catch (RuntimeException e) {}
+            }
+            catch (RuntimeException e) {}
 
             cake.publish("c", "d");
         });

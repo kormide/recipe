@@ -47,7 +47,8 @@ public class Cake {
 
         try {
             runnable.run();
-        } finally {
+        }
+        finally {
             keys.forEach(k -> prefixStack.removeLast());
         }
     }

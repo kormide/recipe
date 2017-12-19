@@ -18,7 +18,8 @@ public class CookbookLoader {
         Cookbook cookbook = null;
         try {
             cookbook = mapper.readValue(ingredients, Cookbook.class);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException("could not load recipe cookbook from input stream", e);
         }
         validate(cookbook);

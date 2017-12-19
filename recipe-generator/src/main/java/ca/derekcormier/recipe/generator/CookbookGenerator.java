@@ -27,7 +27,8 @@ public abstract class CookbookGenerator {
         Template template = Template.parse(templateContent).withRenderSettings(new RenderSettings.Builder().withStrictVariables(true).build());
         try {
             return template.render(objectMapper.writeValueAsString(data));
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,7 +50,8 @@ public abstract class CookbookGenerator {
             bufferedWriter.close();
             writer.close();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException("could not write to " +  filepath);
         }
     }
