@@ -21,7 +21,8 @@ public abstract class Ingredient extends BaseIngredient {
     protected void setOptional(String name, boolean repeatable, Object value) {
         if (!repeatable) {
             setProperty(name, value);
-        } else {
+        }
+        else {
             List values = (List)getProperties().getOrDefault(name, new ArrayList());
             values.add(value);
             setProperty(name, values);
@@ -42,7 +43,8 @@ public abstract class Ingredient extends BaseIngredient {
 
             if (!repeatable) {
                 map.put(keyValuePairs[i], keyValuePairs[i+1]);
-            } else {
+            }
+            else {
                 List values = (List)map.getOrDefault(keyValuePairs[i], new ArrayList<>());
                 values.add(keyValuePairs[i+1]);
                 map.put(keyValuePairs[i], values);

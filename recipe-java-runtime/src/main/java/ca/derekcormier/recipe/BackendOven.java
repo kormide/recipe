@@ -25,7 +25,8 @@ public class BackendOven {
 
         try {
             payload = objectMapper.readValue(json, BackendPayload.class);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException("could not deserialize json payload", e);
         }
 
@@ -34,7 +35,8 @@ public class BackendOven {
 
         try {
             return objectMapper.writeValueAsString(cake);
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             throw new RuntimeException("could not serialize cake", e);
         }
     }

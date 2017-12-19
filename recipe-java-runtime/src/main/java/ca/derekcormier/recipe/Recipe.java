@@ -78,15 +78,18 @@ public class Recipe extends Ingredient {
                 if (!recipe.ingredients.isEmpty()) {
                     currRecipe.ingredients.add(recipe);
                 }
-            } else {
+            }
+            else {
                 if (!ingredient.getDomain().equals(currDomain)) {
                     //copy recipe structure
                     Recipe outerRecipe = null;
                     Recipe recipe = null;
                     for (Recipe r : recipeStack) {
                         if (recipe == null) {
-                            recipe = outerRecipe = new Recipe();
-                        } else {
+                            outerRecipe = new Recipe();
+                            recipe = outerRecipe;
+                        }
+                        else {
                             outerRecipe = Recipe.prepare(outerRecipe);
                         }
                         outerRecipe.context = r.context;

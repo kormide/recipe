@@ -42,6 +42,8 @@ public class JavaFilters {
                             return "int";
                         case STRING:
                             return "String";
+                        default:
+                            throw new RuntimeException("unknown type");
                     }
                 }
                 else if (type instanceof FlagType) {
@@ -77,7 +79,8 @@ public class JavaFilters {
                             default:
                                 throw new RuntimeException("unknown data type '" + strType + "'");
                         }
-                    } else if (CookbookUtils.isEnumType(cookbook, strType)) {
+                    }
+                    else if (CookbookUtils.isEnumType(cookbook, strType)) {
                         if (CookbookUtils.enumHasValue(cookbook, strType, super.asString(value))) {
                             return strType + "." + super.asString(value);
                         }

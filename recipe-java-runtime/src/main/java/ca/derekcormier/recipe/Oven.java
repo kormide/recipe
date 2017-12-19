@@ -45,7 +45,8 @@ public class Oven {
         try {
             Payload payload = new Payload(recipe, cake);
             return objectMapper.writeValueAsString(payload);
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             throw new RuntimeException("could not serialize recipe to json", e);
         }
     }
@@ -53,7 +54,8 @@ public class Oven {
     private Cake deserializeCake(String json) {
         try {
             return objectMapper.readValue(json, Cake.class);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException("could not deserialize cake");
         }
     }
