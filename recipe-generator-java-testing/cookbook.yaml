@@ -101,6 +101,9 @@ ingredients:
       - name: "varargArrayArg"
         type: "int[]..."
 
+  - name: "KeyedTestIngredient"
+    keyed: true
+
 enums:
   - name: "TestEnum"
     values:

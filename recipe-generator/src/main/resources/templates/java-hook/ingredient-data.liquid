@@ -1,7 +1,12 @@
+{%- if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredientSnapshot' -%}
+{%- else -%}
+    {%- assign superclass = 'IngredientSnapshot' -%}
+{%- endif -%}
 {%- assign dataClassName = ingredient.name | append: 'Data' -%}
-import ca.derekcormier.recipe.IngredientSnapshot;
+import ca.derekcormier.recipe.{{superclass}};
 
-public class {{dataClassName}} extends IngredientSnapshot {
+public class {{dataClassName}} extends {{superclass}} {
     public {{dataClassName}}() {
         super("{{ingredient.name}}");
     }

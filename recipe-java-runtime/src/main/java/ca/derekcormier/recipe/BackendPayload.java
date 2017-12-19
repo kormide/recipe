@@ -4,20 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BackendPayload {
-    private IngredientSnapshot ingredient;
+    private RecipeSnapshot recipe;
     private Cake cake;
 
     @JsonCreator
     public BackendPayload(
-        @JsonProperty("ingredient") IngredientSnapshot ingredient,
+        @JsonProperty("recipe") RecipeSnapshot recipe,
         @JsonProperty("cake") Cake cake
     ) {
-        this.ingredient = ingredient;
+        this.recipe = recipe;
         this.cake = cake;
     }
 
-    public IngredientSnapshot getIngredient() {
-        return ingredient;
+    public RecipeSnapshot getRecipe() {
+        return recipe;
     }
 
     public Cake getCake() {

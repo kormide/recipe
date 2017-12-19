@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -44,7 +45,7 @@ public class OvenTest {
 
         Ingredient ingredient = new Ingredient("TestIngredient", "TestDomain") {};
         oven.bake(Recipe.prepare(ingredient));
-        verify(spy).dispatch("TestDomain", "{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
+        verify(spy).dispatch("TestDomain", payloadJson("{\"TestIngredient\":{}}"));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class OvenTest {
     }
 
     @Test
-    public void testBake_callsDispatcherForMultipleIngredients() {
+    public void testBake_callsDispatcherPerDomain() {
         Dispatcher spy = Mockito.spy(Dispatcher.class);
         when(spy.dispatch(anyString(), anyString())).thenReturn("{}");
         oven.addDispatcher(spy);
@@ -63,13 +64,13 @@ public class OvenTest {
         Ingredient ingredient2 = new Ingredient("TestIngredient2", "DomainB") {};
 
         oven.bake(Recipe.prepare(ingredient1, ingredient2));
-        verify(spy).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient1\":{}},\"cake\":{}}");
-        verify(spy).dispatch("DomainB", "{\"ingredient\":{\"TestIngredient2\":{}},\"cake\":{}}");
+        verify(spy).dispatch("DomainA", payloadJson("{\"TestIngredient1\":{}}"));
+        verify(spy).dispatch("DomainB", payloadJson("{\"TestIngredient2\":{}}"));
         verify(spy, times(2)).dispatch(anyString(), anyString());
     }
 
     @Test
-    public void testBake_callsDispatcherForIngredientsInNestedRecipe() {
+    public void testBake_callsDispatcherPerDomain_nestedRecipe() {
         Dispatcher spy = Mockito.spy(Dispatcher.class);
         when(spy.dispatch(anyString(), anyString())).thenReturn("{}");
         oven.addDispatcher(spy);
@@ -86,27 +87,39 @@ public class OvenTest {
             )
         ));
 
-        verify(spy).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient1\":{}},\"cake\":{}}");
-        verify(spy).dispatch("DomainB", "{\"ingredient\":{\"TestIngredient2\":{}},\"cake\":{}}");
-        verify(spy).dispatch("DomainB", "{\"ingredient\":{\"TestIngredient3\":{}},\"cake\":{}}");
-        verify(spy, times(3)).dispatch(anyString(), anyString());
+        verify(spy).dispatch("DomainA", payloadJson("{\"TestIngredient1\":{}}"));
+        verify(spy).dispatch("DomainB", payloadJson("{\"Recipe\":{\"ingredients\":[{\"TestIngredient2\":{}},{\"TestIngredient3\":{}}]}}"));
+        verify(spy, times(2)).dispatch(anyString(), anyString());
     }
 
     @Test
-    public void testBake_callsMultipleDispatchersForSameIngredient() {
-        Dispatcher spy1 = Mockito.spy(Dispatcher.class);
-        Dispatcher spy2 = Mockito.spy(Dispatcher.class);
-        when(spy1.dispatch(anyString(), anyString())).thenReturn("{}");
-        when(spy2.dispatch(anyString(), anyString())).thenReturn("{}");
+    public void testBake_callsDispatcherForInterleavedDomains() {
+        Dispatcher spy = Mockito.spy(Dispatcher.class);
+        when(spy.dispatch(anyString(), anyString())).thenReturn("{}");
+        oven.addDispatcher(spy);
 
-        oven.addDispatcher(spy1);
-        oven.addDispatcher(spy2);
+        Ingredient ingredient1 = new Ingredient("TestIngredient1", "DomainA") {};
+        Ingredient ingredient2 = new Ingredient("TestIngredient2", "DomainB") {};
+        Ingredient ingredient3 = new Ingredient("TestIngredient3", "DomainA") {};
 
-        Ingredient ingredient = new Ingredient("TestIngredient", "DomainA") {};
+        oven.bake(Recipe.prepare(
+            ingredient1,
+            ingredient2,
+            ingredient3
+        ));
 
-        oven.bake(Recipe.prepare(ingredient));
+        verify(spy).dispatch("DomainA", payloadJson("{\"TestIngredient1\":{}}"));
+        verify(spy).dispatch("DomainB", payloadJson("{\"TestIngredient2\":{}}"));
+        verify(spy).dispatch("DomainA", payloadJson("{\"TestIngredient3\":{}}"));
 
-        verify(spy1).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
-        verify(spy2).dispatch("DomainA", "{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
+        verify(spy, times(3)).dispatch(anyString(), anyString());
+    }
+
+    private String payloadJson(String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}},\"cake\":{}}";
+    }
+
+    private String payloadJsonWithCake(String cake, String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}},\"cake\":" + cake + "}";
     }
 }

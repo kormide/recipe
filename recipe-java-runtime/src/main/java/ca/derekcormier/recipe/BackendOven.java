@@ -30,7 +30,7 @@ public class BackendOven {
         }
 
         Cake cake = payload.getCake();
-        bakeIngredient(payload.getIngredient(), cake);
+        bakeIngredient(payload.getRecipe(), cake);
 
         try {
             return objectMapper.writeValueAsString(cake);
@@ -46,8 +46,28 @@ public class BackendOven {
 
     private void bakeIngredient(IngredientSnapshot ingredient, Cake cake) {
         if (ingredient instanceof RecipeSnapshot) {
-            for (IngredientSnapshot i: ((RecipeSnapshot)ingredient).getIngredients()) {
-                bakeIngredient(i, cake);
+            RecipeSnapshot recipe = (RecipeSnapshot)ingredient;
+
+            Runnable bakeRecipeIngredients = () -> {
+                for (IngredientSnapshot i: recipe.getIngredients()) {
+                    bakeIngredient(i, cake);
+                }
+            };
+
+            if (recipe.getContext() != null) {
+                cake.inNamespace(recipe.getContext(), bakeRecipeIngredients);
+            }
+            else if (recipe.getContextIngredient() != null) {
+                bakeIngredient(recipe.getContextIngredient(), cake);
+                if (recipe.getContextIngredient().getKey() != null) {
+                    cake.inNamespace(recipe.getContextIngredient().getKey(), bakeRecipeIngredients);
+                }
+                else {
+                    bakeRecipeIngredients.run();
+                }
+            }
+            else {
+                bakeRecipeIngredients.run();
             }
         }
         else {
