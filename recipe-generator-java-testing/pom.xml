@@ -48,6 +48,18 @@
                         </goals>
                         <configuration>
                             <flavour>java-ingredient</flavour>
+                            <cookbook>${project.basedir}/cookbook.yaml</cookbook>
+                            <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-ingredients-domain-b</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <flavour>java-ingredient</flavour>
+                            <cookbook>${project.basedir}/cookbook-b.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
                         </configuration>
                     </execution>

@@ -26,16 +26,12 @@ public class Oven {
     }
 
     private Cake _bake(Recipe recipe, Cake cake) {
-        for (Ingredient ingredient: recipe.getIngredients()) {
-            if (ingredient instanceof Recipe) {
-                cake = _bake((Recipe)ingredient, cake);
-            }
-            else {
-                String payload = serializePayload(ingredient, cake);
-                for (Dispatcher dispatcher: dispatchers) {
-                    String jsonCake = dispatcher.dispatch(ingredient.getDomain(), payload);
-                    cake = deserializeCake(jsonCake);
-                }
+        List<Recipe.Segment> segments = recipe.segment();
+        for (Recipe.Segment segment: segments) {
+             String payload = serializePayload(segment.recipe, cake);
+            for (Dispatcher dispatcher: dispatchers) {
+                String jsonCake = dispatcher.dispatch(segment.domain, payload);
+                cake = deserializeCake(jsonCake);
             }
         }
         return cake;
@@ -45,9 +41,9 @@ public class Oven {
         dispatchers.add(dispatcher);
     }
 
-    private String serializePayload(Ingredient ingredient, Cake cake) {
+    private String serializePayload(Recipe recipe, Cake cake) {
         try {
-            Payload payload = new Payload(ingredient, cake);
+            Payload payload = new Payload(recipe, cake);
             return objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("could not serialize recipe to json", e);

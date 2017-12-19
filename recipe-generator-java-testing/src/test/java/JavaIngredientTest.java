@@ -6,6 +6,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -172,7 +173,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new EmptyIngredient()));
 
-        assertDispatchedJson("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"EmptyIngredient\":{}}"));
     }
 
     @Test
@@ -180,7 +181,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithRequired("foobar")));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithRequired\":{\"required\":\"foobar\"}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithRequired\":{\"required\":\"foobar\"}}"));
     }
 
     @Test
@@ -188,7 +189,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithDefaultRequired(false)));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithDefaultRequired\":{\"param1\":\"foobar\",\"param2\":false,\"param3\":\"A\"}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithDefaultRequired\":{\"param1\":\"foobar\",\"param2\":false,\"param3\":\"A\"}}"));
     }
 
     @Test
@@ -196,7 +197,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithOptional().withOptional(true)));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithOptional\":{\"optional\":true}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithOptional\":{\"optional\":true}}"));
     }
 
     @Test
@@ -207,7 +208,7 @@ public class JavaIngredientTest {
             .withOptional(false)
         ));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{\"optional\":[true,false]}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithRepeatableOptional\":{\"optional\":[true,false]}}"));
     }
 
     @Test
@@ -218,7 +219,7 @@ public class JavaIngredientTest {
             .withOptional(3, 4)
         ));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}}"));
     }
 
     @Test
@@ -226,7 +227,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithCompoundOptional().withCompoundOptional(5, false)));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}}"));
     }
 
     @Test
@@ -237,7 +238,7 @@ public class JavaIngredientTest {
             .withCompoundOptional(-2, true)
         ));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":{\"param1\":[5,-2],\"param2\":[false,true]}}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":{\"param1\":[5,-2],\"param2\":[false,true]}}}"));
     }
 
     @Test
@@ -245,7 +246,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithCompoundOptionalWithOneParam().withCompoundOptional(3)));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithCompoundOptionalWithOneParam\":{\"compoundOptional\":{\"param1\":3}}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithCompoundOptionalWithOneParam\":{\"compoundOptional\":{\"param1\":3}}}"));
     }
 
     @Test
@@ -253,7 +254,7 @@ public class JavaIngredientTest {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithRequiredAndOptional("foobar").withOptional(true)));
 
-        assertDispatchedJson("{\"ingredient\":{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson("{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}}"));
     }
 
     @Test
@@ -271,7 +272,9 @@ public class JavaIngredientTest {
                 .withVarargArrayArg(new int[]{1, 2}, new int[]{3, 4})
         ));
 
-        assertDispatchedJson("{\"ingredient\":{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}},\"cake\":{}}");
+        assertDispatchedJson(payloadJson(
+            "{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}}"
+        ));
     }
 
     @Test
@@ -295,13 +298,46 @@ public class JavaIngredientTest {
 
         Cake cake = oven.bake(Recipe.prepare(
             new EmptyIngredient(),
+            new DomainBIngredient()
+        ));
+
+        verify(dispatcherSpy).dispatch(anyString(), eq(payloadJson("{\"EmptyIngredient\":{}}")));
+        verify(dispatcherSpy).dispatch(anyString(), eq(payloadJsonWithCake("{\"someKey\":\"someValue\"}", "{\"DomainBIngredient\":{}}")));
+
+        assertEquals("someValue", cake.get("someKey"));
+    }
+
+    @Test
+    public void testBake_serializesRecipeWithContext() {
+        setupDispatcherSpy();
+
+        oven.bake(Recipe.context("foo",
             new EmptyIngredient()
         ));
 
-        verify(dispatcherSpy).dispatch(anyString(), eq("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{}}"));
-        verify(dispatcherSpy).dispatch(anyString(), eq("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{\"someKey\":\"someValue\"}}"));
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}],\"context\":\"foo\"}},\"cake\":{}}");
+    }
 
-        assertEquals("someValue", cake.get("someKey"));
+    @Test
+    public void testBake_serializesRecipeWithContextIngredient_notKeyed() {
+        setupDispatcherSpy();
+
+        oven.bake(Recipe.context(new KeyedTestIngredient(),
+            new EmptyIngredient()
+        ));
+
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":null}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+    }
+
+    @Test
+    public void testBake_serializesRecipeWithContextIngredient_keyed() {
+        setupDispatcherSpy();
+
+        oven.bake(Recipe.context(new KeyedTestIngredient().keyed("foo"),
+            new EmptyIngredient()
+        ));
+
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":\"foo\"}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
     }
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -326,5 +362,13 @@ public class JavaIngredientTest {
     private void assertDispatchedJson(String expected) {
         verify(dispatcherSpy).dispatch(anyString(), jsonCaptor.capture());
         assertJsonEquals(expected, jsonCaptor.getValue());
+    }
+
+    private String payloadJson(String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}},\"cake\":{}}";
+    }
+
+    private String payloadJsonWithCake(String cake, String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}},\"cake\":" + cake + "}";
     }
 }

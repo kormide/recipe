@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import ca.derekcormier.recipe.BaseIngredientHook;
@@ -173,7 +174,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"intArg\":5}}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"intArg\":5}}]}}"));
         verify(spy).run();
     }
 
@@ -189,7 +190,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRequired\":{\"required\":\"foobar\"}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRequired\":{\"required\":\"foobar\"}}"));
         verify(spy).run();
     }
 
@@ -206,7 +207,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}}"));
         verify(spy).run();
     }
 
@@ -223,7 +224,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithOptional\":{\"optional\":true}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithOptional\":{\"optional\":true}}"));
         verify(spy).run();
     }
 
@@ -239,7 +240,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithOptional\":{}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithOptional\":{}}"));
         verify(spy).run();
     }
 
@@ -256,7 +257,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{\"optional\":[true]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableOptional\":{\"optional\":[true]}}"));
         verify(spy).run();
     }
 
@@ -273,7 +274,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{\"optional\":[true, false, true]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableOptional\":{\"optional\":[true, false, true]}}"));
         verify(spy).run();
     }
 
@@ -290,7 +291,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableVarargOptional\":{\"optional\":[[1,2],[3,4]]}}"));
         verify(spy).run();
     }
 
@@ -306,7 +307,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableOptional\":{}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableOptional\":{}}"));
         verify(spy).run();
     }
 
@@ -324,7 +325,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}}"));
         verify(spy).run();
     }
 
@@ -340,7 +341,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithCompoundOptional\":{}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithCompoundOptional\":{}}"));
         verify(spy).run();
     }
 
@@ -358,7 +359,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false}]}}"));
         verify(spy).run();
     }
 
@@ -378,7 +379,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false},{\"param1\":-1,\"param2\":true}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false},{\"param1\":-1,\"param2\":true}]}}"));
         verify(spy).run();
     }
 
@@ -394,7 +395,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"IngredientWithRepeatableCompoundOptional\":{}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"IngredientWithRepeatableCompoundOptional\":{}}"));
         verify(spy).run();
     }
 
@@ -410,7 +411,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"stringArg\":\"foobar\"}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"stringArg\":\"foobar\"}}"));
         verify(spy).run();
     }
 
@@ -426,7 +427,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"stringArg\":null}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"stringArg\":null}}"));
         verify(spy).run();
     }
 
@@ -442,7 +443,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"intArg\":100}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"intArg\":100}}"));
         verify(spy).run();
     }
 
@@ -458,7 +459,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"booleanArg\":true}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"booleanArg\":true}}"));
         verify(spy).run();
     }
 
@@ -474,7 +475,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"flagArg\":false}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"flagArg\":false}}"));
         verify(spy).run();
     }
 
@@ -490,7 +491,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"enumArg\":\"B\"}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"enumArg\":\"B\"}}"));
         verify(spy).run();
     }
 
@@ -506,7 +507,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"stringArrayArg\":[\"foo\",\"bar\"]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"stringArrayArg\":[\"foo\",\"bar\"]}}"));
         verify(spy).run();
     }
 
@@ -522,7 +523,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"enumArrayArg\":[\"B\",\"C\"]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"enumArrayArg\":[\"B\",\"C\"]}}"));
         verify(spy).run();
     }
 
@@ -538,7 +539,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"varargArg\":[\"foo\",\"bar\"]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"varargArg\":[\"foo\",\"bar\"]}}"));
         verify(spy).run();
     }
 
@@ -554,7 +555,7 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}}"));
         verify(spy).run();
     }
 
@@ -571,7 +572,53 @@ public class JavaHookTest {
             }
         });
 
-        oven.bake("{\"ingredient\":{\"EmptyIngredient\":{}},\"cake\":{\"someKey\":\"someValue\"}}");
+        oven.bake(payloadJsonWithCake("{\"someKey\":\"someValue\"}", "{\"EmptyIngredient\":{}}"));
         verify(spy).run();
+    }
+
+    @Test
+    public void testBake_bakesIngredientInContext() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractEmptyIngredientHook() {
+            @Override
+            public void bake(EmptyIngredientData data, Cake cake) {
+                cake.publish("bar", "value");
+                assertEquals(Cake.key("foo", "bar"), cake.getPublishedKeyForValue("value", true));
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}],\"context\":\"foo\"}},\"cake\":{}}");
+        verify(spy).run();
+    }
+
+    @Test
+    public void testBake_bakesIngredientInContextIngredient() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractKeyedTestIngredientHook() {
+            @Override
+            public void bake(KeyedTestIngredientData data, Cake cake) {}
+        });
+        oven.registerHook(new AbstractEmptyIngredientHook() {
+            @Override
+            public void bake(EmptyIngredientData data, Cake cake) {
+                cake.publish("bar", "value");
+                assertEquals(Cake.key("foo", "bar"), cake.getPublishedKeyForValue("value", true));
+                spy.run();
+            }
+        });
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}],\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":\"foo\"}}}},\"cake\":{}}");
+        verify(spy).run();
+    }
+
+    private String payloadJson(String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}}}";
+    }
+
+    private String payloadJsonWithCake(String cake, String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}},\"cake\":" + cake + "}";
     }
 }

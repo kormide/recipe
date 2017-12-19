@@ -52,7 +52,7 @@ public class Cake {
         }
     }
 
-    public List<String> getSubKeysAndValidateFullKey(String fullKey) {
+    private List<String> getSubKeysAndValidateFullKey(String fullKey) {
         List<String> keys = (null == fullKey) ? new ArrayList<>() : Arrays.asList(StringUtils.split(fullKey, Cake.SEPARATOR));
         if (keys.isEmpty() || StringUtils.countMatches(fullKey, Cake.SEPARATOR) != keys.size() - 1) {
             throw new IllegalArgumentException("cannot publish value for empty key");

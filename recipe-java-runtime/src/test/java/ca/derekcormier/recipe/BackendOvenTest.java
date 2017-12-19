@@ -5,6 +5,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,25 +17,16 @@ public class BackendOvenTest {
         oven = new BackendOven();
     }
 
-    @Test
-    public void testBake_invokesHookForIngredient() {
-        TestIngredientHook hook = spy(TestIngredientHook.class);
-        oven.registerHook(hook);
-        oven.bake("{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
-
-        verify(hook).bake(any(), any());
-    }
-
     @Test(expected = RuntimeException.class)
     public void testBake_throwsOnMissingIngredientHook() {
-        oven.bake("{\"ingredient\":{\"TestIngredient\":{}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"TestIngredient\":{}}"));
     }
 
     @Test
-    public void testBake_invokesHookForIngredientInRecipe() {
+    public void testBake_invokesHookForSingleIngredientInRecipe() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"TestIngredient\":{}}"));
 
         verify(hook).bake(any(), any());
     }
@@ -43,7 +35,7 @@ public class BackendOvenTest {
     public void testBake_invokesHookForIngredientInNestedRecipe() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}}"));
 
         verify(hook).bake(any(), any());
     }
@@ -52,19 +44,19 @@ public class BackendOvenTest {
     public void testBake_invokesHookMultipleTimesForRepeatedIngredient() {
         TestIngredientHook hook = spy(TestIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}},{\"TestIngredient\":{}}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"TestIngredient\":{}}", "{\"TestIngredient\":{}}"));
 
         verify(hook, times(2)).bake(any(), any());
     }
 
     @Test
-    public void testBake_invokesHooksForMultipleIngredientsInRecipe() {
+    public void testBake_invokesHooksForDifferentIngredientsInRecipe() {
         TestIngredientHook hook1 = spy(TestIngredientHook.class);
         TestIngredientHook2 hook2 = spy(TestIngredientHook2.class);
 
         oven.registerHook(hook1);
         oven.registerHook(hook2);
-        oven.bake("{\"ingredient\":{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}},{\"TestIngredient2\":{}}]}},\"cake\":{}}");
+        oven.bake(payloadJson("{\"TestIngredient\":{}}", "{\"TestIngredient2\":{}}"));
 
         verify(hook1).bake(any(), any());
         verify(hook2).bake(any(), any());
@@ -102,5 +94,9 @@ public class BackendOvenTest {
         public TestIngredientData2() {
             super("TestIngredient2");
         }
+    }
+
+    private String payloadJson(String... ingredientJson) {
+        return "{\"recipe\":{\"Recipe\":{\"ingredients\":[" + StringUtils.join(ingredientJson, ",") + "]}}}";
     }
 }

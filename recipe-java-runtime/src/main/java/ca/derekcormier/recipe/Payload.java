@@ -1,16 +1,16 @@
 package ca.derekcormier.recipe;
 
 public class Payload {
-    private Ingredient ingredient;
+    private Recipe recipe;
     private Cake cake;
 
-    public Payload(Ingredient ingredient, Cake cake) {
-        this.ingredient = ingredient;
+    public Payload(Recipe recipe, Cake cake) {
+        this.recipe = recipe;
         this.cake = cake;
     }
 
-    public Ingredient getIngredient() {
-        return ingredient;
+    public Ingredient getRecipe() {
+        return recipe;
     }
 
     public Cake getCake() {
