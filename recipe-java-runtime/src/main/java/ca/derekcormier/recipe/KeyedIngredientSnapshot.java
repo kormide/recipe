@@ -10,6 +10,10 @@ public abstract class KeyedIngredientSnapshot extends IngredientSnapshot {
         super(type);
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getKey() {
         return key;
     }

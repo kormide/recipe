@@ -1,5 +1,6 @@
 package ca.derekcormier.recipe;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class BackendOvenTest {
     private BackendOven oven;
@@ -23,76 +25,223 @@ public class BackendOvenTest {
     }
 
     @Test
-    public void testBake_invokesHookForSingleIngredientInRecipe() {
-        TestIngredientHook hook = spy(TestIngredientHook.class);
+    public void testBake_bakesSingleIngredient() {
+        EmptyIngredientHook hook = spy(EmptyIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake(payloadJson("{\"TestIngredient\":{}}"));
+        oven.bake(payloadJson("{\"EmptyIngredient\":{}}"));
 
         verify(hook).bake(any(), any());
     }
 
     @Test
-    public void testBake_invokesHookForIngredientInNestedRecipe() {
-        TestIngredientHook hook = spy(TestIngredientHook.class);
+    public void testBake_bakesIngredientInNestedRecipe() {
+        EmptyIngredientHook hook = spy(EmptyIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake(payloadJson("{\"Recipe\":{\"ingredients\":[{\"TestIngredient\":{}}]}}"));
+        oven.bake(payloadJson("{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}]}}"));
 
         verify(hook).bake(any(), any());
     }
 
     @Test
-    public void testBake_invokesHookMultipleTimesForRepeatedIngredient() {
-        TestIngredientHook hook = spy(TestIngredientHook.class);
+    public void testBake_bakesRepeatedIngredient() {
+        EmptyIngredientHook hook = spy(EmptyIngredientHook.class);
         oven.registerHook(hook);
-        oven.bake(payloadJson("{\"TestIngredient\":{}}", "{\"TestIngredient\":{}}"));
+        oven.bake(payloadJson("{\"EmptyIngredient\":{}}", "{\"EmptyIngredient\":{}}"));
 
         verify(hook, times(2)).bake(any(), any());
     }
 
     @Test
-    public void testBake_invokesHooksForDifferentIngredientsInRecipe() {
-        TestIngredientHook hook1 = spy(TestIngredientHook.class);
-        TestIngredientHook2 hook2 = spy(TestIngredientHook2.class);
+    public void testBake_basedMultipleIngredients() {
+        EmptyIngredientHook hook1 = spy(EmptyIngredientHook.class);
+        IngredientWithRequiredHook hook2 = spy(IngredientWithRequiredHook.class);
 
         oven.registerHook(hook1);
         oven.registerHook(hook2);
-        oven.bake(payloadJson("{\"TestIngredient\":{}}", "{\"TestIngredient2\":{}}"));
+        oven.bake(payloadJson("{\"EmptyIngredient\":{}}", "{\"IngredientWithRequired\":{}}"));
 
         verify(hook1).bake(any(), any());
         verify(hook2).bake(any(), any());
     }
 
-    public static class TestIngredientHook extends BaseIngredientHook<TestIngredientData> {
-        public TestIngredientData ingredient;
-        public TestIngredientHook() {
-            super("TestIngredient", TestIngredientData.class);
+
+    @Test
+    public void testBake_bakesIngredientInRecipeWithContext() {
+        EmptyIngredientHook hook = spy(EmptyIngredientHook.class);
+
+        oven.registerHook(hook);
+
+        Mockito.doAnswer(invocation -> {
+            Cake cake = invocation.getArgument(1);
+            assertEquals("foo", cake.getNamespace());
+            return null;
+        }).when(hook).bake(any(), any());
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"context\":\"foo\",\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+    }
+
+    @Test
+    public void testBake_bakesContextIngredient() {
+        KeyedIngredientHook hook = spy(KeyedIngredientHook.class);
+
+        oven.registerHook(hook);
+        oven.bake("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedIngredient\":{}},\"ingredients\":[]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+    }
+
+    @Test
+    public void testBake_bakesContextIngredientAndChildIngredients() {
+        KeyedIngredientHook hook = spy(KeyedIngredientHook.class);
+        EmptyIngredientHook hook2 = spy(EmptyIngredientHook.class);
+
+        oven.registerHook(hook);
+        oven.registerHook(hook2);
+        oven.bake("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedIngredient\":{}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+        verify(hook2).bake(any(), any());
+    }
+
+    @Test
+    public void testBake_bakesChildrenOfContextIngredientInContext_keySetInDto() {
+        KeyedIngredientHook hook = spy(KeyedIngredientHook.class);
+        EmptyIngredientHook hook2 = spy(EmptyIngredientHook.class);
+
+        oven.registerHook(hook);
+        oven.registerHook(hook2);
+
+        Mockito.doAnswer(invocation -> {
+            Cake cake = invocation.getArgument(1);
+            assertEquals("foo", cake.getNamespace());
+            return null;
+        }).when(hook2).bake(any(), any());
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedIngredient\":{\"key\":\"foo\"}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+        verify(hook2).bake(any(), any());
+    }
+
+    @Test
+    public void testBake_bakesChildrenOfContextIngredientInContext_keySetInBake() {
+        KeyedIngredientHook hook = spy(KeyedIngredientHook.class);
+        EmptyIngredientHook hook2 = spy(EmptyIngredientHook.class);
+
+        oven.registerHook(hook);
+        oven.registerHook(hook2);
+
+        Mockito.doAnswer(invocation -> {
+            KeyedIngredientData data = invocation.getArgument(0);
+            data.setKey("foo");
+            return null;
+        }).when(hook).bake(any(), any());
+
+        Mockito.doAnswer(invocation -> {
+            Cake cake = invocation.getArgument(1);
+            assertEquals("foo", cake.getNamespace());
+            return null;
+        }).when(hook2).bake(any(), any());
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedIngredient\":{}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+        verify(hook2).bake(any(), any());
+    }
+
+    @Test
+    public void testBake_bakesChildrenOfContextIngredientInContext_noKeyResultsInNoContext() {
+        KeyedIngredientHook hook = spy(KeyedIngredientHook.class);
+        EmptyIngredientHook hook2 = spy(EmptyIngredientHook.class);
+
+        oven.registerHook(hook);
+        oven.registerHook(hook2);
+
+        Mockito.doAnswer(invocation -> {
+            Cake cake = invocation.getArgument(1);
+            assertEquals("", cake.getNamespace());
+            return null;
+        }).when(hook2).bake(any(), any());
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedIngredient\":{}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+        verify(hook2).bake(any(), any());
+    }
+
+    @Test
+    public void testBake_bakesChildrenOfContextIngredientInContext_keyChangedToNullInBakeResultsInNoContext() {
+        KeyedIngredientHook hook = spy(KeyedIngredientHook.class);
+        EmptyIngredientHook hook2 = spy(EmptyIngredientHook.class);
+
+        oven.registerHook(hook);
+        oven.registerHook(hook2);
+
+        Mockito.doAnswer(invocation -> {
+            KeyedIngredientData data = invocation.getArgument(0);
+            data.setKey(null);
+            return null;
+        }).when(hook).bake(any(), any());
+
+        Mockito.doAnswer(invocation -> {
+            Cake cake = invocation.getArgument(1);
+            assertEquals("", cake.getNamespace());
+            return null;
+        }).when(hook2).bake(any(), any());
+
+        oven.bake("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedIngredient\":{\"key\":\"foo\"}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+
+        verify(hook).bake(any(), any());
+        verify(hook2).bake(any(), any());
+    }
+
+    public static class EmptyIngredientHook extends BaseIngredientHook<EmptyIngredientData> {
+        public EmptyIngredientHook() {
+            super("EmptyIngredient", EmptyIngredientData.class);
         }
 
         @Override
-        public void bake(TestIngredientData ingredient, Cake cake) {
-            this.ingredient = ingredient;
+        public void bake(EmptyIngredientData ingredient, Cake cake) {
         }
     }
 
-    public static class TestIngredientData extends IngredientSnapshot {
-        public TestIngredientData() {
-            super("TestIngredient");
+    public static class EmptyIngredientData extends IngredientSnapshot {
+        public EmptyIngredientData() {
+            super("EmptyIngredient");
         }
     }
 
-    public static class TestIngredientHook2 extends BaseIngredientHook<TestIngredientData2> {
-        public TestIngredientHook2() {
-            super("TestIngredient2", TestIngredientData2.class);
+    public static class IngredientWithRequiredHook extends BaseIngredientHook<IngredientWithRequiredData> {
+        public IngredientWithRequiredHook() {
+            super("IngredientWithRequired", IngredientWithRequiredData.class);
         }
 
         @Override
-        public void bake(TestIngredientData2 ingredient, Cake cake) {
+        public void bake(IngredientWithRequiredData ingredient, Cake cake) {
         }
     }
 
-    public static class TestIngredientData2 extends IngredientSnapshot {
-        public TestIngredientData2() {
-            super("TestIngredient2");
+    public static class IngredientWithRequiredData extends IngredientSnapshot {
+        public IngredientWithRequiredData() {
+            super("IngredientWithRequired");
+        }
+    }
+
+    public static class KeyedIngredientHook extends BaseIngredientHook<KeyedIngredientData> {
+        public KeyedIngredientHook() {
+            super("KeyedIngredient", KeyedIngredientData.class);
+        }
+
+        @Override
+        public void bake(KeyedIngredientData ingredient, Cake cake) {
+        }
+    }
+
+    public static class KeyedIngredientData extends KeyedIngredientSnapshot {
+        public KeyedIngredientData() {
+            super("KeyedIngredient");
         }
     }
 

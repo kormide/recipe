@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +105,7 @@ public class Cake {
     }
 
     public String getPublishedKeyForValue(Object value, boolean fullyQualified) {
-        List<String> matchingKeys = entries.entrySet().stream().filter(e -> e.getValue().getClass() == value.getClass() && e.getValue().equals(value)).map(Map.Entry::getKey).collect(Collectors.toList());
+        List<String> matchingKeys = entries.entrySet().stream().filter(e -> e.getValue().equals(value)).map(Map.Entry::getKey).collect(Collectors.toList());
         if (matchingKeys.size() == 1) {
             if (fullyQualified) {
                 return matchingKeys.get(0);
@@ -118,6 +119,10 @@ public class Cake {
         throw new IllegalArgumentException("no key found for object " + value);
     }
 
+    @JsonIgnore
+    public String getNamespace() {
+        return StringUtils.join(prefixStack, Cake.SEPARATOR);
+    }
 
     private String getPrefixWithSeparator(List<String> namespaces) {
         return StringUtils.join(namespaces, Cake.SEPARATOR) + (namespaces.size() > 0 ? Cake.SEPARATOR : "");

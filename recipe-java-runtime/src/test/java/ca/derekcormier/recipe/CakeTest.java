@@ -223,4 +223,12 @@ public class CakeTest {
 
         assertEquals(Cake.key("a", "key"), cake.getPublishedKeyForValue("value", true));
     }
+
+    @Test
+    public void testGetPublishedKeyForValue_getsCorrectKey_twoObjectsOfDifferentClasses() {
+        cake.publish("foo", "5");
+        cake.publish("bar", 5);
+
+        assertEquals("foo", cake.getPublishedKeyForValue("5", false));
+    }
 }
