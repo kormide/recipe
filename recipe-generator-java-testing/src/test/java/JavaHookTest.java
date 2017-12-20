@@ -164,22 +164,22 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_backendOvenInvokesHook() {
+    public void testBake_deserialization_emptyIngredient() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
-        oven.registerHook(new AbstractAllParamsIngredientHook() {
+        oven.registerHook(new AbstractEmptyIngredientHook() {
             @Override
-            public void bake(AllParamsIngredientData data, Cake cake) {
+            public void bake(EmptyIngredientData data, Cake cake) {
                 spy.run();
             }
         });
 
-        oven.bake(payloadJson("{\"Recipe\":{\"ingredients\":[{\"AllParamsIngredient\":{\"intArg\":5}}]}}"));
+        oven.bake(payloadJson("{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}]}}"));
         verify(spy).run();
     }
 
     @Test
-    public void testGeneration_deserializesIngredienWithRequired() {
+    public void testBake_deserialization_ingredientWithRequired() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRequiredHook() {
@@ -195,7 +195,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRequiredAndOptional() {
+    public void testBake_deserialization_ingredientWithRequiredAndOptional() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRequiredAndOptionalHook() {
@@ -212,7 +212,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithOptional_valuePresent() {
+    public void testBake_deserialization_ingredientWithOptionalValuePresent() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithOptionalHook() {
@@ -229,7 +229,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredienWithOptional_valueMissing() {
+    public void testBake_deserialization_ingredientWithOptionalValueMissing() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithOptionalHook() {
@@ -245,7 +245,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableOptional_singleValuePresent() {
+    public void testBake_deserialization_ingredientWithRepeatableOptional_singleValuePresent() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
@@ -262,7 +262,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableOptional_multipleValuesPresent() {
+    public void testBake_deserialization_ingredientWithRepeatableOptional_multipleValuesPresent() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
@@ -279,7 +279,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableVarargOptional() {
+    public void testBake_deserialization_ingredientWithRepeatableVarargOptional() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableVarargOptionalHook() {
@@ -296,7 +296,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableOptional_valueMissing() {
+    public void testBake_deserialization_ingredientWithRepeatableOptional_valueMissing() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableOptionalHook() {
@@ -312,7 +312,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithCompoundOptional_valuePresent() {
+    public void testBake_deserialization_ingredientWithCompoundOptional_valuePresent() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithCompoundOptionalHook() {
@@ -330,7 +330,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithCompoundOptional_valueMissing() {
+    public void testBake_deserialization_ingredientWithCompoundOptional_valueMissing() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithCompoundOptionalHook() {
@@ -346,7 +346,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableCompoundOptional_singleValuePresent() {
+    public void testBake_deserialization_ingredientWithRepeatableCompoundOptional_singleValuePresent() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
@@ -364,7 +364,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableCompoundOptional_multipleValuesPresent() {
+    public void testBake_deserialization_ingredientWithRepeatableCompoundOptional_multipleValuesPresent() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
@@ -384,7 +384,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithRepeatableCompoundOptional_valueMissing() {
+    public void testBake_deserialization_ingredientWithRepeatableCompoundOptional_valueMissing() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractIngredientWithRepeatableCompoundOptionalHook() {
@@ -400,7 +400,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithStringParam() {
+    public void testBake_deserialization_ingredientWithStringParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -416,7 +416,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithStringParam_null() {
+    public void testBake_deserialization_ingredientWithStringParam_null() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -432,7 +432,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithIntParam() {
+    public void testBake_deserialization_ingredientWithIntParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -448,7 +448,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithBooleanParam() {
+    public void testBake_deserialization_ingredientWithBooleanParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -464,7 +464,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithFlagParam() {
+    public void testBake_deserialization_ingredientWithFlagParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -480,7 +480,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithEnumParam() {
+    public void testBake_deserialization_ingredientWithEnumParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -496,7 +496,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithPrimitiveArrayParam() {
+    public void testBake_deserialization_ingredientWithPrimitiveArrayParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -512,7 +512,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithEnumArrayParam() {
+    public void testBake_deserialization_ingredientWithEnumArrayParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -528,7 +528,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithVarargParam() {
+    public void testBake_deserialization_ingredientWithVarargParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -544,7 +544,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testGeneration_deserializesIngredientWithVarargArrayParam() {
+    public void testBake_deserialization_ingredientWithVarargArrayParam() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractAllParamsIngredientHook() {
@@ -594,7 +594,7 @@ public class JavaHookTest {
     }
 
     @Test
-    public void testBake_bakesIngredientInContextIngredient() {
+    public void testBake_bakesIngredientInContextOfIngredient() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
         oven.registerHook(new AbstractKeyedTestIngredientHook() {
