@@ -238,7 +238,7 @@ public class JavaIngredientTest {
             .withCompoundOptional(-2, true)
         ));
 
-        assertDispatchedJson(payloadJson("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":{\"param1\":[5,-2],\"param2\":[false,true]}}}"));
+        assertDispatchedJson(payloadJson("{\"IngredientWithRepeatableCompoundOptional\":{\"compoundOptional\":[{\"param1\":5,\"param2\":false},{\"param1\":-2,\"param2\":true}]}}"));
     }
 
     @Test
@@ -326,7 +326,7 @@ public class JavaIngredientTest {
             new EmptyIngredient()
         ));
 
-        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":null}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
     }
 
     @Test

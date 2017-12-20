@@ -61,6 +61,9 @@ public class Oven {
     }
 
     private void registerSubtypes(Recipe recipe) {
+        if (recipe.getContextIngredient() != null) {
+            subtypeResolver.registerSubtypes(new NamedType(recipe.getContextIngredient().getClass(), recipe.getContextIngredient().getType()));
+        }
         for (Ingredient ingredient: recipe.getIngredients()) {
             if (ingredient instanceof Recipe) {
                 registerSubtypes((Recipe)ingredient);

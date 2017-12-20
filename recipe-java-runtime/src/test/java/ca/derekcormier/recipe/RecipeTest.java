@@ -1,6 +1,7 @@
 package ca.derekcormier.recipe;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -187,5 +188,18 @@ public class RecipeTest {
         assertEquals(1, segments.get(1).recipe.getIngredients().size());
         assertEquals("A", segments.get(2).domain);
         assertEquals(1, segments.get(2).recipe.getIngredients().size());
+    }
+
+    @Test
+    public void testSegment_createsSegmentForContextfulRecipeWithNoIngredients() {
+        KeyedIngredient keyedIngredient = new KeyedIngredient("KeyedIngredient", "A") {};
+
+        Recipe recipe = Recipe.context(keyedIngredient);
+
+        List<Recipe.Segment> segments = recipe.segment();
+        assertEquals(1, segments.size());
+        assertEquals("A", segments.get(0).domain);
+        assertEquals(0, segments.get(0).recipe.getIngredients().size());
+        assertNotNull(segments.get(0).recipe.getContextIngredient());
     }
 }

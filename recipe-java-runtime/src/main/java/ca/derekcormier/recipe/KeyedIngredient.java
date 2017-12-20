@@ -1,5 +1,8 @@
 package ca.derekcormier.recipe;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class KeyedIngredient extends Ingredient {
     private String key;
 

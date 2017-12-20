@@ -30,27 +30,31 @@ public abstract class Ingredient extends BaseIngredient {
     }
 
     protected void setCompoundOptional(String name, boolean repeatable, Object...keyValuePairs) {
-        Map map = (Map)getProperties().getOrDefault(name, new HashMap());
-
         if (keyValuePairs.length % 2 != 0) {
             throw new IllegalArgumentException("must have an even number of key-value pairs for compound optional");
         }
 
         for (int i = 0; i < keyValuePairs.length; i += 2) {
-            if (!(keyValuePairs[i] instanceof  String)) {
+            if (!(keyValuePairs[i] instanceof String)) {
                 throw new IllegalArgumentException("key in compound optional is not a string");
-            }
-
-            if (!repeatable) {
-                map.put(keyValuePairs[i], keyValuePairs[i+1]);
-            }
-            else {
-                List values = (List)map.getOrDefault(keyValuePairs[i], new ArrayList<>());
-                values.add(keyValuePairs[i+1]);
-                map.put(keyValuePairs[i], values);
             }
         }
 
-        setProperty(name, map);
+        if (!repeatable) {
+            Map map = (Map)getProperties().getOrDefault(name, new HashMap());
+            for (int i = 0; i < keyValuePairs.length; i += 2) {
+                map.put(keyValuePairs[i], keyValuePairs[i+1]);
+            }
+            setProperty(name, map);
+        }
+        else {
+            List<Map> list = (List)getProperties().getOrDefault(name, new ArrayList<>());
+            Map map = new HashMap();
+            for (int i = 0; i < keyValuePairs.length; i += 2) {
+                map.put(keyValuePairs[i], keyValuePairs[i+1]);
+            }
+            list.add(map);
+            setProperty(name, list);
+        }
     }
 }

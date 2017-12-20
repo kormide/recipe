@@ -78,6 +78,11 @@ public class CakeTest {
         Cake.key("", "bar");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testKey_throwsOnSubkeyContainingSeparator() {
+        Cake.key("a" + Cake.SEPARATOR + "b", "c");
+    }
+
     @Test
     public void testKey_noSeparatorForSingleKey() {
         assertEquals("a", Cake.key("a"));

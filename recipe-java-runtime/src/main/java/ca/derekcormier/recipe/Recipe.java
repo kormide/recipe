@@ -50,6 +50,10 @@ public class Recipe extends Ingredient {
         return context;
     }
 
+    public KeyedIngredient getContextIngredient() {
+        return contextIngredient;
+    }
+
     public class Segment {
         public String domain;
         public Recipe recipe;
@@ -67,6 +71,35 @@ public class Recipe extends Ingredient {
     }
 
     private void _segment(Recipe currRecipe, List<Recipe> recipeStack, String currDomain, List<Segment> segments) {
+        if (recipeStack.get(0).contextIngredient != null) {
+            KeyedIngredient contextIngredient = recipeStack.get(0).contextIngredient;
+            if (!contextIngredient.getDomain().equals(currDomain)) {
+                //copy recipe structure
+                Recipe outerRecipe = null;
+                Recipe recipe = null;
+                for (Recipe r : recipeStack) {
+                    if (recipe == null) {
+                        outerRecipe = new Recipe();
+                        recipe = outerRecipe;
+                    }
+                    else {
+                        outerRecipe = Recipe.prepare(outerRecipe);
+                    }
+                    outerRecipe.context = r.context;
+                    outerRecipe.contextIngredient = r.contextIngredient;
+                }
+
+                Segment segmented = new Segment();
+                segmented.domain = contextIngredient.getDomain();
+                segmented.recipe = outerRecipe;
+                segments.add(segmented);
+
+                currRecipe = recipe;
+                currDomain = contextIngredient.getDomain();
+            }
+
+            currRecipe.contextIngredient = contextIngredient;
+        }
         for (Ingredient ingredient: recipeStack.get(0).ingredients) {
             if (ingredient instanceof Recipe) {
                 Recipe recipe = new Recipe();
