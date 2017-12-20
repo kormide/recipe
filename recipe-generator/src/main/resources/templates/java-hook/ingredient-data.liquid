@@ -3,6 +3,9 @@
 {%- else -%}
     {%- assign superclass = 'IngredientSnapshot' -%}
 {%- endif -%}
+{%- if options.javaPackage != "" -%}
+package {{options.javaPackage}};
+{% endif %}
 {%- assign dataClassName = ingredient.name | append: 'Data' -%}
 import ca.derekcormier.recipe.{{superclass}};
 

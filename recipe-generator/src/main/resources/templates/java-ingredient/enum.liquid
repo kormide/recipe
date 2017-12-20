@@ -1,4 +1,8 @@
-enum {{enum.name}} {
+{%- if options.javaPackage != "" -%}
+package {{options.javaPackage}};
+{% endif %}
+
+public enum {{enum.name}} {
     {%- capture commaNewLine %},
     {% endcapture %}
     {{ enum.values | join: commaNewLine}}

@@ -7,6 +7,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_TEST_RESOURCES)
 public class RecipeGeneratorMojo extends AbstractMojo {
     @Parameter
@@ -15,9 +18,22 @@ public class RecipeGeneratorMojo extends AbstractMojo {
     private String cookbook;
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/recipe")
     private String targetDir;
+    @Parameter
+    private String javaPackage;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        Main.main(new String[]{flavour, cookbook, targetDir});
+        List<String> args = new ArrayList<>();
+
+        args.add(flavour);
+        args.add(cookbook);
+        args.add(targetDir);
+
+        if (null != javaPackage) {
+            args.add("--javaPackage");
+            args.add(javaPackage);
+        }
+
+        Main.main(args.toArray(new String[args.size()]));
     }
 }
