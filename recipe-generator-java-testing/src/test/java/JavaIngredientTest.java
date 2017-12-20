@@ -20,9 +20,21 @@ import java.util.Map;
 
 import ca.derekcormier.recipe.Cake;
 import ca.derekcormier.recipe.Dispatcher;
-import ca.derekcormier.recipe.Ingredient;
 import ca.derekcormier.recipe.Oven;
 import ca.derekcormier.recipe.Recipe;
+import testdomain.ingredients.AllParamsIngredient;
+import testdomain.ingredients.EmptyIngredient;
+import testdomain.ingredients.IngredientWithCompoundOptional;
+import testdomain.ingredients.IngredientWithCompoundOptionalWithOneParam;
+import testdomain.ingredients.IngredientWithDefaultRequired;
+import testdomain.ingredients.IngredientWithOptional;
+import testdomain.ingredients.IngredientWithRepeatableCompoundOptional;
+import testdomain.ingredients.IngredientWithRepeatableOptional;
+import testdomain.ingredients.IngredientWithRepeatableVarargOptional;
+import testdomain.ingredients.IngredientWithRequired;
+import testdomain.ingredients.IngredientWithRequiredAndOptional;
+import testdomain.ingredients.KeyedTestIngredient;
+import testdomain.ingredients.TestEnum;
 
 public class JavaIngredientTest {
     private Oven oven;

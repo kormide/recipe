@@ -3,13 +3,16 @@
 {%- else -%}
     {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
+{%- if options.javaPackage != "" -%}
+package {{options.javaPackage}};
+{% endif %}
 
 import ca.derekcormier.recipe.{{superclass}};
 
 import java.util.HashMap;
 import java.util.Map;
 
-class {{ingredient.name}} extends {{superclass}} {
+public class {{ingredient.name}} extends {{superclass}} {
     {%- for initializer in ingredient.initializers %}
     public {{ingredient.name}}(
         {%- for param in initializer.params -%}

@@ -1,3 +1,7 @@
+{%- if options.javaPackage != "" -%}
+package {{options.javaPackage}};
+{% endif %}
+
 import ca.derekcormier.recipe.BaseIngredientHook;
 import ca.derekcormier.recipe.Cake;
 

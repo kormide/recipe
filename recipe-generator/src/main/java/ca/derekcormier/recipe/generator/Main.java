@@ -1,32 +1,73 @@
 package ca.derekcormier.recipe.generator;
 
+import org.kohsuke.args4j.Argument;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.CookbookLoader;
 
 public class Main {
+    @Argument(index = 0, usage = "type of generation to perform; valid options: java-ingredient, java-hook", metaVar = "flavour")
+    private String flavour;
+    @Argument(index = 1, usage = "path to the yaml cookbook definition file", metaVar = "cookbook")
+    private String cookbook;
+    @Argument(index = 2, usage = "directory to output generated files", metaVar = "targetDir")
+    private String targetDir;
+
+    @Option(name = "--javaPackage", usage = "java package for generated classes", metaVar = "package")
+    private String javaPackage;
+
+    private CmdLineParser parser;
+
     public static void main(String[] args) {
-        if (args.length != 3) {
-            printUsage();
-            return;
+        new Main().doMain(args);
+    }
+
+    public void doMain(String[] args) {
+        parser = new CmdLineParser(this);
+
+        try {
+            parser.parseArgument(args);
         }
-        try (FileInputStream ingredients = new FileInputStream(args[1])) {
+        catch (CmdLineException e) {
+            System.err.println("could not parse arguments");
+            printUsage();
+            System.exit(1);
+        }
+
+        if (null == flavour || null == cookbook || null == targetDir) {
+            printUsage();
+            System.exit(1);
+        }
+
+        Map<String,Object> options = createOptions();
+
+        try (FileInputStream ingredients = new FileInputStream(cookbook)) {
             Cookbook domain = new CookbookLoader().load(ingredients);
-            CookbookGenerator generator = CookbookGeneratorFactory.getGenerator(Flavour.fromAlias(args[0]));
-            generator.generate(domain, args[2]);
+            CookbookGenerator generator = CookbookGeneratorFactory.getGenerator(Flavour.fromAlias(flavour));
+            generator.generate(domain, targetDir, options);
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void printUsage() {
-        System.err.println(String.join("\n",
-            "USAGE: java -jar {jarpath} flavour cookbook target_dir",
-            "  flavour     - type of generation to perform; valid options: java-ingredient, java-hook",
-            "  cookbook    - path to the yaml cookbook definition file",
-            "  target_dir  - directory to output generated files"
-        ));
+    private Map<String,Object> createOptions() {
+        Map<String,Object> options = new HashMap<>();
+        if (null != javaPackage) {
+            options.put("javaPackage", javaPackage);
+        }
+        return options;
+    }
+
+    private void printUsage() {
+        System.err.println("USAGE: java -jar {jarpath} [options...] arguments...");
+        parser.printUsage(System.err);
     }
 }
