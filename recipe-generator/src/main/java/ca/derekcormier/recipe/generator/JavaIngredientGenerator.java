@@ -29,7 +29,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             data.put("ingredient", ingredient);
             data.put("domain", cookbook.getDomain());
             data.put("options", options);
-            String rendered = renderTemplate("templates/java-ingredient/ingredient.liquid", data);
+            String rendered = renderTemplate("templates/java/ingredient.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + ".java";
             writeToFile(filepath, rendered);
         }
@@ -38,7 +38,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             Map<String,Object> data = new HashMap<>();
             data.put("enum", enumeration);
             data.put("options", options);
-            String rendered = renderTemplate("templates/java-ingredient/enum.liquid", data);
+            String rendered = renderTemplate("templates/java/enum.liquid", data);
             String filepath = directory + File.separator + enumeration.getName() + ".java";
             writeToFile(filepath, rendered);
         }

@@ -28,7 +28,7 @@ public class JavaHookGenerator extends CookbookGenerator {
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
             data.put("options", options);
-            String rendered = renderTemplate("templates/java-hook/hook.liquid", data);
+            String rendered = renderTemplate("templates/java/hook.liquid", data);
             String filepath = directory + File.separator + "Abstract" + ingredient.getName() + "Hook.java";
             writeToFile(filepath, rendered);
         }
@@ -37,7 +37,7 @@ public class JavaHookGenerator extends CookbookGenerator {
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
             data.put("options", options);
-            String rendered = renderTemplate("templates/java-hook/ingredient-data.liquid", data);
+            String rendered = renderTemplate("templates/java/ingredient-data.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + "Data.java";
             writeToFile(filepath, rendered);
         }
@@ -46,7 +46,7 @@ public class JavaHookGenerator extends CookbookGenerator {
             Map<String,Object> data = new HashMap<>();
             data.put("enum", enumeration);
             data.put("options", options);
-            String rendered = renderTemplate("templates/java-ingredient/enum.liquid", data);
+            String rendered = renderTemplate("templates/java/enum.liquid", data);
             String filepath = directory + File.separator + enumeration.getName() + ".java";
             writeToFile(filepath, rendered);
         }
