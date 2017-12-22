@@ -1,0 +1,19 @@
+{
+  "name": "recipe-ts-runtime",
+  "version": "0.0.1",
+  "description": "TypeScript run-time library for the Recipe framework",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kormide/recipe"
+  },
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "tslint": "5.8.0",
+    "typescript": "2.6.2"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json ./src/*.ts"
+  }
+}

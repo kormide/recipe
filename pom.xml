@@ -18,6 +18,7 @@
         <module>recipe-java-runtime</module>
         <module>recipe-generator-java-testing</module>
         <module>recipe-generator-maven-plugin</module>
+        <module>recipe-ts-runtime</module>
     </modules>
 
     <build>
