@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+{% if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
+{%- else -%}
+    {%- assign superclass = 'Ingredient' -%}
+{%- endif -%}
+const {{superclass}} = require("recipe-ts-runtime").{{superclass}};
+
+class {{ingredient.name}} extends {{superclass}} {
+}
+
+exports.{{ingredient.name}} = {{ingredient.name}};

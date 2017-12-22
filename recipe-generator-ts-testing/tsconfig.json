@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
+        "moduleResolution": "node",
 
         "lib": ["es6"],
 
@@ -9,14 +10,13 @@
         "noUnusedLocals": true,
         "noUnusedParameters": false,
         "removeComments": false,
-        "sourceMap": true,
-        "declaration": true,
+        "sourceMap": false,
         "diagnostics": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "noEmitOnError": true,
 
-        "outDir": "target/dist"
+        "outDir": "target/"
     },
 
     "include": [
