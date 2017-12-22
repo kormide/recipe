@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+
+        "lib": ["es6"],
+
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "removeComments": false,
+        "sourceMap": true,
+        "declaration": true,
+        "diagnostics": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmitOnError": true,
+
+        "outDir": "target/"
+    },
+
+    "include": [
+        "src/*.ts"
+    ],
+
+    "exclude": []
+}
