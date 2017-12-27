@@ -32,7 +32,7 @@ public class Recipe extends Ingredient {
         return recipe;
     }
 
-    public Recipe() {
+    protected Recipe() {
         super("Recipe");
         this.ingredients = new ArrayList<>();
     }
