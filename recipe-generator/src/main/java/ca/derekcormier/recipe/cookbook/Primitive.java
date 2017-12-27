@@ -3,6 +3,7 @@ package ca.derekcormier.recipe.cookbook;
 public enum Primitive {
     BOOLEAN("boolean"),
     INTEGER("int"),
+    FLOAT("float"),
     STRING("string");
 
     private String alias;

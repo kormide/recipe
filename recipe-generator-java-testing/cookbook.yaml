@@ -88,6 +88,8 @@ ingredients:
         type: "boolean"
       - name: "intArg"
         type: "int"
+      - name: "floatArg"
+        type: "float"
       - name: "flagArg"
         type: "flag"
       - name: "enumArg"

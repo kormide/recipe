@@ -113,6 +113,12 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testGeneration_floatType() {
+        new AllParamsIngredient()
+            .withFloatArg(1.123f);
+    }
+
+    @Test
     public void testGeneration_flagType() {
         new AllParamsIngredient()
             .withFlagArg();
@@ -279,13 +285,14 @@ public class JavaIngredientTest {
                 .withFlagArg()
                 .withStringArg("foobar")
                 .withIntArg(-10)
+                .withFloatArg(1.123f)
                 .withEnumArrayArg(new TestEnum[]{TestEnum.A, TestEnum.B})
                 .withVarargArg("foo", "bar")
                 .withVarargArrayArg(new int[]{1, 2}, new int[]{3, 4})
         ));
 
         assertDispatchedJson(payloadJson(
-            "{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}}"
+            "{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"floatArg\":1.123,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}}"
         ));
     }
 

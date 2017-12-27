@@ -40,6 +40,8 @@ public class JavaFilters {
                             return "boolean";
                         case INTEGER:
                             return "int";
+                        case FLOAT:
+                            return "float";
                         case STRING:
                             return "String";
                         default:
@@ -73,6 +75,8 @@ public class JavaFilters {
                             case BOOLEAN:
                                 return super.asString(value);
                             case INTEGER:
+                                return super.asString(value);
+                            case FLOAT:
                                 return super.asString(value);
                             case STRING:
                                 return "\"" + super.asString(value) + "\"";
