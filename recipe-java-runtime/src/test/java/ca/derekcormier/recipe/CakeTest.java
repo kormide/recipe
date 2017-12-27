@@ -51,7 +51,7 @@ public class CakeTest {
     }
 
     @Test
-    public void testPublish_publishesMultipleValues() {
+    public void testPublish_publishesMultipleKeys() {
         cake.publish("key1", "value1");
         cake.publish("key2", "value2");
         assertEquals("value1", cake.get("key1"));

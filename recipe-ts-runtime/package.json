@@ -9,11 +9,18 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
+    "@types/chai": "4.0.10",
+    "@types/mocha": "2.2.44",
+    "@types/node": "8.5.2",
+    "chai": "4.1.2",
+    "mocha": "4.0.1",
+    "ts-node": "4.0.2",
     "tslint": "5.8.0",
     "typescript": "2.6.2"
   },
   "scripts": {
     "build": "tsc",
-    "lint": "tslint -c ./tslint.json --project ./tsconfig.json ./src/*.ts"
+    "lint": "tslint -c ./tslint.json --project ./tsconfig-all.json ./src/**/*.ts",
+    "test": "mocha --require ts-node/register/type-check src/**/*.spec.ts"
   }
 }
