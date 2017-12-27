@@ -1,0 +1,6 @@
+{
+    "extends": "./tsconfig.json",
+
+    /* Don't exclude test files -- for linting */
+    "exclude": []
+}
