@@ -25,6 +25,11 @@ public class CookbookUtilsTest {
     }
 
     @Test
+    public void testIsPrimitiveType_float() {
+        assertTrue(CookbookUtils.isPrimitiveType("float"));
+    }
+
+    @Test
     public void testIsPrimitiveType_unknownType() {
         assertFalse(CookbookUtils.isPrimitiveType("foobar"));
     }

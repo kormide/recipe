@@ -847,6 +847,58 @@ public class CookbookLoaderTest {
         loader.load(toStream(yaml));
     }
 
+    @Test
+    public void testLoad_ingredientWithStringParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'foo'",
+            "        type: 'string'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithIntParam_doesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'foo'",
+            "        type: 'int'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithFloatParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'foo'",
+            "        type: 'float'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_ingredientWithBooleanParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    optionals:",
+            "      - name: 'foo'",
+            "        type: 'boolean'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
     private InputStream toStream(String str) {
         return new ByteArrayInputStream(str.getBytes());
     }

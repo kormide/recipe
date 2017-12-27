@@ -129,6 +129,13 @@ public class JavaHookTest {
     }
 
     @Test
+    public void testGeneration_ingredientDataWithFloatParam() throws NoSuchMethodException {
+        new AllParamsIngredientData();
+        AllParamsIngredientData.class.getMethod("getFloatArg");
+        assertEquals(float.class, AllParamsIngredientData.class.getMethod("getFloatArg").getReturnType());
+    }
+
+    @Test
     public void testGeneration_ingredientDataWithStringParam() throws NoSuchMethodException {
         new AllParamsIngredientData();
         AllParamsIngredientData.class.getMethod("getStringArg");
@@ -465,6 +472,22 @@ public class JavaHookTest {
         });
 
         oven.bake(payloadJson("{\"AllParamsIngredient\":{\"intArg\":100}}"));
+        verify(spy).run();
+    }
+
+    @Test
+    public void testBake_deserialization_ingredientWithFloatParam() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractAllParamsIngredientHook() {
+            @Override
+            public void bake(AllParamsIngredientData data, Cake cake) {
+                assertEquals(-1.543f, data.getFloatArg(), 0);
+                spy.run();
+            }
+        });
+
+        oven.bake(payloadJson("{\"AllParamsIngredient\":{\"floatArg\":-1.543}}"));
         verify(spy).run();
     }
 
