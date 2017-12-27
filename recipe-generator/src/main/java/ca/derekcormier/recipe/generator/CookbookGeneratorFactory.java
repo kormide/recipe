@@ -7,6 +7,8 @@ public class CookbookGeneratorFactory {
                 return new JavaHookGenerator();
             case JAVA_INGREDIENT:
                 return new JavaIngredientGenerator();
+            case TYPESCRIPT_INGREDIENT:
+                return new TypescriptIngredientGenerator();
             default:
                 throw new RuntimeException("no generator for generator " + flavour.name());
         }

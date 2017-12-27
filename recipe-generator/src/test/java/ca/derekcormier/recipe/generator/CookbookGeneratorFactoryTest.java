@@ -15,4 +15,9 @@ public class CookbookGeneratorFactoryTest {
     public void testGetGenerator_forJavaHooks() {
         assertTrue(CookbookGeneratorFactory.getGenerator(Flavour.JAVA_HOOK) instanceof JavaHookGenerator);
     }
+
+    @Test
+    public void testGetGenerator_forTypescriptIngredients() {
+        assertTrue(CookbookGeneratorFactory.getGenerator(Flavour.TYPESCRIPT_INGREDIENT) instanceof TypescriptIngredientGenerator);
+    }
 }

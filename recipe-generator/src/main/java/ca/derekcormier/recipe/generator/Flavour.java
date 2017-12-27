@@ -2,7 +2,8 @@ package ca.derekcormier.recipe.generator;
 
 public enum Flavour {
     JAVA_HOOK("java-hook"),
-    JAVA_INGREDIENT("java-ingredient");
+    JAVA_INGREDIENT("java-ingredient"),
+    TYPESCRIPT_INGREDIENT("ts-ingredient");
 
     private String alias;
 

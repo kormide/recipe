@@ -12,7 +12,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Recipe Typescript Runtime</name>
+    <name>Recipe TypeScript Runtime</name>
 
     <build>
         <plugins>
@@ -37,7 +37,6 @@
                             <yarnVersion>v1.3.2</yarnVersion>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>yarn-install</id>
                         <phase>initialize</phase>
@@ -48,7 +47,6 @@
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>yarn-run-lint</id>
                         <phase>compile</phase>
@@ -59,7 +57,6 @@
                             <arguments>run lint</arguments>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>yarn-compile</id>
                         <phase>compile</phase>

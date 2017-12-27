@@ -1,0 +1,9 @@
+{%- if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
+{%- else -%}
+    {%- assign superclass = 'Ingredient' -%}
+{%- endif -%}
+import { {{ superclass}} } from "recipe-ts-runtime";
+
+export class {{ingredient.name}} extends {{superclass}} {
+}
