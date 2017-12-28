@@ -1,6 +1,6 @@
 export class Cake {
     public static readonly SEPARATOR = ".";
-    private readonly entries = new Map<string, any>();
+    private entries: {[key: string]: any} = {};
     private readonly prefixStack: string[] = [];
 
     public static key(...subKeys: string[]): string {
@@ -25,7 +25,7 @@ export class Cake {
     public publish(key: string, value: any) {
         this.getSubKeysAndValidateFullKey(key);
         const newKey = this.getPrefixWithSeparator(this.prefixStack) + key;
-        this.entries.set(newKey, value);
+        this.entries[newKey] = value;
     }
 
     public inNamespace(key: string, runnable: () => void) {
@@ -61,8 +61,8 @@ export class Cake {
 
         // search within current namespace
         let searchKey = this.getPrefixWithSeparator(this.prefixStack) + fullKey;
-        if (this.entries.has(searchKey)) {
-            return <T>this.entries.get(searchKey);
+        if (searchKey in this.entries) {
+            return <T>this.entries[searchKey];
         }
 
         // search within each ancestor namespace up to the root
@@ -70,21 +70,21 @@ export class Cake {
         while (namespaces.length !== 0) {
             namespaces.pop();
             searchKey = this.getPrefixWithSeparator(namespaces) + fullKey;
-            if (this.entries.has(searchKey)) {
-                return <T>this.entries.get(searchKey);
+            if (searchKey in this.entries) {
+                return <T>this.entries[searchKey];
             }
         }
 
         // search within any other namespace (if unambiguous)
         const candidates: string[] = [];
-        for (const k of this.entries.keys()) {
+        for (const k in this.entries) {
             if (k.endsWith(fullKey)) {
                 candidates.push(k);
             }
         }
 
         if (candidates.length === 1) {
-            return <T>this.entries.get(candidates[0]);
+            return <T>this.entries[candidates[0]];
         }
         else if (candidates.length === 0) {
             throw new Error("cake does not contain key '" + fullKey + "'");
@@ -100,9 +100,9 @@ export class Cake {
 
     public getPublishedKeyForValue(value: any, fullyQualified: boolean): string {
         const matchingKeys: string[] = [];
-        for (const e of this.entries) {
-            if (e[1] === value) {
-                matchingKeys.push(e[0]);
+        for (const k in this.entries) {
+            if (this.entries[k] === value) {
+                matchingKeys.push(k);
             }
         }
         if (matchingKeys.length === 1) {
@@ -120,5 +120,15 @@ export class Cake {
 
     public getNamespace(): string {
         return this.prefixStack.join(Cake.SEPARATOR);
+    }
+
+    public toJSON() {
+        return this.entries;
+    }
+
+    public static fromJson(jsonCake: string): Cake {
+        const cake = new Cake();
+        cake.entries = JSON.parse(jsonCake);
+        return cake;
     }
 }
