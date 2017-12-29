@@ -5,12 +5,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 {%- else -%}
     {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
+{%- assign ingredientName = ingredient.name | append:options.ingredientPostfix -%}
 const {{superclass}} = require("recipe-ts-runtime").{{superclass}};
 {% for type in info.nonPrimitiveTypes -%}
 const {{type}} = require("./{{type}}").{{type}};
 {% endfor %}
 
-class {{ingredient.name}} extends {{superclass}} {
+class {{ingredientName}} extends {{superclass}} {
     constructor(...args) {
         super("{{ingredient.name}}", "{{domain}}");
         {% for initializer in ingredient.initializers %}
@@ -73,4 +74,4 @@ class {{ingredient.name}} extends {{superclass}} {
     {% endfor %}
 }
 
-exports.{{ingredient.name}} = {{ingredient.name}};
+exports.{{ingredientName}} = {{ingredientName}};

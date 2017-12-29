@@ -54,6 +54,17 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>generate-hooks</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <flavour>java-hook</flavour>
+                            <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
+                            <javaPackage>testdomain.hooks</javaPackage>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>generate-ingredients-domain-b</id>
                         <goals>
                             <goal>generate</goal>
@@ -65,14 +76,27 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>generate-hooks</id>
+                        <id>generate-ingredients-postfix</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <flavour>java-ingredient</flavour>
+                            <cookbook>${project.basedir}/cookbook-postfix.yaml</cookbook>
+                            <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
+                            <ingredientPostfix>Foo</ingredientPostfix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-hooks-postfix</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <flavour>java-hook</flavour>
+                            <cookbook>${project.basedir}/cookbook-postfix.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
-                            <javaPackage>testdomain.hooks</javaPackage>
+                            <ingredientPostfix>Foo</ingredientPostfix>
                         </configuration>
                     </execution>
                 </executions>

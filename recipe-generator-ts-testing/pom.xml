@@ -70,6 +70,19 @@
                             <targetDir>${project.build.directory}/ingredients</targetDir>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>generate-ingredients-postfix</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <flavour>ts-ingredient</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook-postfix.yaml</cookbook>
+                            <targetDir>${project.build.directory}/ingredients/postfix</targetDir>
+                            <ingredientPostfix>Foo</ingredientPostfix>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

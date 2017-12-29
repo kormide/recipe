@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 {% for ingredient in ingredients %}
-var {{ingredient.name}}_ = require("./{{ingredient.name}}");
-exports.{{ingredient.name}} = {{ingredient.name}}_.{{ingredient.name}};
+{%- assign ingredientName = ingredient.name | append:options.ingredientPostfix -%}
+var {{ingredientName}}_ = require("./{{ingredientName}}");
+exports.{{ingredientName}} = {{ingredientName}}_.{{ingredientName}};
 {% endfor %}
 {% for enum in enums %}
 var {{enum.name}}_ = require("./{{enum.name}}");

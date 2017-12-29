@@ -193,6 +193,17 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithPostfix() {
+        new PostfixIngredientFoo();
+    }
+
+    @Test
+    public void testGeneration_ingredientWithPostfixDoesNotIncludePostfixInType() {
+        PostfixIngredientFoo ingredient = new PostfixIngredientFoo();
+        assertEquals("PostfixIngredient", ingredient.getType());
+    }
+
+    @Test
     public void testBake_serialization_emptyIngredient() {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new EmptyIngredient()));

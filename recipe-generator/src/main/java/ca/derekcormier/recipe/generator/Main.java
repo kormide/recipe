@@ -23,6 +23,9 @@ public class Main {
     @Option(name = "--javaPackage", usage = "java package for generated classes", metaVar = "package")
     private String javaPackage;
 
+    @Option(name = "--ingredientPostfix", usage = "string to append to ingredient names", metaVar = "postfix")
+    private String ingredientPostfox;
+
     private CmdLineParser parser;
 
     public static void main(String[] args) {
@@ -62,6 +65,9 @@ public class Main {
         Map<String,Object> options = new HashMap<>();
         if (null != javaPackage) {
             options.put("javaPackage", javaPackage);
+        }
+        if (null != ingredientPostfox) {
+            options.put("ingredientPostfix", ingredientPostfox);
         }
         return options;
     }

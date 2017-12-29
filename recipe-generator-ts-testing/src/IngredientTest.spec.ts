@@ -5,6 +5,7 @@ import {
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
     IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers
 } from "../target/ingredients";
+import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
 describe("generation", () => {
     it("should generate an empty ingredient", () => {
@@ -101,6 +102,15 @@ describe("generation", () => {
     it("should generate ingredients with the correct domain", () => {
         const ingredient = new AllParamsIngredient();
         expect(ingredient.getDomain()).to.equal("TestDomain");
+    });
+
+    it("should generate an ingredient with a postfix", () => {
+        new PostfixIngredientFoo();
+    });
+
+    it("should not include an ingredient postfix in the type", () => {
+        const ingredient = new PostfixIngredientFoo();
+        expect(ingredient.getType()).to.equal("PostfixIngredient");
     });
 });
 

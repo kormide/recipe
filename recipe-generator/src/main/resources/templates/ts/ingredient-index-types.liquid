@@ -1,5 +1,6 @@
 {% for ingredient in ingredients %}
-export { {{ingredient.name}} } from "./{{ingredient.name}}"
+{%- assign ingredientName = ingredient.name | append:options.ingredientPostfix -%}
+export { {{ingredientName}} } from "./{{ingredientName}}"
 {% endfor %}
 {% for enum in enums %}
 export { {{enum.name}} } from "./{{enum.name}}"

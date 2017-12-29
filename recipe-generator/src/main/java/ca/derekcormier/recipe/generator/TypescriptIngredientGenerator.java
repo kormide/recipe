@@ -24,6 +24,8 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
         registerFilters(cookbook);
         String directory = createDirectories(targetDir);
 
+        options.putIfAbsent("ingredientPostfix", "");
+
         // generate javascript ingredients
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> info = new HashMap<>();
@@ -36,7 +38,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             data.put("options", options);
             data.put("info", info);
             String rendered = renderTemplate("templates/ts/ingredient.liquid", data);
-            String filepath = directory + File.separator + ingredient.getName() + ".js";
+            String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".js";
             writeToFile(filepath, rendered);
         }
 
@@ -51,7 +53,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             data.put("options", options);
             data.put("info", info);
             String rendered = renderTemplate("templates/ts/ingredient-types.liquid", data);
-            String filepath = directory + File.separator + ingredient.getName() + ".d.ts";
+            String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".d.ts";
             writeToFile(filepath, rendered);
         }
 
