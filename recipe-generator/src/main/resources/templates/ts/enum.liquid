@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class {{enum.name}} {
+    constructor(value) {
+        this.value = value;
+    }
+    getValue() {
+        return this.value;
+    }
+    toJSON() {
+        return this.value;
+    }
+}
+{% for value in enum.values %}
+{{enum.name}}.{{value}} = new {{enum.name}}("{{value}}");
+{% endfor %}
+
+exports.{{enum.name}} = {{enum.name}};

@@ -6,8 +6,66 @@ Object.defineProperty(exports, "__esModule", { value: true });
     {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
 const {{superclass}} = require("recipe-ts-runtime").{{superclass}};
+{% for type in info.nonPrimitiveTypes -%}
+const {{type}} = require("./{{type}}").{{type}};
+{% endfor %}
 
 class {{ingredient.name}} extends {{superclass}} {
+    constructor(...args) {
+        super("{{ingredient.name}}", "{{domain}}");
+        {% for initializer in ingredient.initializers %}
+        {% if forloop.first %}if{% else %}else if{% endif %} (args.length === {{initializer.params.size}}
+        {%- for param in initializer.params -%}
+            {%- assign type = info.requiredTypes[param] -%}
+            {% raw %} {% endraw %}
+            {%- if type == 'string' or type == 'int' or type == 'float' or type == 'boolean' -%}
+                && typeof args[{{forloop.index0}}] === "{{type | tstype}}"
+            {%- else -%}
+                && (args[{{forloop.index0}}] instanceof {{type}})
+            {%- endif -%}
+        {%- endfor -%}
+        ) {
+            {% for required in ingredient.required -%}
+            {%- for param in initializer.params -%}
+            {%- if required.name == param %}
+            this.setRequired("{{required.name}}", args[{{forloop.index0}}]);
+            {%- else %}
+            this.setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
+            {%- endif -%}
+            {%- endfor -%}
+            {%- endfor %}
+        }
+        {% endfor %}
+    }
+
+    {% for optional in ingredient.optionals %}
+    with{{optional.name | capitalize}}(
+        {%- if optional.compound != true -%}
+            {%- if optional.type != 'flag' -%}
+            {{ optional | jsparam }}
+            {%- endif -%}
+        {%- else -%}
+            {%- for param in optional.params -%}
+                {{ param | jsparam }}
+                {%- unless forloop.last -%}, {% endunless -%}
+            {%- endfor -%}
+        {%- endif -%}
+    ) {
+        {%- if optional.compound != true -%}
+            {%- if optional.type != 'flag' %}
+        this.setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name}});
+            {%- else %}
+        this.setOptional("{{optional.name}}", {{optional.repeatable}}, true);
+            {%- endif -%}
+        {%- else %}
+        this.setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
+        {%- for param in optional.params -%}
+        , "{{param.name}}", {{param.name}}
+        {%- endfor -%});
+        {%- endif %}
+        return this;
+    }
+    {% endfor %}
 }
 
 exports.{{ingredient.name}} = {{ingredient.name}};

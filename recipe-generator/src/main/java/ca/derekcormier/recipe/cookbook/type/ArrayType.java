@@ -10,4 +10,9 @@ public class ArrayType extends Type {
     public Type getBaseType() {
         return baseType;
     }
+
+    @Override
+    public String name() {
+        return baseType.name() + "[]";
+    }
 }
