@@ -67,7 +67,7 @@ public class TypescriptFilters {
                             case FLOAT:
                                 return super.asString(value);
                             case STRING:
-                                return "\"" + super.asString(value) + "\"";
+                                return "\"" + super.asString(value).replace("\"", "\\\"") + "\"";
                             default:
                                 throw new RuntimeException("unknown data type '" + strType + "'");
                         }

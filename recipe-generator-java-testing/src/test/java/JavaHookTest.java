@@ -21,6 +21,7 @@ import testdomain.hooks.AbstractIngredientWithRepeatableOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableVarargOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRequiredAndOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRequiredHook;
+import testdomain.hooks.AbstractIngredientWithStringDefaultContainingQuotesHook;
 import testdomain.hooks.AbstractKeyedTestIngredientHook;
 import testdomain.hooks.AllParamsIngredientData;
 import testdomain.hooks.EmptyIngredientData;
@@ -32,6 +33,7 @@ import testdomain.hooks.IngredientWithRepeatableOptionalData;
 import testdomain.hooks.IngredientWithRepeatableVarargOptionalData;
 import testdomain.hooks.IngredientWithRequiredAndOptionalData;
 import testdomain.hooks.IngredientWithRequiredData;
+import testdomain.hooks.IngredientWithStringDefaultContainingQuotesData;
 import testdomain.hooks.KeyedTestIngredientData;
 import testdomain.hooks.TestEnum;
 
@@ -626,6 +628,22 @@ public class JavaHookTest {
         });
 
         oven.bake(payloadJson("{\"AllParamsIngredient\":{\"varargArrayArg\":[[1,2],[3,4]]}}"));
+        verify(spy).run();
+    }
+
+    @Test
+    public void testBake_deserialization_ingredientWithStringDefaultContainingQuotes() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithStringDefaultContainingQuotesHook() {
+            @Override
+            public void bake(IngredientWithStringDefaultContainingQuotesData data, Cake cake) {
+                assertEquals("\"foo", data.getRequired());
+                spy.run();
+            }
+        });
+
+        oven.bake(payloadJson("{\"IngredientWithStringDefaultContainingQuotes\":{\"required\":\"\\\"foo\"}}"));
         verify(spy).run();
     }
 

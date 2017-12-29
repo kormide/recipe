@@ -34,6 +34,7 @@ import testdomain.ingredients.IngredientWithRepeatableOptional;
 import testdomain.ingredients.IngredientWithRepeatableVarargOptional;
 import testdomain.ingredients.IngredientWithRequired;
 import testdomain.ingredients.IngredientWithRequiredAndOptional;
+import testdomain.ingredients.IngredientWithStringDefaultContainingQuotes;
 import testdomain.ingredients.KeyedTestIngredient;
 import testdomain.ingredients.TestEnum;
 
@@ -180,6 +181,11 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithStringDefaultContainingQuotes() {
+        new IngredientWithStringDefaultContainingQuotes();
+    }
+
+    @Test
     public void testGeneration_ingredientsHaveCorrectDomain() {
         setupDispatcherSpy();
         oven.bake(Recipe.prepare(new IngredientWithRequired("foo")));
@@ -307,6 +313,18 @@ public class JavaIngredientTest {
 
         assertDispatchedJson(payloadJson(
             "{\"AllParamsIngredient\":{\"booleanArg\":true,\"enumArg\":\"B\",\"flagArg\":true,\"stringArg\":\"foobar\",\"intArg\":-10,\"floatArg\":1.123,\"enumArrayArg\":[\"A\",\"B\"],\"varargArg\":[\"foo\",\"bar\"],\"varargArrayArg\":[[1,2],[3,4]]}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithStringDefaultContainingQuotes() {
+        setupDispatcherSpy();
+        oven.bake(Recipe.prepare(
+            new IngredientWithStringDefaultContainingQuotes()
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"IngredientWithStringDefaultContainingQuotes\":{\"required\":\"\\\"foo\"}}"
         ));
     }
 
