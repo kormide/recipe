@@ -14,6 +14,7 @@ import ca.derekcormier.recipe.Cake;
 import testdomain.hooks.AbstractAllParamsIngredientHook;
 import testdomain.hooks.AbstractEmptyIngredientHook;
 import testdomain.hooks.AbstractIngredientWithCompoundOptionalHook;
+import testdomain.hooks.AbstractIngredientWithDefaultRequiredNoInitializersHook;
 import testdomain.hooks.AbstractIngredientWithOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableCompoundOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableOptionalHook;
@@ -24,6 +25,7 @@ import testdomain.hooks.AbstractKeyedTestIngredientHook;
 import testdomain.hooks.AllParamsIngredientData;
 import testdomain.hooks.EmptyIngredientData;
 import testdomain.hooks.IngredientWithCompoundOptionalData;
+import testdomain.hooks.IngredientWithDefaultRequiredNoInitializersData;
 import testdomain.hooks.IngredientWithOptionalData;
 import testdomain.hooks.IngredientWithRepeatableCompoundOptionalData;
 import testdomain.hooks.IngredientWithRepeatableOptionalData;
@@ -66,6 +68,14 @@ public class JavaHookTest {
 
         IngredientWithRequiredData.class.getMethod("getRequired");
         assertEquals(String.class, IngredientWithRequiredData.class.getMethod("getRequired").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_ingredientWithDefaultRequiredNoInitializersData() throws NoSuchMethodException {
+        new IngredientWithDefaultRequiredNoInitializersData();
+
+        IngredientWithDefaultRequiredNoInitializersData.class.getMethod("getRequired");
+        assertEquals(int.class, IngredientWithDefaultRequiredNoInitializersData.class.getMethod("getRequired").getReturnType());
     }
 
     @Test
@@ -219,6 +229,22 @@ public class JavaHookTest {
         });
 
         oven.bake(payloadJson("{\"IngredientWithRequired\":{\"required\":\"foobar\"}}"));
+        verify(spy).run();
+    }
+
+    @Test
+    public void testBake_deserialization_ingredientWithDefaultRequiredNoInitializers() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithDefaultRequiredNoInitializersHook() {
+            @Override
+            public void bake(IngredientWithDefaultRequiredNoInitializersData data, Cake cake) {
+                assertEquals(5, data.getRequired());
+                spy.run();
+            }
+        });
+
+        oven.bake(payloadJson("{\"IngredientWithDefaultRequiredNoInitializers\":{\"required\":5}}"));
         verify(spy).run();
     }
 

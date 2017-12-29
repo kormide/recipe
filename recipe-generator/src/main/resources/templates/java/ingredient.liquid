@@ -37,10 +37,13 @@ public class {{ingredient.name}} extends {{superclass}} {
         {%- endfor %}
     }{% endfor %}
 
-    {%- if ingredient.initializers.size == 0 %}
+    {% if ingredient.initializers.size == 0 %}
     public {{ingredient.name}}() {
         super("{{ingredient.name}}", "{{domain}}");
-    }{%- endif -%}
+    {%- for required in ingredient.required %}
+        setRequired("{{required.name}}", {{required.default | javavalue:required.type}});
+    {%- endfor %}
+    }{% endif %}
 
     {%- for optional in ingredient.optionals %}
     public {{ingredient.name}} with{{optional.name | capitalize}}(

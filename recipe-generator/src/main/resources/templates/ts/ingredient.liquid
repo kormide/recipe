@@ -36,6 +36,11 @@ class {{ingredient.name}} extends {{superclass}} {
             {%- endfor %}
         }
         {% endfor %}
+        {% if ingredient.initializers.size == 0 %}
+        {%- for required in ingredient.required %}
+        this.setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
+        {%- endfor %}
+        {% endif %}
     }
 
     {% for optional in ingredient.optionals %}
