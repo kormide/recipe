@@ -46,8 +46,8 @@ describe("Oven", () => {
 
     describe("bake", () => {
         it("should not call dispatcher for empty recipe", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "");
-            oven.addDispatcher(dispatcher);
+            const dispatcher = spy((payload: string) => "{}");
+            oven.addDispatcher("A", dispatcher);
 
             oven.bake(Recipe.prepare());
 
@@ -55,30 +55,40 @@ describe("Oven", () => {
         });
 
         it("should not call dispatcher for empty nested recipes", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "");
-            oven.addDispatcher(dispatcher);
+            const dispatcher = spy((payload: string) => "{}");
+            oven.addDispatcher("A", dispatcher);
 
             oven.bake(Recipe.prepare(Recipe.prepare()));
 
             expect(dispatcher).callCount(0);
         });
 
-        it("should not call the dispatcher for a single ingredient", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "{}");
-            oven.addDispatcher(dispatcher);
-
-            oven.bake(Recipe.prepare(new TestIngredientA1()));
-
-            expect(dispatcher).to.have.been.calledWith("A");
+        it("should throw when there is no dispatcher for an ingredient", () => {
+            expect(() => oven.bake(Recipe.prepare(new TestIngredientA1()))).to.throw();
         });
 
-        it("should not throw when there is no dispatcher", () => {
+        it("should throw when adding two dispatchers for the same ingredient", () => {
+            oven.addDispatcher("A", payload => "{}");
+            expect(() => oven.addDispatcher("A", payload => "{}")).to.throw();
+        });
+
+        it("should call the dispatcher for a single ingredient", () => {
+            const dispatcher = spy((payload: string) => "{}");
+            oven.addDispatcher("A", dispatcher);
+
             oven.bake(Recipe.prepare(new TestIngredientA1()));
+
+            expect(dispatcher).callCount(1);
         });
 
         it("should call the dispatcher for different domains", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "{}");
-            oven.addDispatcher(dispatcher);
+            const dispatcherA = spy((payload: string) => "{}");
+            const dispatcherB = spy((payload: string) => "{}");
+            const dispatcherC = spy((payload: string) => "{}");
+
+            oven.addDispatcher("A", dispatcherA);
+            oven.addDispatcher("B", dispatcherB);
+            oven.addDispatcher("C", dispatcherC);
 
             oven.bake(Recipe.prepare(
                 new TestIngredientA1(),
@@ -86,15 +96,19 @@ describe("Oven", () => {
                 new TestIngredientC1()
             ));
 
-            expect(dispatcher).callCount(3);
-            expect(dispatcher.getCall(0).calledWith("A")).to.equal(true);
-            expect(dispatcher.getCall(1).calledWith("B")).to.equal(true);
-            expect(dispatcher.getCall(2).calledWith("C")).to.equal(true);
+            expect(dispatcherA).callCount(1);
+            expect(dispatcherB).callCount(1);
+            expect(dispatcherC).callCount(1);
         });
 
         it("should call the dispatcher for different domains in nested recipe", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "{}");
-            oven.addDispatcher(dispatcher);
+            const dispatcherA = spy((payload: string) => "{}");
+            const dispatcherB = spy((payload: string) => "{}");
+            const dispatcherC = spy((payload: string) => "{}");
+
+            oven.addDispatcher("A", dispatcherA);
+            oven.addDispatcher("B", dispatcherB);
+            oven.addDispatcher("C", dispatcherC);
 
             oven.bake(Recipe.prepare(
                 new TestIngredientA1(),
@@ -104,15 +118,17 @@ describe("Oven", () => {
                 )
             ));
 
-            expect(dispatcher).callCount(3);
-            expect(dispatcher.getCall(0).calledWith("A")).to.equal(true);
-            expect(dispatcher.getCall(1).calledWith("B")).to.equal(true);
-            expect(dispatcher.getCall(2).calledWith("C")).to.equal(true);
+            expect(dispatcherA).callCount(1);
+            expect(dispatcherB).callCount(1);
+            expect(dispatcherC).callCount(1);
         });
 
         it("should call the dispatcher for the same interleaved domains", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "{}");
-            oven.addDispatcher(dispatcher);
+            const dispatcherA = spy((payload: string) => "{}");
+            const dispatcherB = spy((payload: string) => "{}");
+
+            oven.addDispatcher("A", dispatcherA);
+            oven.addDispatcher("B", dispatcherB);
 
             oven.bake(Recipe.prepare(
                 new TestIngredientA1(),
@@ -120,36 +136,40 @@ describe("Oven", () => {
                 new TestIngredientA1()
             ));
 
-            expect(dispatcher).callCount(3);
-            expect(dispatcher.getCall(0).calledWith("A")).to.equal(true);
-            expect(dispatcher.getCall(1).calledWith("B")).to.equal(true);
-            expect(dispatcher.getCall(2).calledWith("A")).to.equal(true);
+            expect(dispatcherA).callCount(2);
+            expect(dispatcherB).callCount(1);
         });
 
         it("should call the dispatcher for a context ingredient", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "{}");
-            oven.addDispatcher(dispatcher);
+            const dispatcher = spy((payload: string) => "{}");
+            oven.addDispatcher("A", dispatcher);
 
             oven.bake(Recipe.context(new TestKeyedIngredientA()));
 
-            expect(dispatcher).to.have.been.calledWith("A");
+            expect(dispatcher).callCount(1);
         });
 
         it("should call the dispatcher for a context ingredient and child with different domain", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => "{}");
-            oven.addDispatcher(dispatcher);
+            const dispatcherA = spy((payload: string) => "{}");
+            const dispatcherB = spy((payload: string) => "{}");
+
+            oven.addDispatcher("A", dispatcherA);
+            oven.addDispatcher("B", dispatcherB);
 
             oven.bake(Recipe.context(new TestKeyedIngredientA(),
                 new TestIngredientB1()
             ));
 
-            expect(dispatcher.getCall(0).calledWith("A")).to.equal(true);
-            expect(dispatcher.getCall(1).calledWith("B")).to.equal(true);
+            expect(dispatcherA).callCount(1);
+            expect(dispatcherB).callCount(1);
         });
 
         it("should propagate the cake to subsequent dispatches", () => {
-            const dispatcher = spy((domain: string | null, payload: string) => `{"foo":"bar"}`);
-            oven.addDispatcher(dispatcher);
+            const dispatcherA = spy((payload: string) => `{"foo":"bar"}`);
+            const dispatcherB = spy((payload: string) => "{}");
+
+            oven.addDispatcher("A", dispatcherA);
+            oven.addDispatcher("B", dispatcherB);
 
             const recipe = Recipe.prepare(
                 new TestIngredientA1(),
@@ -159,8 +179,8 @@ describe("Oven", () => {
 
             oven.bake(recipe);
 
-            expect(dispatcher.getCall(0).calledWith("A", `{"recipe":${JSON.stringify(segments[0].recipe)},"cake":{}}`)).to.equal(true);
-            expect(dispatcher.getCall(1).calledWith("B", `{"recipe":${JSON.stringify(segments[1].recipe)},"cake":{"foo":"bar"}}`)).to.equal(true);
+            expect(dispatcherA.getCall(0).calledWith(`{"recipe":${JSON.stringify(segments[0].recipe)},"cake":{}}`)).to.equal(true);
+            expect(dispatcherB.getCall(0).calledWith(`{"recipe":${JSON.stringify(segments[1].recipe)},"cake":{"foo":"bar"}}`)).to.equal(true);
         });
     });
 });

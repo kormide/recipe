@@ -7,11 +7,12 @@ import com.fasterxml.jackson.databind.jsontype.SubtypeResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.StdSubtypeResolver;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Oven {
-    private List<Dispatcher> dispatchers = new ArrayList<>();
+    private Map<String,Dispatcher> dispatchers = new HashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SubtypeResolver subtypeResolver = new StdSubtypeResolver();
 
@@ -30,10 +31,13 @@ public class Oven {
             List<Recipe.Segment> segments = recipe.segment();
             for (Recipe.Segment segment: segments) {
                 String payload = serializePayload(segment.recipe, cake);
-                for (Dispatcher dispatcher: dispatchers) {
-                    String jsonCake = dispatcher.dispatch(segment.domain, payload);
-                    cake = deserializeCake(jsonCake);
+
+                if (!dispatchers.containsKey(segment.domain)) {
+                    throw new RuntimeException("cannot dispatch ingredient; no dispatcher registered for domain '" + segment.domain + "'");
                 }
+
+                String jsonCake = dispatchers.get(segment.domain).dispatch(payload);
+                cake = deserializeCake(jsonCake);
             }
             return cake;
         }
@@ -42,8 +46,12 @@ public class Oven {
         }
     }
 
-    public void addDispatcher(Dispatcher dispatcher) {
-        dispatchers.add(dispatcher);
+    public void addDispatcher(String domain, Dispatcher dispatcher) {
+        if (dispatchers.containsKey(domain)) {
+            throw new RuntimeException("oven already has a dispatcher for domain '" + domain + "'");
+        }
+
+        dispatchers.put(domain, dispatcher);
     }
 
     private String serializePayload(Recipe recipe, Cake cake) throws JsonProcessingException {
