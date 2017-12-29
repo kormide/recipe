@@ -26,6 +26,12 @@ ingredients:
       - params: ["param2"]
       - params: ["param3"]
 
+  - name: "IngredientWithDefaultRequiredNoInitializers"
+    required:
+      - name: "required"
+        type: "int"
+        default: 5
+
   - name: "IngredientWithOptional"
     optionals:
       - name: "optional"

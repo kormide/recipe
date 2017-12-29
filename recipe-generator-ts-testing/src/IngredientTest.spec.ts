@@ -3,7 +3,7 @@ import {
     EmptyIngredient, IngredientWithOptional, IngredientWithDefaultRequired, IngredientWithRequired, TestEnum,
     IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
-    IngredientWithCompoundOptionalWithOneParam
+    IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers
 } from "../target/ingredients";
 
 describe("generation", () => {
@@ -19,6 +19,10 @@ describe("generation", () => {
         new IngredientWithDefaultRequired("foo");
         new IngredientWithDefaultRequired(false);
         new IngredientWithDefaultRequired(TestEnum.B);
+    });
+
+    it("should generate an ingredient with a required param with a default but no initializers", () => {
+        new IngredientWithDefaultRequiredNoInitializers();
     });
 
     it("should generate an ingredient with an optional param", () => {
@@ -109,8 +113,12 @@ describe("serialization", () => {
         expectJsonEquals(`{"IngredientWithRequired":{"required":"foo"}}`, new IngredientWithRequired("foo"));
     });
 
-    it("should serialize an ingredient with a required params with defaults", () => {
+    it("should serialize an ingredient with required params with defaults", () => {
          expectJsonEquals(`{"IngredientWithDefaultRequired":{"param1":"foobar","param2":false,"param3":"A"}}`, new IngredientWithDefaultRequired(false));
+    });
+
+    it("should serialize an ingredient with a required param with a default but no initializers", () => {
+        expectJsonEquals(`{"IngredientWithDefaultRequiredNoInitializers":{"required":5}}`, new IngredientWithDefaultRequiredNoInitializers());
     });
 
     it("should serialize an ingredient with an optional param", () => {
