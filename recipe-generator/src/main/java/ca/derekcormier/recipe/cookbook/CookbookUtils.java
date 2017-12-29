@@ -42,6 +42,10 @@ public class CookbookUtils {
                 .contains(value);
     }
 
+    public static boolean isPrimitiveType(Type type) {
+        return type instanceof PrimitiveType || type instanceof ArrayType && isPrimitiveType(((ArrayType)type).getBaseType());
+    }
+
     public static ParamType parseType(String type, Cookbook cookbook) {
         if (type.endsWith("...")) {
             Type parsed = _parseType(type.substring(0, type.length() - 3), cookbook);

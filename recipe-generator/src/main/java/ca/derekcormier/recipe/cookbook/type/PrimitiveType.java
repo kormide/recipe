@@ -12,4 +12,9 @@ public class PrimitiveType extends Type {
     public Primitive getPrimitive() {
         return primitive;
     }
+
+    @Override
+    public String name() {
+        return primitive.getAlias();
+    }
 }

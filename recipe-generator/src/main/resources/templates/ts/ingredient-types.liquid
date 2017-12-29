@@ -4,6 +4,41 @@
     {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
 import { {{ superclass}} } from "recipe-ts-runtime";
+{% for type in info.nonPrimitiveTypes -%}
+import { {{ type }} } from "./{{type}}";
+{% endfor %}
 
 export class {{ingredient.name}} extends {{superclass}} {
+    {%- for initializer in ingredient.initializers %}
+    constructor(
+        {%- for param in initializer.params -%}
+            {%- for required in ingredient.required -%}
+                {%- if param == required.name -%}
+                    {%- assign type = required.type | tstype -%}
+                    {%- assign argWithColonAndSpace = param | append: ': ' -%}
+                    {%- assign argument = argWithColonAndSpace | append: type -%}
+                {%- endif -%}
+            {%- endfor -%}
+            {{- argument -}}
+            {%- unless forloop.last -%}, {% endunless -%}
+        {%- endfor -%}
+    );{% endfor %}
+
+    {%- if ingredient.initializers.size == 0 %}
+    constructor();{%- endif %}
+
+    {% for optional in ingredient.optionals %}
+    public with{{optional.name | capitalize}}(
+        {%- if optional.compound != true -%}
+            {%- if optional.type != 'flag' -%}
+            {{ optional | tsparam }}
+            {%- endif -%}
+        {%- else -%}
+            {%- for param in optional.params -%}
+                {{- param | tsparam -}}
+                {%- unless forloop.last -%}, {% endunless -%}
+            {%- endfor -%}
+        {%- endif -%}
+    ): {{ingredient.name}};
+    {% endfor %}
 }

@@ -1,0 +1,6 @@
+{% for ingredient in ingredients %}
+export { {{ingredient.name}} } from "./{{ingredient.name}}"
+{% endfor %}
+{% for enum in enums %}
+export { {{enum.name}} } from "./{{enum.name}}"
+{% endfor %}

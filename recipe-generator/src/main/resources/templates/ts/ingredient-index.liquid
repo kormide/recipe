@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+{% for ingredient in ingredients %}
+var {{ingredient.name}}_ = require("./{{ingredient.name}}");
+exports.{{ingredient.name}} = {{ingredient.name}}_.{{ingredient.name}};
+{% endfor %}
+{% for enum in enums %}
+var {{enum.name}}_ = require("./{{enum.name}}");
+exports.{{enum.name}} = {{enum.name}}_.{{enum.name}};
+{% endfor %}
