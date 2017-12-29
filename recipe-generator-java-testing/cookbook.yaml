@@ -112,6 +112,12 @@ ingredients:
   - name: "KeyedTestIngredient"
     keyed: true
 
+  - name: "IngredientWithStringDefaultContainingQuotes"
+    required:
+      - name: "required"
+        type: "string"
+        default: "\"foo"
+
 enums:
   - name: "TestEnum"
     values:

@@ -3,7 +3,8 @@ import {
     EmptyIngredient, IngredientWithOptional, IngredientWithDefaultRequired, IngredientWithRequired, TestEnum,
     IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
-    IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers
+    IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
+    IngredientWithStringDefaultContainingQuotes
 } from "../target/ingredients";
 
 describe("generation", () => {
@@ -98,6 +99,10 @@ describe("generation", () => {
             .withCompoundOptional(0.0043, true);
     });
 
+    it("should generate and ingredient with a string default containing quotes", () => {
+        new IngredientWithStringDefaultContainingQuotes();
+    });
+
     it("should generate ingredients with the correct domain", () => {
         const ingredient = new AllParamsIngredient();
         expect(ingredient.getDomain()).to.equal("TestDomain");
@@ -163,6 +168,10 @@ describe("serialization", () => {
                 .withVarargArg("foo", "bar")
                 .withVarargArrayArg([1, 2], [3, 4])
         );
+    });
+
+    it("should serialize an ingredient with a string default containing quotes", () => {
+        expectJsonEquals(`{"IngredientWithStringDefaultContainingQuotes":{"required":"\\"foo"}}`, new IngredientWithStringDefaultContainingQuotes());
     });
 });
 
