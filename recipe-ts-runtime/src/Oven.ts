@@ -1,23 +1,28 @@
 import { Cake } from "./Cake";
 import { Recipe } from "./Recipe";
 
-export type Dispatcher = (domain: string | null, payload: string) => string;
+export type Dispatcher = (payload: string) => string;
 
 export class Oven {
-    private readonly dispatchers: Dispatcher[] = [];
+    private readonly dispatchers: {[key: string]: Dispatcher} = {};
 
     public bake(recipe: Recipe): Cake {
         let cake = new Cake();
         for (const segment of recipe.segment()) {
             const payload = `{"recipe":${JSON.stringify(segment.recipe)},"cake":${JSON.stringify(cake)}}`;
-            for (const dispatcher of this.dispatchers) {
-                cake = Cake.fromJson(dispatcher(segment.domain, payload));
+            if (!(segment.domain! in this.dispatchers)) {
+                throw new Error(`cannot dispatch ingredient; no dispatcher registered for domain '${segment.domain}'`);
             }
+            cake = Cake.fromJson(this.dispatchers[segment.domain!](payload));
         }
         return cake;
     }
 
-    public addDispatcher(dispatcher: Dispatcher) {
-        this.dispatchers.push(dispatcher);
+    public addDispatcher(domain: string, dispatcher: Dispatcher) {
+        if (domain in this.dispatchers) {
+            throw new Error(`oven already has a dispatcher for domain '${domain}'`);
+        }
+
+        this.dispatchers[domain] = dispatcher;
     }
 }

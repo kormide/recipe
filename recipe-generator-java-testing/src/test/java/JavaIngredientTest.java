@@ -181,10 +181,10 @@ public class JavaIngredientTest {
 
     @Test
     public void testGeneration_ingredientsHaveCorrectDomain() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRequired("foo")));
 
-        verify(dispatcherSpy).dispatch(eq("TestDomain"), anyString());
+        verify(dispatcherSpy).dispatch(anyString());
     }
 
     @Test
@@ -194,7 +194,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_emptyIngredient() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new EmptyIngredient()));
 
         assertDispatchedJson(payloadJson("{\"EmptyIngredient\":{}}"));
@@ -202,7 +202,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithRequired() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRequired("foobar")));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithRequired\":{\"required\":\"foobar\"}}"));
@@ -210,7 +210,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithDefaultRequired() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithDefaultRequired(false)));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithDefaultRequired\":{\"param1\":\"foobar\",\"param2\":false,\"param3\":\"A\"}}"));
@@ -218,7 +218,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithDefaultRequiredNoInitializers() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithDefaultRequiredNoInitializers()));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithDefaultRequiredNoInitializers\":{\"required\":5}}"));
@@ -226,7 +226,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithOptional() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithOptional().withOptional(true)));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithOptional\":{\"optional\":true}}"));
@@ -234,7 +234,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithRepeatableOptional() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRepeatableOptional()
             .withOptional(true)
             .withOptional(false)
@@ -245,7 +245,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithRepeatableVarargOptional() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRepeatableVarargOptional()
             .withOptional(1, 2)
             .withOptional(3, 4)
@@ -256,7 +256,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithCompoundOptional() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithCompoundOptional().withCompoundOptional(5, false)));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithCompoundOptional\":{\"compoundOptional\":{\"param1\":5,\"param2\":false}}}"));
@@ -264,7 +264,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithRepeatableCompoundOptional() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRepeatableCompoundOptional()
             .withCompoundOptional(5, false)
             .withCompoundOptional(-2, true)
@@ -275,7 +275,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithCompoundOptionalWithOneParam() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithCompoundOptionalWithOneParam().withCompoundOptional(3)));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithCompoundOptionalWithOneParam\":{\"compoundOptional\":{\"param1\":3}}}"));
@@ -283,7 +283,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithRequiredAndOptional() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRequiredAndOptional("foobar").withOptional(true)));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithRequiredAndOptional\":{\"required\":\"foobar\",\"optional\":true}}"));
@@ -291,7 +291,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithAllParamTypes() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(
             new AllParamsIngredient()
                 .withBooleanArg(true)
@@ -312,16 +312,16 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_recipeWithContextButNoIngredientsDoesNotDispatch() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
 
         oven.bake(Recipe.context("foo"));
 
-        verify(dispatcherSpy, never()).dispatch(anyString(), anyString());
+        verify(dispatcherSpy, never()).dispatch(anyString());
     }
 
     @Test
     public void testBake_serialization_recipeWithContextAndChildIngredient() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
 
         oven.bake(Recipe.context("foo",
             new EmptyIngredient()
@@ -332,7 +332,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_recipeWithUnkeyedContextIngredient() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
 
         oven.bake(Recipe.context(new KeyedTestIngredient()));
 
@@ -341,7 +341,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_recipeWithKeyedContextIngredient() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
 
         oven.bake(Recipe.context(new KeyedTestIngredient().keyed("foo")));
 
@@ -350,7 +350,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_recipeContextIngredientAndChild() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
 
         oven.bake(Recipe.context(new KeyedTestIngredient().keyed("foo"),
             new EmptyIngredient()
@@ -362,8 +362,8 @@ public class JavaIngredientTest {
     @Test
     public void testBake_deserializesCake() {
         dispatcherSpy = spy(Dispatcher.class);
-        when(dispatcherSpy.dispatch(anyString(), anyString())).thenReturn("{\"someKey\":\"someValue\"}");
-        oven.addDispatcher(dispatcherSpy);
+        when(dispatcherSpy.dispatch(anyString())).thenReturn("{\"someKey\":\"someValue\"}");
+        oven.addDispatcher("TestDomain", dispatcherSpy);
 
         Cake cake = oven.bake(Recipe.prepare(
             new EmptyIngredient()
@@ -375,16 +375,20 @@ public class JavaIngredientTest {
     @Test
     public void testBake_propagatesCakeUpdatesToSubsequentDispatches() {
         dispatcherSpy = spy(Dispatcher.class);
-        when(dispatcherSpy.dispatch(anyString(), anyString())).thenReturn("{\"someKey\":\"someValue\"}");
-        oven.addDispatcher(dispatcherSpy);
+        when(dispatcherSpy.dispatch(anyString())).thenReturn("{\"someKey\":\"someValue\"}");
+        Dispatcher dispatcherSpyB = spy(Dispatcher.class);
+        when(dispatcherSpyB.dispatch(anyString())).thenReturn("{\"someKey\":\"someValue\"}");
+
+        oven.addDispatcher("TestDomain", dispatcherSpy);
+        oven.addDispatcher("B", dispatcherSpyB);
 
         Cake cake = oven.bake(Recipe.prepare(
             new EmptyIngredient(),
             new DomainBIngredient()
         ));
 
-        verify(dispatcherSpy).dispatch(anyString(), eq(payloadJson("{\"EmptyIngredient\":{}}")));
-        verify(dispatcherSpy).dispatch(anyString(), eq(payloadJsonWithCake("{\"someKey\":\"someValue\"}", "{\"DomainBIngredient\":{}}")));
+        verify(dispatcherSpy).dispatch(eq(payloadJson("{\"EmptyIngredient\":{}}")));
+        verify(dispatcherSpyB).dispatch(eq(payloadJsonWithCake("{\"someKey\":\"someValue\"}", "{\"DomainBIngredient\":{}}")));
 
         assertEquals("someValue", cake.get("someKey"));
     }
@@ -401,15 +405,15 @@ public class JavaIngredientTest {
         }
     }
 
-    private void setupDispatcherSpy() {
+    private void setupDispatcherSpy(String domain) {
         dispatcherSpy = spy(Dispatcher.class);
-        when(dispatcherSpy.dispatch(anyString(), anyString())).thenReturn("{}");
+        when(dispatcherSpy.dispatch(anyString())).thenReturn("{}");
         jsonCaptor = ArgumentCaptor.forClass(String.class);
-        oven.addDispatcher(dispatcherSpy);
+        oven.addDispatcher(domain, dispatcherSpy);
     }
 
     private void assertDispatchedJson(String expected) {
-        verify(dispatcherSpy).dispatch(anyString(), jsonCaptor.capture());
+        verify(dispatcherSpy).dispatch(jsonCaptor.capture());
         assertJsonEquals(expected, jsonCaptor.getValue());
     }
 
