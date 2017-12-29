@@ -20,6 +20,8 @@ public class RecipeGeneratorMojo extends AbstractMojo {
     private String targetDir;
     @Parameter
     private String javaPackage;
+    @Parameter
+    private String ingredientPostfix;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -32,6 +34,11 @@ public class RecipeGeneratorMojo extends AbstractMojo {
         if (null != javaPackage) {
             args.add("--javaPackage");
             args.add(javaPackage);
+        }
+
+        if (null != ingredientPostfix) {
+            args.add("--ingredientPostfix");
+            args.add(ingredientPostfix);
         }
 
         Main.main(args.toArray(new String[args.size()]));

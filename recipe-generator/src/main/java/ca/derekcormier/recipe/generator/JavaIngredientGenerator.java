@@ -18,6 +18,8 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             options.put("javaPackage", "");
         }
 
+        options.putIfAbsent("ingredientPostfix", "");
+
         String javaPackage = (String)options.get("javaPackage");
         if (!javaPackage.isEmpty()) {
             targetDir += "/" + String.join("/", Arrays.asList(javaPackage.split("\\.")));
@@ -30,7 +32,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             data.put("domain", cookbook.getDomain());
             data.put("options", options);
             String rendered = renderTemplate("templates/java/ingredient.liquid", data);
-            String filepath = directory + File.separator + ingredient.getName() + ".java";
+            String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".java";
             writeToFile(filepath, rendered);
         }
 

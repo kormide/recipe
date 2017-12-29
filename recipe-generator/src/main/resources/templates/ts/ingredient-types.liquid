@@ -3,12 +3,13 @@
 {%- else -%}
     {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
+{%- assign ingredientName = ingredient.name | append:options.ingredientPostfix -%}
 import { {{ superclass}} } from "recipe-ts-runtime";
 {% for type in info.nonPrimitiveTypes -%}
 import { {{ type }} } from "./{{type}}";
 {% endfor %}
 
-export class {{ingredient.name}} extends {{superclass}} {
+export class {{ingredientName}} extends {{superclass}} {
     {%- for initializer in ingredient.initializers %}
     constructor(
         {%- for param in initializer.params -%}
@@ -39,6 +40,6 @@ export class {{ingredient.name}} extends {{superclass}} {
                 {%- unless forloop.last -%}, {% endunless -%}
             {%- endfor -%}
         {%- endif -%}
-    ): {{ingredient.name}};
+    ): {{ingredientName}};
     {% endfor %}
 }

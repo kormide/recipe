@@ -6,15 +6,16 @@
 {%- if options.javaPackage != "" -%}
 package {{options.javaPackage}};
 {% endif %}
+{%- assign ingredientName = ingredient.name | append:options.ingredientPostfix -%}
 
 import ca.derekcormier.recipe.{{superclass}};
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class {{ingredient.name}} extends {{superclass}} {
+public class {{ingredientName}} extends {{superclass}} {
     {%- for initializer in ingredient.initializers %}
-    public {{ingredient.name}}(
+    public {{ingredientName}}(
         {%- for param in initializer.params -%}
             {%- for required in ingredient.required -%}
                 {%- if param == required.name -%}
@@ -38,7 +39,7 @@ public class {{ingredient.name}} extends {{superclass}} {
     }{% endfor %}
 
     {% if ingredient.initializers.size == 0 %}
-    public {{ingredient.name}}() {
+    public {{ingredientName}}() {
         super("{{ingredient.name}}", "{{domain}}");
     {%- for required in ingredient.required %}
         setRequired("{{required.name}}", {{required.default | javavalue:required.type}});
@@ -46,7 +47,7 @@ public class {{ingredient.name}} extends {{superclass}} {
     }{% endif %}
 
     {%- for optional in ingredient.optionals %}
-    public {{ingredient.name}} with{{optional.name | capitalize}}(
+    public {{ingredientName}} with{{optional.name | capitalize}}(
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' -%}
             {{optional.type | javatype}} {{optional.name}}

@@ -1,0 +1,9 @@
+domain: "Postfix"
+ingredients:
+  - name: "PostfixIngredient"
+enums:
+  - name: "PostfixEnum"
+    values:
+      - "A"
+      - "B"
+      - "C"

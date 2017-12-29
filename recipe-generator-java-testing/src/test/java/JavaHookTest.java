@@ -204,6 +204,12 @@ public class JavaHookTest {
     }
 
     @Test
+    public void testGeneration_doesNotAddIngredientPostfixToHook() {
+        new PostfixIngredientData();
+        Class c = AbstractPostfixIngredientHook.class;
+    }
+
+    @Test
     public void testBake_deserialization_emptyIngredient() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();
