@@ -329,7 +329,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testBake_serialization_ingredientWithStringDefaultContainingQuotes() {
-        setupDispatcherSpy();
+        setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(
             new IngredientWithStringDefaultContainingQuotes()
         ));
