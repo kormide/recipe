@@ -1,27 +1,26 @@
 {
   "name": "recipe-ts-runtime",
-  "version": "0.1.5",
+  "version": "0.0.0",
   "description": "TypeScript run-time library for the Recipe framework",
   "author": "Derek Cormier",
   "homepage": "https://github.com/kormide/recipe",
   "license": "MIT",
-
   "keywords": [
     "recipe",
     "ingredient",
     "integration",
     "testing"
   ],
-
   "repository": {
     "type": "git",
     "url": "https://github.com/kormide/recipe"
   },
   "private": false,
-
   "main": "target/dist/index.js",
   "types": "target/dist/index.d.ts",
-
+  "files": [
+    "target/dist/"
+  ],
   "devDependencies": {
     "@types/chai": "4.0.10",
     "@types/mocha": "2.2.44",

@@ -1,9 +1,0 @@
-node_modules/
-src/
-target/node/
-tsconfig.json
-tsconfig-all.json
-tslint.json
-yarn.lock
-pom.xml
-recipe-ts-runtime.iml

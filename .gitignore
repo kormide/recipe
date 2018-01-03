@@ -1,8 +1,8 @@
 .DS_STORE
 .idea
+target/
 */target/*
 *.swp
 *.iml
 */node_modules/*
 */yarn-error.log
-*/pom.xml.versionsBackup

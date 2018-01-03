@@ -12,6 +12,10 @@
     <name>Recipe Generator TypeScript Testing</name>
     <artifactId>recipe-generator-ts-testing</artifactId>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>ca.derekcormier.recipe</groupId>
