@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.lang.model.SourceVersion;
+
 public class CookbookLoader {
     public Cookbook load(InputStream ingredients) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -39,6 +41,8 @@ public class CookbookLoader {
         validateInitializerSignaturesUnique(cookbook);
         validateRequiredHaveDefaultOrAppearInAllInitializers(cookbook);
         validateVaragParamsAppearLastInParamLists(cookbook);
+        validateKeyConstantNames(cookbook);
+        validateNoDuplicateKeyConstants(cookbook);
     }
 
     private void validateEnums(Cookbook cookbook) {
@@ -138,6 +142,28 @@ public class CookbookLoader {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void validateKeyConstantNames(Cookbook cookbook) {
+        for (Ingredient ingredient: cookbook.getIngredients()) {
+            for (String keyConstant: ingredient.getKeyConstants()) {
+                if (keyConstant == null || keyConstant.equals("") || !SourceVersion.isName(keyConstant)) {
+                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has invalid constant");
+                }
+            }
+        }
+    }
+
+    private void validateNoDuplicateKeyConstants(Cookbook cookbook) {
+        for (Ingredient ingredient: cookbook.getIngredients()) {
+            Set<String> used = new HashSet<>();
+            for (String keyConstant: ingredient.getKeyConstants()) {
+                if (used.contains(keyConstant)) {
+                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has duplicate key constant '" + keyConstant + "'");
+                }
+                used.add(keyConstant);
             }
         }
     }

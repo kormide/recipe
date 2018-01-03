@@ -477,6 +477,7 @@ public class CookbookLoaderTest {
             "domain: 'Domain'",
             "ingredients:",
             "  - name: 'fooIngredient'",
+            "    keyConstants: ['KEY_A', 'KEY_B']",
             "    keyed: true",
             "    required:",
             "      - name: 'requiredField'",
@@ -512,6 +513,9 @@ public class CookbookLoaderTest {
         assertEquals("Domain", cookbook.getDomain());
         assertEquals(1, cookbook.getIngredients().size());
         assertEquals("fooIngredient", cookbook.getIngredients().get(0).getName());
+        assertEquals(2, cookbook.getIngredients().get(0).getKeyConstants().size());
+        assertEquals("KEY_A", cookbook.getIngredients().get(0).getKeyConstants().get(0));
+        assertEquals("KEY_B", cookbook.getIngredients().get(0).getKeyConstants().get(1));
         assertTrue(cookbook.getIngredients().get(0).isKeyed());
         assertEquals(1, cookbook.getIngredients().get(0).getRequired().size());
         assertEquals("requiredField", cookbook.getIngredients().get(0).getRequired().get(0).getName());
@@ -894,6 +898,50 @@ public class CookbookLoaderTest {
             "    optionals:",
             "      - name: 'foo'",
             "        type: 'boolean'"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnEmptyKeyConstant() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyConstants: ['']"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnNullKeyConstant() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyConstants: [null]"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnInvalidVariableNameKeyConstant() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyConstants: ['12foo']"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnDuplicateKeyConstant() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyConstants: ['A','A']"
         );
 
         loader.load(toStream(yaml));

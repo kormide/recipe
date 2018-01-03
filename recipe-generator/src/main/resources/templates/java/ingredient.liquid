@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class {{ingredientName}} extends {{superclass}} {
+    {%- for keyConstant in ingredient.keyConstants %}
+    public static String {{keyConstant}} = "{{keyConstant}}";
+    {% endfor %}
+
     {%- for initializer in ingredient.initializers %}
     public {{ingredientName}}(
         {%- for param in initializer.params -%}

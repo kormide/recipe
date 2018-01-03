@@ -73,5 +73,7 @@ class {{ingredientName}} extends {{superclass}} {
     }
     {% endfor %}
 }
-
+{% for keyConstant in ingredient.keyConstants %}
+{{ingredientName}}.{{keyConstant}} = "{{keyConstant}}";
+{% endfor %}
 exports.{{ingredientName}} = {{ingredientName}};
