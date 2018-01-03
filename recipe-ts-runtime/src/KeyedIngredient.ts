@@ -19,7 +19,7 @@ export class KeyedIngredient extends Ingredient {
     public toJSON() {
         const jsonObj = super.toJSON();
         if (this.key) {
-            jsonObj[this.getType()].key = this.key;
+            jsonObj[this.getIngredientType()].key = this.key;
         }
 
         return jsonObj;

@@ -59,8 +59,8 @@ describe("Recipe", () => {
             expect(segments.length).to.equal(1);
             expect(segments[0].domain).to.equal("A");
             expect(segments[0].recipe.getIngredients().length).to.equal(2);
-            expect(segments[0].recipe.getIngredients()[0].getType()).to.equal("TestIngredientA1");
-            expect(segments[0].recipe.getIngredients()[1].getType()).to.equal("TestIngredientA2");
+            expect(segments[0].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientA1");
+            expect(segments[0].recipe.getIngredients()[1].getIngredientType()).to.equal("TestIngredientA2");
         });
 
         it("should create two segments for two ingredients in different domains", () => {
@@ -73,8 +73,8 @@ describe("Recipe", () => {
             expect(segments[0].recipe.getIngredients().length).to.equal(1);
             expect(segments[1].domain).to.equal("B");
             expect(segments[1].recipe.getIngredients().length).to.equal(1);
-            expect(segments[0].recipe.getIngredients()[0].getType()).to.equal("TestIngredientA1");
-            expect(segments[1].recipe.getIngredients()[0].getType()).to.equal("TestIngredientB1");
+            expect(segments[0].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientA1");
+            expect(segments[1].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientB1");
         });
 
         it("should preserve nested recipe structure", () => {
@@ -91,10 +91,10 @@ describe("Recipe", () => {
             expect(segments.length).to.equal(1);
             expect(segments[0].domain).to.equal("A");
             expect(segments[0].recipe.getIngredients().length).to.equal(3);
-            expect(segments[0].recipe.getIngredients()[0].getType()).to.equal("TestIngredientA1");
-            expect(segments[0].recipe.getIngredients()[1].getType()).to.equal("TestIngredientA2");
-            expect(segments[0].recipe.getIngredients()[2].getType()).to.equal("Recipe");
-            expect((<Recipe>segments[0].recipe.getIngredients()[2]).getIngredients()[0].getType()).to.equal("TestIngredientA3");
+            expect(segments[0].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientA1");
+            expect(segments[0].recipe.getIngredients()[1].getIngredientType()).to.equal("TestIngredientA2");
+            expect(segments[0].recipe.getIngredients()[2].getIngredientType()).to.equal("Recipe");
+            expect((<Recipe>segments[0].recipe.getIngredients()[2]).getIngredients()[0].getIngredientType()).to.equal("TestIngredientA3");
         });
 
         it("should preserve recipe contexts", () => {
@@ -111,11 +111,11 @@ describe("Recipe", () => {
             expect(segments.length).to.equal(1);
             expect(segments[0].domain).to.equal("A");
             expect(segments[0].recipe.getIngredients().length).to.equal(3);
-            expect(segments[0].recipe.getIngredients()[0].getType()).to.equal("TestIngredientA1");
-            expect(segments[0].recipe.getIngredients()[1].getType()).to.equal("TestIngredientA2");
-            expect(segments[0].recipe.getIngredients()[2].getType()).to.equal("Recipe");
+            expect(segments[0].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientA1");
+            expect(segments[0].recipe.getIngredients()[1].getIngredientType()).to.equal("TestIngredientA2");
+            expect(segments[0].recipe.getIngredients()[2].getIngredientType()).to.equal("Recipe");
             expect((<Recipe>segments[0].recipe.getIngredients()[2]).getContext()).to.equal("context");
-            expect((<Recipe>segments[0].recipe.getIngredients()[2]).getIngredients()[0].getType()).to.equal("TestIngredientA3");
+            expect((<Recipe>segments[0].recipe.getIngredients()[2]).getIngredients()[0].getIngredientType()).to.equal("TestIngredientA3");
         });
 
         it("should segment nested recipes with ingredients in different domains", () => {
@@ -132,13 +132,13 @@ describe("Recipe", () => {
             expect(segments.length).to.equal(2);
             expect(segments[0].domain).to.equal("A");
             expect(segments[0].recipe.getIngredients().length).to.equal(2);
-            expect(segments[0].recipe.getIngredients()[0].getType()).to.equal("TestIngredientA1");
-            expect(segments[0].recipe.getIngredients()[1].getType()).to.equal("TestIngredientA2");
+            expect(segments[0].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientA1");
+            expect(segments[0].recipe.getIngredients()[1].getIngredientType()).to.equal("TestIngredientA2");
             expect(segments[1].domain).to.equal("B");
             expect(segments[1].recipe.getIngredients().length).to.equal(1);
-            expect(segments[1].recipe.getIngredients()[0].getType()).to.equal("Recipe");
+            expect(segments[1].recipe.getIngredients()[0].getIngredientType()).to.equal("Recipe");
             expect((<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients().length).to.equal(1);
-            expect((<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0].getType()).to.equal("TestIngredientB1");
+            expect((<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0].getIngredientType()).to.equal("TestIngredientB1");
         });
 
         it("should preserve recipe contexts for nested recipes with different domains", () => {
@@ -157,17 +157,17 @@ describe("Recipe", () => {
             expect(segments[0].domain).to.equal("A");
             expect(segments[0].recipe.getContext()).to.equal("foo");
             expect(segments[0].recipe.getIngredients().length).to.equal(1);
-            expect(segments[0].recipe.getIngredients()[0].getType()).to.equal("TestIngredientA1");
+            expect(segments[0].recipe.getIngredients()[0].getIngredientType()).to.equal("TestIngredientA1");
             expect(segments[1].recipe.getContext()).to.equal("foo");
             expect(segments[1].recipe.getIngredients().length).to.equal(1);
             expect(segments[1].domain).to.equal("B");
-            expect(segments[1].recipe.getIngredients()[0].getType()).to.equal("Recipe");
+            expect(segments[1].recipe.getIngredients()[0].getIngredientType()).to.equal("Recipe");
             expect((<Recipe>segments[1].recipe.getIngredients()[0]).getContext()).to.equal(null);
             expect((<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients().length).to.equal(1);
-            expect((<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0].getType()).to.equal("Recipe");
+            expect((<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0].getIngredientType()).to.equal("Recipe");
             expect((<Recipe>(<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0]).getContext()).to.equal("bar");
             expect((<Recipe>(<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0]).getIngredients().length).to.equal(1);
-            expect((<Recipe>(<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0]).getIngredients()[0].getType()).to.equal("TestIngredientB1");
+            expect((<Recipe>(<Recipe>segments[1].recipe.getIngredients()[0]).getIngredients()[0]).getIngredients()[0].getIngredientType()).to.equal("TestIngredientB1");
         });
 
         it("should create more than two segments when there are two domains in non-contiguous order", () => {

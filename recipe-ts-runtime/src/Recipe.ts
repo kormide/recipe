@@ -120,13 +120,13 @@ export class Recipe extends Ingredient {
 
     public toJSON() {
         const jsonObj = super.toJSON();
-        jsonObj[this.getType()].ingredients = this.ingredients;
+        jsonObj[this.getIngredientType()].ingredients = this.ingredients;
 
         if (this.context) {
-            jsonObj[this.getType()].context = this.context;
+            jsonObj[this.getIngredientType()].context = this.context;
         }
         else if (this.contextIngredient) {
-            jsonObj[this.getType()].contextIngredient = this.contextIngredient.toJSON();
+            jsonObj[this.getIngredientType()].contextIngredient = this.contextIngredient.toJSON();
         }
 
         return jsonObj;

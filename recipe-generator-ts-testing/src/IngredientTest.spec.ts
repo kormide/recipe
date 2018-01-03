@@ -115,7 +115,7 @@ describe("generation", () => {
 
     it("should not include an ingredient postfix in the type", () => {
         const ingredient = new PostfixIngredientFoo();
-        expect(ingredient.getType()).to.equal("PostfixIngredient");
+        expect(ingredient.getIngredientType()).to.equal("PostfixIngredient");
     });
 
     it("should generate key constants", () => {

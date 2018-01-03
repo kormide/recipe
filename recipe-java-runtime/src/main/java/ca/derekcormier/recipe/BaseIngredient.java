@@ -16,25 +16,25 @@ public abstract class BaseIngredient {
     private final Map<String,Object> properties = new HashMap<>();
 
     @JsonIgnore
-    private final String type;
+    private final String ingredientType;
     @JsonIgnore
     private final String domain;
 
-    public BaseIngredient(String type, String domain) {
-        this.type = type;
+    public BaseIngredient(String ingredientType, String domain) {
+        this.ingredientType = ingredientType;
         this.domain = domain;
     }
 
-    public BaseIngredient(String type) {
-        this(type, "");
+    public BaseIngredient(String ingredientType) {
+        this(ingredientType, "");
     }
 
     public String getDomain() {
         return domain;
     }
 
-    public String getType() {
-        return type;
+    public String getIngredientType() {
+        return ingredientType;
     }
 
     @JsonAnySetter

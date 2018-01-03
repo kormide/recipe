@@ -62,7 +62,7 @@ public class BackendOven {
             }
         }
         else {
-            hooks.get(ingredient.getType()).bake(ingredient, cake);
+            hooks.get(ingredient.getIngredientType()).bake(ingredient, cake);
         }
     }
 }

@@ -1,18 +1,18 @@
 export abstract class Ingredient {
     protected readonly properties: Map<string,any> = new Map();
-    private readonly type: string;
+    private readonly ingredientType: string;
     private readonly domain: string | null;
 
     protected constructor(
         type: string,
         domain?: string
     ) {
-        this.type = type;
+        this.ingredientType = type;
         this.domain = domain ? domain : null;
     }
 
-    public getType(): string {
-        return this.type;
+    public getIngredientType(): string {
+        return this.ingredientType;
     }
 
     public getDomain(): string | null {
@@ -65,10 +65,10 @@ export abstract class Ingredient {
 
     public toJSON() {
         const jsonObj: any = {};
-        jsonObj[this.type] = this.properties;
+        jsonObj[this.ingredientType] = this.properties;
 
         for (const entry of this.properties) {
-            jsonObj[this.type][entry[0]] = entry[1];
+            jsonObj[this.ingredientType][entry[0]] = entry[1];
         }
 
         return jsonObj;
