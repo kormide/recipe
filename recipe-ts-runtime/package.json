@@ -1,6 +1,6 @@
 {
   "name": "recipe-ts-runtime",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "TypeScript run-time library for the Recipe framework",
   "author": "Derek Cormier",
   "homepage": "https://github.com/kormide/recipe",
