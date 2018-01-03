@@ -39,8 +39,8 @@ public class RecipeTest {
         assertEquals(1, segments.size());
         assertEquals("A", segments.get(0).domain);
         assertEquals(2, segments.get(0).recipe.getIngredients().size());
-        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getType());
-        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getType());
+        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getIngredientType());
+        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getIngredientType());
     }
 
     @Test
@@ -56,8 +56,8 @@ public class RecipeTest {
         assertEquals("A", segments.get(0).domain);
         assertEquals(1, segments.get(1).recipe.getIngredients().size());
         assertEquals("B", segments.get(1).domain);
-        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getType());
-        assertEquals("TestIngredient2", segments.get(1).recipe.getIngredients().get(0).getType());
+        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getIngredientType());
+        assertEquals("TestIngredient2", segments.get(1).recipe.getIngredients().get(0).getIngredientType());
     }
 
     @Test
@@ -78,10 +78,10 @@ public class RecipeTest {
         assertEquals(1, segments.size());
         assertEquals("A", segments.get(0).domain);
         assertEquals(3, segments.get(0).recipe.getIngredients().size());
-        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getType());
-        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getType());
-        assertEquals("Recipe", segments.get(0).recipe.getIngredients().get(2).getType());
-        assertEquals("TestIngredient3", ((Recipe)segments.get(0).recipe.getIngredients().get(2)).getIngredients().get(0).getType());
+        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getIngredientType());
+        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getIngredientType());
+        assertEquals("Recipe", segments.get(0).recipe.getIngredients().get(2).getIngredientType());
+        assertEquals("TestIngredient3", ((Recipe)segments.get(0).recipe.getIngredients().get(2)).getIngredients().get(0).getIngredientType());
     }
 
     @Test
@@ -102,11 +102,11 @@ public class RecipeTest {
         assertEquals(1, segments.size());
         assertEquals("A", segments.get(0).domain);
         assertEquals(3, segments.get(0).recipe.getIngredients().size());
-        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getType());
-        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getType());
-        assertEquals("Recipe", segments.get(0).recipe.getIngredients().get(2).getType());
+        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getIngredientType());
+        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getIngredientType());
+        assertEquals("Recipe", segments.get(0).recipe.getIngredients().get(2).getIngredientType());
         assertEquals("context", ((Recipe)segments.get(0).recipe.getIngredients().get(2)).getContext());
-        assertEquals("TestIngredient3", ((Recipe)segments.get(0).recipe.getIngredients().get(2)).getIngredients().get(0).getType());
+        assertEquals("TestIngredient3", ((Recipe)segments.get(0).recipe.getIngredients().get(2)).getIngredients().get(0).getIngredientType());
     }
 
     @Test
@@ -127,13 +127,13 @@ public class RecipeTest {
         assertEquals(2, segments.size());
         assertEquals(2, segments.get(0).recipe.getIngredients().size());
         assertEquals("A", segments.get(0).domain);
-        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getType());
-        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getType());
+        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getIngredientType());
+        assertEquals("TestIngredient2", segments.get(0).recipe.getIngredients().get(1).getIngredientType());
         assertEquals(1, segments.get(1).recipe.getIngredients().size());
         assertEquals("B", segments.get(1).domain);
-        assertEquals("Recipe", segments.get(1).recipe.getIngredients().get(0).getType());
+        assertEquals("Recipe", segments.get(1).recipe.getIngredients().get(0).getIngredientType());
         assertEquals(1, ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().size());
-        assertEquals("TestIngredient3", ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0).getType());
+        assertEquals("TestIngredient3", ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0).getIngredientType());
     }
 
     @Test
@@ -155,17 +155,17 @@ public class RecipeTest {
         assertEquals("foo", segments.get(0).recipe.getContext());
         assertEquals(1, segments.get(0).recipe.getIngredients().size());
         assertEquals("A", segments.get(0).domain);
-        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getType());
+        assertEquals("TestIngredient1", segments.get(0).recipe.getIngredients().get(0).getIngredientType());
         assertEquals("foo", segments.get(1).recipe.getContext());
         assertEquals(1, segments.get(1).recipe.getIngredients().size());
         assertEquals("B", segments.get(1).domain);
-        assertEquals("Recipe", segments.get(1).recipe.getIngredients().get(0).getType());
+        assertEquals("Recipe", segments.get(1).recipe.getIngredients().get(0).getIngredientType());
         assertEquals(null, ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getContext());
         assertEquals(1, ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().size());
-        assertEquals("Recipe", ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0).getType());
+        assertEquals("Recipe", ((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0).getIngredientType());
         assertEquals("bar", ((Recipe)((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0)).getContext());
         assertEquals(1, ((Recipe)((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0)).getIngredients().size());
-        assertEquals("TestIngredient2", ((Recipe)((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0)).getIngredients().get(0).getType());
+        assertEquals("TestIngredient2", ((Recipe)((Recipe)segments.get(1).recipe.getIngredients().get(0)).getIngredients().get(0)).getIngredients().get(0).getIngredientType());
     }
 
     @Test

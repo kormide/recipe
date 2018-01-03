@@ -207,7 +207,7 @@ public class JavaIngredientTest {
     @Test
     public void testGeneration_ingredientWithPostfixDoesNotIncludePostfixInType() {
         PostfixIngredientFoo ingredient = new PostfixIngredientFoo();
-        assertEquals("PostfixIngredient", ingredient.getType());
+        assertEquals("PostfixIngredient", ingredient.getIngredientType());
     }
 
     @Test
