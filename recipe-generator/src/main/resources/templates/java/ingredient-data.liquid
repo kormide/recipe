@@ -15,7 +15,7 @@ public class {{dataClassName}} extends {{superclass}} {
     }
 
     {%- for required in ingredient.required %}
-    public {{required.type | javatype:true}} get{{required.name | capitalize}}() {
+    public {{required.type | javatype:true}} {% if required.type != 'boolean' %}get{% else %}is{% endif %}{{required.name | capitalize}}() {
         return getProperty("{{required.name}}");
     }
     public void set{{required.name | capitalize}}({{required.type | javatype}} {{required.name}}) {
@@ -27,7 +27,7 @@ public class {{dataClassName}} extends {{superclass}} {
         return hasProperty("{{optional.name}}");
     }
         {%- if optional.compound != true %}
-    public {{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
+    public {{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {% if optional.type != 'boolean' and optional.type != 'flag' %}get{% else %}is{% endif %}{{optional.name | capitalize}}() {
         return getProperty("{{optional.name}}");
     }
     private void set{{optional.name | capitalize}}({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
