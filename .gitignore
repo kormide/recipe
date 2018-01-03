@@ -1,5 +1,6 @@
 .DS_STORE
 .idea
+target/
 */target/*
 *.swp
 *.iml

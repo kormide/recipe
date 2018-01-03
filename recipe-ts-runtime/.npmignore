@@ -7,3 +7,7 @@ tslint.json
 yarn.lock
 pom.xml
 recipe-ts-runtime.iml
+recipe-ts-runtime-*.tgz
+pom.xml.versionsBackup
+target/maven-archiver
+target/*.jar
