@@ -85,10 +85,10 @@ public class JavaHookTest {
         new IngredientWithRequiredAndOptionalData();
 
         IngredientWithRequiredAndOptionalData.class.getMethod("getRequired");
-        IngredientWithRequiredAndOptionalData.class.getMethod("getOptional");
+        IngredientWithRequiredAndOptionalData.class.getMethod("isOptional");
         IngredientWithRequiredAndOptionalData.class.getMethod("hasOptional");
         assertEquals(String.class, IngredientWithRequiredAndOptionalData.class.getMethod("getRequired").getReturnType());
-        assertEquals(boolean.class, IngredientWithRequiredAndOptionalData.class.getMethod("getOptional").getReturnType());
+        assertEquals(boolean.class, IngredientWithRequiredAndOptionalData.class.getMethod("isOptional").getReturnType());
         assertEquals(boolean.class, IngredientWithRequiredAndOptionalData.class.getMethod("hasOptional").getReturnType());
     }
 
@@ -96,8 +96,8 @@ public class JavaHookTest {
     public void testGeneration_ingredientWithRepeatableOptionalData() throws NoSuchMethodException {
         new IngredientWithRepeatableOptionalData();
 
-        IngredientWithRepeatableOptionalData.class.getMethod("getOptional");
-        assertEquals(boolean[].class, IngredientWithRepeatableOptionalData.class.getMethod("getOptional").getReturnType());
+        IngredientWithRepeatableOptionalData.class.getMethod("isOptional");
+        assertEquals(boolean[].class, IngredientWithRepeatableOptionalData.class.getMethod("isOptional").getReturnType());
     }
 
     @Test
@@ -157,15 +157,15 @@ public class JavaHookTest {
     @Test
     public void testGeneration_ingredientDataWithBooleanParam() throws NoSuchMethodException {
         new AllParamsIngredientData();
-        AllParamsIngredientData.class.getMethod("getBooleanArg");
-        assertEquals(boolean.class, AllParamsIngredientData.class.getMethod("getBooleanArg").getReturnType());
+        AllParamsIngredientData.class.getMethod("isBooleanArg");
+        assertEquals(boolean.class, AllParamsIngredientData.class.getMethod("isBooleanArg").getReturnType());
     }
 
     @Test
     public void testGeneration_ingredientDataWithFlagParam() throws NoSuchMethodException {
         new AllParamsIngredientData();
-        AllParamsIngredientData.class.getMethod("getFlagArg");
-        assertEquals(boolean.class, AllParamsIngredientData.class.getMethod("getFlagArg").getReturnType());
+        AllParamsIngredientData.class.getMethod("isFlagArg");
+        assertEquals(boolean.class, AllParamsIngredientData.class.getMethod("isFlagArg").getReturnType());
     }
 
     @Test
@@ -264,7 +264,7 @@ public class JavaHookTest {
             @Override
             public void bake(IngredientWithRequiredAndOptionalData data, Cake cake) {
                 assertEquals("foobar", data.getRequired());
-                assertEquals(true, data.getOptional());
+                assertEquals(true, data.isOptional());
                 spy.run();
             }
         });
@@ -281,7 +281,7 @@ public class JavaHookTest {
             @Override
             public void bake(IngredientWithOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
-                assertEquals(true, data.getOptional());
+                assertEquals(true, data.isOptional());
                 spy.run();
             }
         });
@@ -314,7 +314,7 @@ public class JavaHookTest {
             @Override
             public void bake(IngredientWithRepeatableOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
-                assertArrayEquals(new boolean[]{true}, data.getOptional());
+                assertArrayEquals(new boolean[]{true}, data.isOptional());
                 spy.run();
             }
         });
@@ -331,7 +331,7 @@ public class JavaHookTest {
             @Override
             public void bake(IngredientWithRepeatableOptionalData data, Cake cake) {
                 assertTrue(data.hasOptional());
-                assertArrayEquals(new boolean[]{true, false, true}, data.getOptional());
+                assertArrayEquals(new boolean[]{true, false, true}, data.isOptional());
                 spy.run();
             }
         });
@@ -532,7 +532,7 @@ public class JavaHookTest {
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
             public void bake(AllParamsIngredientData data, Cake cake) {
-                assertEquals(true, data.getBooleanArg());
+                assertEquals(true, data.isBooleanArg());
                 spy.run();
             }
         });
@@ -548,7 +548,7 @@ public class JavaHookTest {
         oven.registerHook(new AbstractAllParamsIngredientHook() {
             @Override
             public void bake(AllParamsIngredientData data, Cake cake) {
-                assertEquals(false, data.getFlagArg());
+                assertEquals(false, data.isFlagArg());
                 spy.run();
             }
         });
