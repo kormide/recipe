@@ -15,6 +15,7 @@ import testdomain.hooks.AbstractAllParamsIngredientHook;
 import testdomain.hooks.AbstractEmptyIngredientHook;
 import testdomain.hooks.AbstractIngredientWithCompoundOptionalHook;
 import testdomain.hooks.AbstractIngredientWithDefaultRequiredNoInitializersHook;
+import testdomain.hooks.AbstractIngredientWithKeyConstantHook;
 import testdomain.hooks.AbstractIngredientWithOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableCompoundOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableOptionalHook;
@@ -213,7 +214,7 @@ public class JavaHookTest {
 
     @Test
     public void testGeneration_generatesKeyConstants() {
-        assertEquals("KEY_A", IngredientWithKeyConstant.KEY_A);
+        assertEquals("KEY_A", AbstractIngredientWithKeyConstantHook.KEY_A);
     }
 
     @Test

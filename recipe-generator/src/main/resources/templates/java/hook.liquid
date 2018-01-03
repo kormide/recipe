@@ -11,6 +11,9 @@ import ca.derekcormier.recipe.Cake;
 {%- assign dataClassName = ingredient.name | append: 'Data' -%}
 
 public abstract class {{className}} extends BaseIngredientHook<{{dataClassName}}> {
+    {%- for keyConstant in ingredient.keyConstants %}
+    public static String {{keyConstant}} = "{{keyConstant}}";
+    {% endfor %}
     public {{className}}() {
         super("{{ingredient.name}}", {{dataClassName}}.class);
     }
