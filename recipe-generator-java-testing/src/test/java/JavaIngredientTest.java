@@ -28,6 +28,7 @@ import testdomain.ingredients.IngredientWithCompoundOptional;
 import testdomain.ingredients.IngredientWithCompoundOptionalWithOneParam;
 import testdomain.ingredients.IngredientWithDefaultRequired;
 import testdomain.ingredients.IngredientWithDefaultRequiredNoInitializers;
+import testdomain.ingredients.IngredientWithKeyConstant;
 import testdomain.ingredients.IngredientWithOptional;
 import testdomain.ingredients.IngredientWithRepeatableCompoundOptional;
 import testdomain.ingredients.IngredientWithRepeatableOptional;
@@ -207,6 +208,11 @@ public class JavaIngredientTest {
     public void testGeneration_ingredientWithPostfixDoesNotIncludePostfixInType() {
         PostfixIngredientFoo ingredient = new PostfixIngredientFoo();
         assertEquals("PostfixIngredient", ingredient.getType());
+    }
+
+    @Test
+    public void testGeneration_generatesKeyConstants() {
+        assertEquals("KEY_A", IngredientWithKeyConstant.KEY_A);
     }
 
     @Test

@@ -27,6 +27,7 @@ import testdomain.hooks.AllParamsIngredientData;
 import testdomain.hooks.EmptyIngredientData;
 import testdomain.hooks.IngredientWithCompoundOptionalData;
 import testdomain.hooks.IngredientWithDefaultRequiredNoInitializersData;
+import testdomain.hooks.IngredientWithKeyConstantData;
 import testdomain.hooks.IngredientWithOptionalData;
 import testdomain.hooks.IngredientWithRepeatableCompoundOptionalData;
 import testdomain.hooks.IngredientWithRepeatableOptionalData;
@@ -36,6 +37,7 @@ import testdomain.hooks.IngredientWithRequiredData;
 import testdomain.hooks.IngredientWithStringDefaultContainingQuotesData;
 import testdomain.hooks.KeyedTestIngredientData;
 import testdomain.hooks.TestEnum;
+import testdomain.ingredients.IngredientWithKeyConstant;
 
 public class JavaHookTest {
     @Test
@@ -207,6 +209,11 @@ public class JavaHookTest {
     public void testGeneration_doesNotAddIngredientPostfixToHook() {
         new PostfixIngredientData();
         Class c = AbstractPostfixIngredientHook.class;
+    }
+
+    @Test
+    public void testGeneration_generatesKeyConstants() {
+        assertEquals("KEY_A", IngredientWithKeyConstant.KEY_A);
     }
 
     @Test

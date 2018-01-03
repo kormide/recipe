@@ -4,7 +4,7 @@ import {
     IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
     IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
-    IngredientWithStringDefaultContainingQuotes
+    IngredientWithStringDefaultContainingQuotes, IngredientWithKeyConstant
 } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
@@ -116,6 +116,10 @@ describe("generation", () => {
     it("should not include an ingredient postfix in the type", () => {
         const ingredient = new PostfixIngredientFoo();
         expect(ingredient.getType()).to.equal("PostfixIngredient");
+    });
+
+    it("should generate key constants", () => {
+        expect(IngredientWithKeyConstant.KEY_A).to.equal("KEY_A");
     });
 });
 

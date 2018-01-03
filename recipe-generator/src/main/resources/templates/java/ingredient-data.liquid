@@ -10,6 +10,10 @@ package {{options.javaPackage}};
 import ca.derekcormier.recipe.{{superclass}};
 
 public class {{dataClassName}} extends {{superclass}} {
+    {%- for keyConstant in ingredient.keyConstants %}
+    public static String {{keyConstant}} = "{{keyConstant}}";
+    {% endfor %}
+
     public {{dataClassName}}() {
         super("{{ingredient.name}}");
     }

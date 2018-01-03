@@ -2,6 +2,9 @@ domain: "TestDomain"
 ingredients:
   - name: "EmptyIngredient"
 
+  - name: "IngredientWithKeyConstant"
+    keyConstants: ["KEY_A"]
+
   - name: "IngredientWithRequired"
     required:
       - name: "required"
