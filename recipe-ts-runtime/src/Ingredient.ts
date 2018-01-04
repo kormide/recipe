@@ -63,6 +63,12 @@ export abstract class Ingredient {
         }
     }
 
+    protected duplicate(): Ingredient {
+        const copy = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+        copy.properties = new Map(this.properties);
+        return copy;
+    }
+
     public toJSON() {
         const jsonObj: any = {};
         jsonObj[this.ingredientType] = this.properties;

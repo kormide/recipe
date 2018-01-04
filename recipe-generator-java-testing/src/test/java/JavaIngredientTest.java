@@ -1,4 +1,5 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -94,6 +95,13 @@ public class JavaIngredientTest {
     @Test
     public void testGeneration_ingredientOptionalReturnsSameClass() {
         assertTrue(new IngredientWithOptional().withOptional(true) instanceof IngredientWithOptional);
+    }
+
+    @Test
+    public void testGeneration_ingredientOptionalReturnsNewInstance() {
+        IngredientWithOptional ingredient = new IngredientWithOptional();
+        IngredientWithOptional afterSetOptional = ingredient.withOptional(false);
+        assertFalse(ingredient == afterSetOptional);
     }
 
     @Test

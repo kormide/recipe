@@ -49,7 +49,9 @@ public class {{ingredientName}} extends {{superclass}} {
         setRequired("{{required.name}}", {{required.default | javavalue:required.type}});
     {%- endfor %}
     }{% endif %}
-
+    protected {{ingredientName}}({{ingredientName}} other) {
+        super(other);
+    }
     {%- for optional in ingredient.optionals %}
     public {{ingredientName}} with{{optional.name | capitalize}}(
         {%- if optional.compound != true -%}
@@ -66,18 +68,19 @@ public class {{ingredientName}} extends {{superclass}} {
             {%- endfor -%}
         {%- endif -%}
     ) {
+        {{ingredientName}} copy = new {{ingredientName}}(this);
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' %}
-        setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name}});
+        copy.setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name}});
             {%- else %}
-        setOptional("{{optional.name}}", {{optional.repeatable}}, true);
+        copy.setOptional("{{optional.name}}", {{optional.repeatable}}, true);
             {%- endif -%}
         {%- else %}
-        setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
+        copy.setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
         {%- for param in optional.params -%}
         , "{{param.name}}", {{param.name}}
         {%- endfor -%});
         {%- endif %}
-        return this;
+        return copy;
     }{% endfor %}
 }

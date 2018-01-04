@@ -48,6 +48,12 @@ describe("generation", () => {
         expect(new IngredientWithOptional().withOptional(true) instanceof IngredientWithOptional).to.equal(true);
     });
 
+    it("should generate ingredient optionals that return a new instance of the same class", () => {
+        const ingredient = new IngredientWithOptional();
+        const withValue = ingredient.withOptional(true);
+        expect(ingredient === withValue).to.equal(false);
+    });
+
     it("should generate an ingredient with optional and required params", () => {
         new IngredientWithRequiredAndOptional("foo")
             .withOptional(false);
