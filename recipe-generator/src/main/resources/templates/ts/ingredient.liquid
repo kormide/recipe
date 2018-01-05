@@ -57,19 +57,20 @@ class {{ingredientName}} extends {{superclass}} {
             {%- endfor -%}
         {%- endif -%}
     ) {
+        const copy = this.duplicate();
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' %}
-        this.setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name}});
+        copy.setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name}});
             {%- else %}
-        this.setOptional("{{optional.name}}", {{optional.repeatable}}, true);
+        copy.setOptional("{{optional.name}}", {{optional.repeatable}}, true);
             {%- endif -%}
         {%- else %}
-        this.setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
+        copy.setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
         {%- for param in optional.params -%}
         , "{{param.name}}", {{param.name}}
         {%- endfor -%});
         {%- endif %}
-        return this;
+        return copy;
     }
     {% endfor %}
 }

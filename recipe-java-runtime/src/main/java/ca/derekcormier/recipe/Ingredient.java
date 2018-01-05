@@ -14,6 +14,13 @@ public abstract class Ingredient extends BaseIngredient {
         super(type, domain);
     }
 
+    protected Ingredient(Ingredient other) {
+        super(other.getIngredientType(), other.getDomain());
+        other.getProperties().forEach((key, value) -> {
+            this.setProperty(key, value);
+        });
+    }
+
     protected void setRequired(String name, Object value) {
         setProperty(name, value);
     }

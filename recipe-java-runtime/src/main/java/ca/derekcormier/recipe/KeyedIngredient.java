@@ -16,6 +16,11 @@ public abstract class KeyedIngredient extends Ingredient {
         return this;
     }
 
+    protected KeyedIngredient(KeyedIngredient other) {
+        super(other);
+        this.key = other.key;
+    }
+
     public String getKey() {
         return key;
     }
