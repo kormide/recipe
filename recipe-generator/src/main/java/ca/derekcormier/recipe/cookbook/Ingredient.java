@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Ingredient {
     private final String name;
@@ -12,7 +14,7 @@ public class Ingredient {
     private final List<Required> required;
     private final List<Initializer> initializers;
     private final List<Optional> optionals;
-    private final List<String> keyConstants;
+    private final Map<String,String> constants;
 
     @JsonCreator
     public Ingredient(
@@ -21,14 +23,14 @@ public class Ingredient {
         @JsonProperty(value = "required") List<Required> required,
         @JsonProperty(value = "initializers") List<Initializer> initializers,
         @JsonProperty(value = "optionals") List<Optional> optionals,
-        @JsonProperty(value = "keyConstants") List<String> keyConstants
+        @JsonProperty(value = "constants") Map<String,String> constants
     ) {
         this.name = name;
         this.keyed = keyed;
         this.required = required == null ? new ArrayList<>() : required;
         this.initializers = initializers == null ? new ArrayList<>() : initializers;
         this.optionals = optionals == null ? new ArrayList<>() : optionals;
-        this.keyConstants = keyConstants == null ? new ArrayList<>() : keyConstants;
+        this.constants = constants == null ? new HashMap<>() : constants;
     }
 
     public String getName() {
@@ -51,7 +53,7 @@ public class Ingredient {
         return optionals;
     }
 
-    public List<String> getKeyConstants() {
-        return keyConstants;
+    public Map<String,String> getConstants() {
+        return constants;
     }
 }

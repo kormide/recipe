@@ -10,8 +10,8 @@ import { {{ type }} } from "./{{type}}";
 {% endfor %}
 
 export class {{ingredientName}} extends {{superclass}} {
-    {% for keyConstant in ingredient.keyConstants %}
-    static readonly {{keyConstant}}: string;
+    {% for key in info.constantKeys %}
+    static readonly {{key}}: string;
     {% endfor %}
     {%- for initializer in ingredient.initializers %}
     constructor(

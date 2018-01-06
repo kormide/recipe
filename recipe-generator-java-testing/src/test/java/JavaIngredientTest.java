@@ -29,7 +29,7 @@ import testdomain.ingredients.IngredientWithCompoundOptional;
 import testdomain.ingredients.IngredientWithCompoundOptionalWithOneParam;
 import testdomain.ingredients.IngredientWithDefaultRequired;
 import testdomain.ingredients.IngredientWithDefaultRequiredNoInitializers;
-import testdomain.ingredients.IngredientWithKeyConstant;
+import testdomain.ingredients.IngredientWithConstant;
 import testdomain.ingredients.IngredientWithNullStringDefault;
 import testdomain.ingredients.IngredientWithOptional;
 import testdomain.ingredients.IngredientWithRepeatableCompoundOptional;
@@ -226,7 +226,7 @@ public class JavaIngredientTest {
 
     @Test
     public void testGeneration_generatesKeyConstants() {
-        assertEquals("KEY_A", IngredientWithKeyConstant.KEY_A);
+        assertEquals("bar", IngredientWithConstant.FOO);
     }
 
     @Test
