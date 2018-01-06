@@ -31,6 +31,8 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             Map<String,Object> info = new HashMap<>();
             info.put("requiredTypes", getRequiredTypeMapping(ingredient));
             info.put("nonPrimitiveTypes", getNonPrimitiveTypes(ingredient, cookbook));
+            info.put("constantKeys", getConstantKeyValueArrays(ingredient).get(0));
+            info.put("constantValues", getConstantKeyValueArrays(ingredient).get(1));
 
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
@@ -46,6 +48,8 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> info = new HashMap<>();
             info.put("nonPrimitiveTypes", getNonPrimitiveTypes(ingredient, cookbook));
+            info.put("constantKeys", getConstantKeyValueArrays(ingredient).get(0));
+            info.put("constantValues", getConstantKeyValueArrays(ingredient).get(1));
 
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);

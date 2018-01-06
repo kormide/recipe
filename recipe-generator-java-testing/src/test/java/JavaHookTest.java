@@ -8,14 +8,14 @@ import static org.mockito.Mockito.verify;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
-import ca.derekcormier.recipe.BaseIngredientHook;
 import ca.derekcormier.recipe.BackendOven;
+import ca.derekcormier.recipe.BaseIngredientHook;
 import ca.derekcormier.recipe.Cake;
 import testdomain.hooks.AbstractAllParamsIngredientHook;
 import testdomain.hooks.AbstractEmptyIngredientHook;
 import testdomain.hooks.AbstractIngredientWithCompoundOptionalHook;
+import testdomain.hooks.AbstractIngredientWithConstantHook;
 import testdomain.hooks.AbstractIngredientWithDefaultRequiredNoInitializersHook;
-import testdomain.hooks.AbstractIngredientWithKeyConstantHook;
 import testdomain.hooks.AbstractIngredientWithNullStringDefaultHook;
 import testdomain.hooks.AbstractIngredientWithOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableCompoundOptionalHook;
@@ -29,7 +29,6 @@ import testdomain.hooks.AllParamsIngredientData;
 import testdomain.hooks.EmptyIngredientData;
 import testdomain.hooks.IngredientWithCompoundOptionalData;
 import testdomain.hooks.IngredientWithDefaultRequiredNoInitializersData;
-import testdomain.hooks.IngredientWithKeyConstantData;
 import testdomain.hooks.IngredientWithNullStringDefaultData;
 import testdomain.hooks.IngredientWithOptionalData;
 import testdomain.hooks.IngredientWithRepeatableCompoundOptionalData;
@@ -40,7 +39,6 @@ import testdomain.hooks.IngredientWithRequiredData;
 import testdomain.hooks.IngredientWithStringDefaultContainingQuotesData;
 import testdomain.hooks.KeyedTestIngredientData;
 import testdomain.hooks.TestEnum;
-import testdomain.ingredients.IngredientWithKeyConstant;
 
 public class JavaHookTest {
     @Test
@@ -216,7 +214,7 @@ public class JavaHookTest {
 
     @Test
     public void testGeneration_generatesKeyConstants() {
-        assertEquals("KEY_A", AbstractIngredientWithKeyConstantHook.KEY_A);
+        assertEquals("bar", AbstractIngredientWithConstantHook.FOO);
     }
 
     @Test

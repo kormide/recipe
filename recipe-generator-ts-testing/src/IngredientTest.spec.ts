@@ -4,7 +4,7 @@ import {
     IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
     IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
-    IngredientWithStringDefaultContainingQuotes, IngredientWithKeyConstant, IngredientWithNullStringDefault
+    IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant
 } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
@@ -129,7 +129,7 @@ describe("generation", () => {
     });
 
     it("should generate key constants", () => {
-        expect(IngredientWithKeyConstant.KEY_A).to.equal("KEY_A");
+        expect(IngredientWithConstant.FOO).to.equal("bar");
     });
 
     it("should allow string params to take null", () => {

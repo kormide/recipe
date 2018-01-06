@@ -25,9 +25,14 @@ public class JavaHookGenerator extends CookbookGenerator {
         String directory = createDirectories(targetDir);
 
         for (Ingredient ingredient: cookbook.getIngredients()) {
+            Map<String,Object> info = new HashMap<>();
+            info.put("constantKeys", getConstantKeyValueArrays(ingredient).get(0));
+            info.put("constantValues", getConstantKeyValueArrays(ingredient).get(1));
+
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
             data.put("options", options);
+            data.put("info", info);
             String rendered = renderTemplate("templates/java/hook.liquid", data);
             String filepath = directory + File.separator + "Abstract" + ingredient.getName() + "Hook.java";
             writeToFile(filepath, rendered);

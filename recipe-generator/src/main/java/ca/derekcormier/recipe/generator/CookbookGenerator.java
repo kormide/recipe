@@ -8,10 +8,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import ca.derekcormier.recipe.cookbook.Cookbook;
+import ca.derekcormier.recipe.cookbook.Ingredient;
 import liqp.RenderSettings;
 import liqp.Template;
 
@@ -54,5 +57,20 @@ public abstract class CookbookGenerator {
         catch (IOException e) {
             throw new RuntimeException("could not write to " +  filepath);
         }
+    }
+
+    protected List<List<String>> getConstantKeyValueArrays(Ingredient ingredient) {
+        List<String> keys = new ArrayList<>();
+        List<String> values = new ArrayList<>();
+
+        for (String key: ingredient.getConstants().keySet()) {
+            keys.add(key);
+            values.add(ingredient.getConstants().get(key));
+        }
+
+        List<List<String>> keyValues = new ArrayList<>();
+        keyValues.add(keys);
+        keyValues.add(values);
+        return keyValues;
     }
 }

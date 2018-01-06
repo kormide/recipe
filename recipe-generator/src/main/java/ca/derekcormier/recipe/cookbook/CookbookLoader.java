@@ -41,8 +41,8 @@ public class CookbookLoader {
         validateInitializerSignaturesUnique(cookbook);
         validateRequiredHaveDefaultOrAppearInAllInitializers(cookbook);
         validateVaragParamsAppearLastInParamLists(cookbook);
-        validateKeyConstantNames(cookbook);
-        validateNoDuplicateKeyConstants(cookbook);
+        validateConstantNames(cookbook);
+        validateNoDuplicateConstantNames(cookbook);
     }
 
     private void validateEnums(Cookbook cookbook) {
@@ -146,24 +146,24 @@ public class CookbookLoader {
         }
     }
 
-    private void validateKeyConstantNames(Cookbook cookbook) {
+    private void validateConstantNames(Cookbook cookbook) {
         for (Ingredient ingredient: cookbook.getIngredients()) {
-            for (String keyConstant: ingredient.getKeyConstants()) {
-                if (keyConstant == null || keyConstant.equals("") || !SourceVersion.isName(keyConstant)) {
-                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has invalid constant");
+            for (String constant: ingredient.getConstants().keySet()) {
+                if (constant == null || constant.equals("") || !SourceVersion.isName(constant)) {
+                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has invalid constant name " + constant);
                 }
             }
         }
     }
 
-    private void validateNoDuplicateKeyConstants(Cookbook cookbook) {
+    private void validateNoDuplicateConstantNames(Cookbook cookbook) {
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Set<String> used = new HashSet<>();
-            for (String keyConstant: ingredient.getKeyConstants()) {
-                if (used.contains(keyConstant)) {
-                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has duplicate key constant '" + keyConstant + "'");
+            for (String constant: ingredient.getConstants().keySet()) {
+                if (used.contains(constant)) {
+                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has duplicate key constant '" + constant + "'");
                 }
-                used.add(keyConstant);
+                used.add(constant);
             }
         }
     }
