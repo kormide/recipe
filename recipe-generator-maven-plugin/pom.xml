@@ -5,11 +5,11 @@
     <parent>
         <groupId>ca.derekcormier.recipe</groupId>
         <artifactId>recipe</artifactId>
-        <version>0.1.8</version>
+        <version>0.1.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.1.8</version>
+    <version>0.1.9-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Recipe Generator Maven Plugin</name>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>ca.derekcormier.recipe</groupId>
             <artifactId>recipe-generator</artifactId>
-            <version>0.1.8</version>
+            <version>0.1.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
