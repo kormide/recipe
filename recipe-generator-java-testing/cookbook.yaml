@@ -35,6 +35,12 @@ ingredients:
         type: "int"
         default: 5
 
+  - name: "IngredientWithNullStringDefault"
+    required:
+      - name: "required"
+        type: "string"
+        default: null
+
   - name: "IngredientWithOptional"
     optionals:
       - name: "optional"

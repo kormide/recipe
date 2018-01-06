@@ -19,7 +19,9 @@ class {{ingredientName}} extends {{superclass}} {
         {%- for param in initializer.params -%}
             {%- assign type = info.requiredTypes[param] -%}
             {% raw %} {% endraw %}
-            {%- if type == 'string' or type == 'int' or type == 'float' or type == 'boolean' -%}
+            {%- if type == 'string' -%}
+                && (args[{{forloop.index0}}] === null || typeof args[{{forloop.index0}}] === "string")
+            {%- elsif type == 'int' or type == 'float' or type == 'boolean' -%}
                 && typeof args[{{forloop.index0}}] === "{{type | tstype}}"
             {%- else -%}
                 && (args[{{forloop.index0}}] instanceof {{type}})

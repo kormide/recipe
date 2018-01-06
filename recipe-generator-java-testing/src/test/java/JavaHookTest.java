@@ -16,6 +16,7 @@ import testdomain.hooks.AbstractEmptyIngredientHook;
 import testdomain.hooks.AbstractIngredientWithCompoundOptionalHook;
 import testdomain.hooks.AbstractIngredientWithDefaultRequiredNoInitializersHook;
 import testdomain.hooks.AbstractIngredientWithKeyConstantHook;
+import testdomain.hooks.AbstractIngredientWithNullStringDefaultHook;
 import testdomain.hooks.AbstractIngredientWithOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableCompoundOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableOptionalHook;
@@ -29,6 +30,7 @@ import testdomain.hooks.EmptyIngredientData;
 import testdomain.hooks.IngredientWithCompoundOptionalData;
 import testdomain.hooks.IngredientWithDefaultRequiredNoInitializersData;
 import testdomain.hooks.IngredientWithKeyConstantData;
+import testdomain.hooks.IngredientWithNullStringDefaultData;
 import testdomain.hooks.IngredientWithOptionalData;
 import testdomain.hooks.IngredientWithRepeatableCompoundOptionalData;
 import testdomain.hooks.IngredientWithRepeatableOptionalData;
@@ -261,6 +263,22 @@ public class JavaHookTest {
         });
 
         oven.bake(payloadJson("{\"IngredientWithDefaultRequiredNoInitializers\":{\"required\":5}}"));
+        verify(spy).run();
+    }
+
+    @Test
+    public void testBake_deserialization_ingredientWithNullDefaultString() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithNullStringDefaultHook() {
+            @Override
+            public void bake(IngredientWithNullStringDefaultData data, Cake cake) {
+                assertEquals(null, data.getRequired());
+                spy.run();
+            }
+        });
+
+        oven.bake(payloadJson("{\"IngredientWithNullStringDefault\":{\"required\":null}}"));
         verify(spy).run();
     }
 

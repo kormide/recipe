@@ -4,7 +4,7 @@ import {
     IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
     IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
-    IngredientWithStringDefaultContainingQuotes, IngredientWithKeyConstant
+    IngredientWithStringDefaultContainingQuotes, IngredientWithKeyConstant, IngredientWithNullStringDefault
 } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
@@ -21,6 +21,10 @@ describe("generation", () => {
         new IngredientWithDefaultRequired("foo");
         new IngredientWithDefaultRequired(false);
         new IngredientWithDefaultRequired(TestEnum.B);
+    });
+
+    it("should generate an ingredient with a null string default param", () => {
+        new IngredientWithNullStringDefault();
     });
 
     it("should generate an ingredient with a required param with a default but no initializers", () => {
@@ -127,6 +131,15 @@ describe("generation", () => {
     it("should generate key constants", () => {
         expect(IngredientWithKeyConstant.KEY_A).to.equal("KEY_A");
     });
+
+    it("should allow string params to take null", () => {
+        new IngredientWithRequired(null);
+        new AllParamsIngredient().withStringArg(null);
+    });
+
+    it("should allow string array params to take null", () => {
+        new AllParamsIngredient().withStringArrayArg([null, "foo", null]);
+    });
 });
 
 describe("serialization", () => {
@@ -144,6 +157,10 @@ describe("serialization", () => {
 
     it("should serialize an ingredient with a required param with a default but no initializers", () => {
         expectJsonEquals(`{"IngredientWithDefaultRequiredNoInitializers":{"required":5}}`, new IngredientWithDefaultRequiredNoInitializers());
+    });
+
+    it("should serialize an ingredient with a null string default param", () => {
+        expectJsonEquals(`{"IngredientWithNullStringDefault":{"required":null}}`, new IngredientWithNullStringDefault());
     });
 
     it("should serialize an ingredient with an optional param", () => {
@@ -192,6 +209,14 @@ describe("serialization", () => {
 
     it("should serialize an ingredient with a string default containing quotes", () => {
         expectJsonEquals(`{"IngredientWithStringDefaultContainingQuotes":{"required":"\\"foo"}}`, new IngredientWithStringDefaultContainingQuotes());
+    });
+
+    it("should serialize an ingredient with a null string value", () => {
+        expectJsonEquals(`{"AllParamsIngredient":{"stringArg":null}}`, new AllParamsIngredient().withStringArg(null));
+    });
+
+    it("should serialize an ingredient with an array of string values with nulls", () => {
+        expectJsonEquals(`{"AllParamsIngredient":{"stringArrayArg":["foo", null, "bar"]}}`, new AllParamsIngredient().withStringArrayArg(["foo", null, "bar"]));
     });
 });
 

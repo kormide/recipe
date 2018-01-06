@@ -30,6 +30,7 @@ import testdomain.ingredients.IngredientWithCompoundOptionalWithOneParam;
 import testdomain.ingredients.IngredientWithDefaultRequired;
 import testdomain.ingredients.IngredientWithDefaultRequiredNoInitializers;
 import testdomain.ingredients.IngredientWithKeyConstant;
+import testdomain.ingredients.IngredientWithNullStringDefault;
 import testdomain.ingredients.IngredientWithOptional;
 import testdomain.ingredients.IngredientWithRepeatableCompoundOptional;
 import testdomain.ingredients.IngredientWithRepeatableOptional;
@@ -70,6 +71,11 @@ public class JavaIngredientTest {
     @Test
     public void testGeneration_ingredientWithDefaultRequiredNoInitializers() {
         new IngredientWithDefaultRequiredNoInitializers();
+    }
+
+    @Test
+    public void testGeneration_ingredientWithNullStringDefault() {
+        new IngredientWithNullStringDefault();
     }
 
     @Test
@@ -245,6 +251,14 @@ public class JavaIngredientTest {
         oven.bake(Recipe.prepare(new IngredientWithDefaultRequired(false)));
 
         assertDispatchedJson(payloadJson("{\"IngredientWithDefaultRequired\":{\"param1\":\"foobar\",\"param2\":false,\"param3\":\"A\"}}"));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithNullStringDefault() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(new IngredientWithNullStringDefault()));
+
+        assertDispatchedJson(payloadJson("{\"IngredientWithNullStringDefault\":{\"required\":null}}"));
     }
 
     @Test
