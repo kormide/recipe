@@ -24,7 +24,7 @@ public abstract class CookbookGenerator {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(templatePath);
         Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         String templateContent = scanner.hasNext() ? scanner.next() : "";
-        Template template = Template.parse(templateContent).withRenderSettings(new RenderSettings.Builder().withStrictVariables(true).build());
+        Template template = Template.parse(templateContent).withRenderSettings(new RenderSettings.Builder().withStrictVariables(false).build());
         try {
             return template.render(objectMapper.writeValueAsString(data));
         }

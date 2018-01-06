@@ -67,7 +67,7 @@ public class TypescriptFilters {
                             case FLOAT:
                                 return super.asString(value);
                             case STRING:
-                                return "\"" + super.asString(value).replace("\"", "\\\"") + "\"";
+                                return value == null ? "null" : "\"" + super.asString(value).replace("\"", "\\\"") + "\"";
                             default:
                                 throw new RuntimeException("unknown data type '" + strType + "'");
                         }
@@ -87,7 +87,8 @@ public class TypescriptFilters {
     }
 
     private static String toTsType(ParamType type) {
-        return _toTsType(type.getType()) + (type.isVararg() ? "[]" : "");
+        boolean isWrapped = type.isVararg() && type.getType() instanceof PrimitiveType && ((PrimitiveType)type.getType()).getPrimitive() == Primitive.STRING;
+        return (isWrapped ? "(" : "") + _toTsType(type.getType()) + (isWrapped ? ")" : "") + (type.isVararg() ? "[]" : "");
     }
 
     private static String _toTsType(Type type) {
@@ -100,7 +101,7 @@ public class TypescriptFilters {
                 case FLOAT:
                     return "number";
                 case STRING:
-                    return "string";
+                    return "string | null";
                 default:
                     throw new RuntimeException("unknown type");
             }
@@ -112,7 +113,8 @@ public class TypescriptFilters {
             return ((EnumType)type).getName();
         }
         else if (type instanceof ArrayType) {
-            return _toTsType(((ArrayType)type).getBaseType()) + "[]";
+            boolean isWrapped = ((ArrayType)type).getBaseType() instanceof PrimitiveType && ((PrimitiveType)((ArrayType)type).getBaseType()).getPrimitive() == Primitive.STRING;
+            return (isWrapped ? "(" : "") + _toTsType(((ArrayType)type).getBaseType()) + (isWrapped ? ")" : "") + "[]";
         }
         throw new RuntimeException("unknown type");
     }

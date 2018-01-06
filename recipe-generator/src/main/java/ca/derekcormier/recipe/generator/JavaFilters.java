@@ -79,7 +79,7 @@ public class JavaFilters {
                             case FLOAT:
                                 return super.asString(value);
                             case STRING:
-                                return "\"" + super.asString(value).replace("\"", "\\\"") + "\"";
+                                return value == null ? "null" : "\"" + super.asString(value).replace("\"", "\\\"") + "\"";
                             default:
                                 throw new RuntimeException("unknown data type '" + strType + "'");
                         }
