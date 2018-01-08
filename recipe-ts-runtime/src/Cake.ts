@@ -12,8 +12,8 @@ export class Cake {
         return subKeys.join(Cake.SEPARATOR);
     }
 
-    private static validateKey(key: string) {
-        if (key === "") {
+    private static validateKey(key: string | null) {
+        if (key === null || key === "") {
             throw new Error("keys cannot be empty");
         }
 
@@ -50,7 +50,7 @@ export class Cake {
         return keys;
     }
 
-    public get<T>(...key: string[]): T {
+    public get<T>(...key: Array<string|null>): T {
         if (key.length === 0) {
             throw new Error("cannot get value for empty key");
         }
@@ -120,6 +120,40 @@ export class Cake {
 
     public getNamespace(): string {
         return this.prefixStack.join(Cake.SEPARATOR);
+    }
+
+    public hasContext(): boolean {
+        try {
+            this.getContext();
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
+    public getContext<T>(): T {
+        if (this.prefixStack.length === 0) {
+            throw new Error("cannot get context in root namespace");
+        }
+        else {
+            let prefix = this.getPrefixWithSeparator(this.prefixStack);
+            prefix = prefix.substr(0, prefix.length - 1);
+
+            if (!(prefix in this.entries)) {
+                throw new Error(`cake does not contain context value for namespace ${prefix}`);
+            }
+            return <T>this.entries[prefix];
+        }
+    }
+
+    public getOrGetContext<T>(...key: Array<string|null>): T {
+        try {
+            return this.get(...key);
+        }
+        catch (e) {
+            return this.getContext();
+        }
     }
 
     public toJSON() {

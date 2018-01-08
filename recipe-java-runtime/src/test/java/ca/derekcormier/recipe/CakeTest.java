@@ -1,6 +1,8 @@
 package ca.derekcormier.recipe;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -230,5 +232,97 @@ public class CakeTest {
         cake.publish("bar", 5);
 
         assertEquals("foo", cake.getPublishedKeyForValue("5", false));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetContext_throwsInRootNamespace() {
+        cake.getContext();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetContext_throwsOnNoValueForNamespaceKey() {
+        cake.inNamespace("foo", () -> {
+            cake.getContext();
+        });
+    }
+
+    @Test
+    public void testGetContext_getsValueForNamespaceKey() {
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            assertEquals("bar", cake.getContext());
+        });
+    }
+
+    @Test
+    public void testGetContext_getsValueForNamespaceKey_twoLevelsDeep() {
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            cake.publish("json", "bearded");
+            cake.inNamespace("json", () -> {
+                assertEquals("bearded", cake.getContext());
+            });
+        });
+    }
+
+    @Test
+    public void testHasContext_returnsFalseAtRootNamespace() {
+        assertFalse(cake.hasContext());
+    }
+
+    @Test
+    public void testHasContext_returnsFalseWhenNoValueForNamespaceKey() {
+        cake.inNamespace("foo", () -> {
+            assertFalse(cake.hasContext());
+        });
+    }
+
+    @Test
+    public void testHasContext_returnsTrueWhenHasValueForNamespaceKey() {
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            assertTrue(cake.hasContext());
+        });
+    }
+
+    @Test
+    public void testGetOrGetContext_emptyInputGetsContext() {
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            assertEquals("bar", cake.getOrGetContext());
+        });
+    }
+
+    @Test
+    public void testGetOrGetContext_nullInputGetsContext() {
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            assertEquals("bar", cake.getOrGetContext(null));
+        });
+    }
+
+    @Test
+    public void testGetOrGetContext_prioritizesGetOverGetContext() {
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            cake.publish("moo", "cow");
+            assertEquals("cow", cake.getOrGetContext("moo"));
+        });
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetOrGetContext_throwsOnNonExistentKeyNoContext() {
+        cake.getOrGetContext("foo");
+    }
+
+    @Test
+    public void testGetOrGetContext_searchesUpNamespaceHierarchyForKey() {
+        cake.publish("a", "foo");
+        cake.inNamespace("a", () -> {
+            cake.publish("key", "value"); // a.key
+            cake.inNamespace("b", () -> {
+                assertEquals("value", cake.getOrGetContext("key"));
+            });
+        });
     }
 }

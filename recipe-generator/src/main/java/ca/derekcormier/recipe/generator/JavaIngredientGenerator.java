@@ -1,8 +1,5 @@
 package ca.derekcormier.recipe.generator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,12 +36,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             data.put("domain", cookbook.getDomain());
             data.put("options", options);
             data.put("info", info);
-            try {
-                System.out.println(new ObjectMapper().writeValueAsString(data));
-            }
-            catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+
             String rendered = renderTemplate("templates/java/ingredient.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".java";
             writeToFile(filepath, rendered);
