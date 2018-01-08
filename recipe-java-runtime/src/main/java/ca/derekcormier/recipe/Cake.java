@@ -27,43 +27,6 @@ public class Cake {
         return StringUtils.join(subKeys, Cake.SEPARATOR);
     }
 
-    private static void validateKey(String key) {
-        if (StringUtils.isBlank(key)) {
-            throw new IllegalArgumentException("keys cannot be empty");
-        }
-        if (key.contains(Cake.SEPARATOR)) {
-            throw new IllegalArgumentException("keys cannot contain the namespace separator: " + Cake.SEPARATOR);
-        }
-    }
-
-    public void publish(String key, Object value) {
-        getSubKeysAndValidateFullKey(key);
-        String newKey = getPrefixWithSeparator(prefixStack) + key;
-        entries.put(newKey, value);
-    }
-
-    public void inNamespace(String key, Runnable runnable) {
-        List<String> keys = getSubKeysAndValidateFullKey(key);
-        keys.forEach(prefixStack::addLast);
-
-        try {
-            runnable.run();
-        }
-        finally {
-            keys.forEach(k -> prefixStack.removeLast());
-        }
-    }
-
-    private List<String> getSubKeysAndValidateFullKey(String fullKey) {
-        List<String> keys = (null == fullKey) ? new ArrayList<>() : Arrays.asList(StringUtils.split(fullKey, Cake.SEPARATOR));
-        if (keys.isEmpty() || StringUtils.countMatches(fullKey, Cake.SEPARATOR) != keys.size() - 1) {
-            throw new IllegalArgumentException("cannot publish value for empty key");
-        }
-
-        keys.forEach(Cake::validateKey);
-        return keys;
-    }
-
     @SuppressWarnings("unchecked")
     public <T> T get(String... key) {
         List<String> keys = (key == null) ? new ArrayList<>() : Arrays.asList(key);
@@ -104,6 +67,24 @@ public class Cake {
         }
     }
 
+    public void publish(String key, Object value) {
+        getSubKeysAndValidateFullKey(key);
+        String newKey = getPrefixWithSeparator(prefixStack) + key;
+        entries.put(newKey, value);
+    }
+
+    public void inNamespace(String key, Runnable runnable) {
+        List<String> keys = getSubKeysAndValidateFullKey(key);
+        keys.forEach(prefixStack::addLast);
+
+        try {
+            runnable.run();
+        }
+        finally {
+            keys.forEach(k -> prefixStack.removeLast());
+        }
+    }
+
     public String getPublishedKeyForValue(Object value, boolean fullyQualified) {
         List<String> matchingKeys = entries.entrySet().stream().filter(e -> e.getValue().equals(value)).map(Map.Entry::getKey).collect(Collectors.toList());
         if (matchingKeys.size() == 1) {
@@ -122,6 +103,61 @@ public class Cake {
     @JsonIgnore
     public String getNamespace() {
         return StringUtils.join(prefixStack, Cake.SEPARATOR);
+    }
+
+    public boolean hasContext() {
+        try {
+            getContext();
+            return true;
+        }
+        catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    @JsonIgnore
+    public <T> T getContext() {
+        if (this.prefixStack.isEmpty()) {
+            throw new IllegalStateException("cannot get context in root namespace");
+        }
+        else {
+            String prefix = this.getPrefixWithSeparator(this.prefixStack);
+            prefix = prefix.substring(0, prefix.length() - 1);
+
+            if (!entries.containsKey(prefix)) {
+                throw new RuntimeException("cake does not contain context value for namespace " + prefix);
+            }
+            return (T)entries.get(prefix);
+        }
+    }
+
+    @JsonIgnore
+    public <T> T getOrGetContext(String... key) {
+        try {
+            return get(key);
+        }
+        catch (RuntimeException e) {
+            return getContext();
+        }
+    }
+
+    private static void validateKey(String key) {
+        if (StringUtils.isBlank(key)) {
+            throw new IllegalArgumentException("keys cannot be empty");
+        }
+        if (key.contains(Cake.SEPARATOR)) {
+            throw new IllegalArgumentException("keys cannot contain the namespace separator: " + Cake.SEPARATOR);
+        }
+    }
+
+    private List<String> getSubKeysAndValidateFullKey(String fullKey) {
+        List<String> keys = (null == fullKey) ? new ArrayList<>() : Arrays.asList(StringUtils.split(fullKey, Cake.SEPARATOR));
+        if (keys.isEmpty() || StringUtils.countMatches(fullKey, Cake.SEPARATOR) != keys.size() - 1) {
+            throw new IllegalArgumentException("cannot publish value for empty key");
+        }
+
+        keys.forEach(Cake::validateKey);
+        return keys;
     }
 
     private String getPrefixWithSeparator(List<String> namespaces) {

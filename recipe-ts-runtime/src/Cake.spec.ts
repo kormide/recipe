@@ -189,4 +189,91 @@ describe("Cake", () => {
             expect(cake.getPublishedKeyForValue("value", true)).to.equal(Cake.key("a", "key"));
         });
     });
+
+    describe("getContext", () => {
+        it("should throw when called in the root namespace", () => {
+            expect(() => cake.getContext()).to.throw();
+        });
+
+        it("should throw when there is no value for the namespace key", () => {
+            cake.inNamespace("foo", () => {
+                expect(() => cake.getContext()).to.throw();
+            });
+        });
+
+        it("should get the value for the namespace key", () => {
+            cake.publish("foo", "bar");
+            cake.inNamespace("foo", () => {
+                expect(cake.getContext()).to.equal("bar");
+            });
+        });
+
+        it("should get the value for the namespace key two levels deep", () => {
+            cake.publish("foo", "bar");
+            cake.inNamespace("foo", () => {
+                cake.publish("json", "bearded");
+                cake.inNamespace("json", () => {
+                    expect(cake.getContext()).to.equal("bearded");
+                });
+            });
+        });
+    });
+
+    describe("hasContext", () => {
+        it("should return false at the root namespace", () => {
+            expect(cake.hasContext()).to.equal(false);
+        });
+
+        it("should return false when there is no value for the namespace key", () => {
+            cake.inNamespace("foo", () => {
+                expect(cake.hasContext()).to.equal(false);
+            });
+        });
+
+        it("should return true when there is a value for the namespace key", () => {
+            cake.publish("foo", "bar");
+            cake.inNamespace("foo", () => {
+                expect(cake.hasContext()).to.equal(true);
+            });
+        });
+    });
+
+    describe("getOrGetContext", () => {
+        it("should get the context on empty input", () => {
+            cake.publish("foo", "bar");
+            cake.inNamespace("foo", () => {
+                expect(cake.getOrGetContext()).to.equal("bar");
+            });
+        });
+
+        it("should get the context on null input", () => {
+            cake.publish("foo", "bar");
+            cake.inNamespace("foo", () => {
+                expect(cake.getOrGetContext(null)).to.equal("bar");
+            });
+        });
+
+        it("should prioritize the get over the getContext", () => {
+            cake.publish("foo", "bar");
+            cake.inNamespace("foo", () => {
+                cake.publish("moo", "cow");
+                expect(cake.getOrGetContext("moo")).to.equal("cow");
+            });
+
+        });
+
+        it("should throw on non-existent key and no context", () => {
+            expect(() => cake.getOrGetContext("foo")).to.throw();
+        });
+
+        it("should search up the namespace hierarchy for the key", () => {
+            cake.publish("a", "foo");
+            cake.inNamespace("a", () => {
+                cake.publish("key", "value"); // a.key
+                cake.inNamespace("b", () => {
+                    expect(cake.getOrGetContext("key")).to.equal("value");
+                });
+            });
+        });
+    });
 });
