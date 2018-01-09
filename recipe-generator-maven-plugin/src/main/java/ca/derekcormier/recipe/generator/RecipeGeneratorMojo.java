@@ -51,11 +51,13 @@ public class RecipeGeneratorMojo extends AbstractMojo {
 
         Main.main(args.toArray(new String[args.size()]));
 
-        if (execution.getLifecyclePhase().equals("generate-sources")) {
-            project.addCompileSourceRoot(targetDir);
-        }
-        else if (execution.getLifecyclePhase().equals("generate-test-sources")) {
-            project.addTestCompileSourceRoot(targetDir);
+        if (flavour.startsWith("java-")) {
+            if (execution.getLifecyclePhase().equals("generate-sources")) {
+                project.addCompileSourceRoot(targetDir);
+            }
+            else if (execution.getLifecyclePhase().equals("generate-test-sources")) {
+                project.addTestCompileSourceRoot(targetDir);
+            }
         }
     }
 }
