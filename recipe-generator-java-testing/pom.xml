@@ -47,6 +47,7 @@
                 <executions>
                     <execution>
                         <id>generate-ingredients</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -59,6 +60,7 @@
                     </execution>
                     <execution>
                         <id>generate-hooks</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -70,6 +72,7 @@
                     </execution>
                     <execution>
                         <id>generate-ingredients-domain-b</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -81,6 +84,7 @@
                     </execution>
                     <execution>
                         <id>generate-ingredients-postfix</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -93,6 +97,7 @@
                     </execution>
                     <execution>
                         <id>generate-hooks-postfix</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -101,25 +106,6 @@
                             <cookbook>${project.basedir}/cookbook-postfix.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
                             <ingredientPostfix>Foo</ingredientPostfix>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-test-sources</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/target/generated-test-sources/recipe</source>
-                            </sources>
                         </configuration>
                     </execution>
                 </executions>

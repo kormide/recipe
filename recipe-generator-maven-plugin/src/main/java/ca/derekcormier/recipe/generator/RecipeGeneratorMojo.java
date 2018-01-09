@@ -13,7 +13,7 @@ import org.apache.maven.project.MavenProject;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_TEST_RESOURCES)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class RecipeGeneratorMojo extends AbstractMojo {
     @Component
     private MojoExecution execution;
