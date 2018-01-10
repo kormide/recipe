@@ -24,6 +24,9 @@ public class JavaHookGenerator extends CookbookGenerator {
         }
         String directory = createDirectories(targetDir);
 
+        if (!cookbook.getIngredients().isEmpty()) {
+            System.out.println("Generating ingredient hooks in " + directory + "...");
+        }
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> info = new HashMap<>();
             info.put("constantKeys", getConstantKeyValueArrays(ingredient).get(0));
@@ -36,8 +39,12 @@ public class JavaHookGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/java/hook.liquid", data);
             String filepath = directory + File.separator + "Abstract" + ingredient.getName() + "Hook.java";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + "Abstract" + ingredient.getName() + "Hook.java");
         }
 
+        if (!cookbook.getIngredients().isEmpty()) {
+            System.out.println("\nGenerating ingredient data snapshots in " + directory + "...");
+        }
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
@@ -45,8 +52,12 @@ public class JavaHookGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/java/ingredient-data.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + "Data.java";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + ingredient.getName() + "Data.java");
         }
 
+        if (!cookbook.getEnums().isEmpty()) {
+            System.out.println("\nGenerating hook enums in " + directory + "...");
+        }
         for (ca.derekcormier.recipe.cookbook.Enum enumeration: cookbook.getEnums()) {
             Map<String,Object> data = new HashMap<>();
             data.put("enum", enumeration);
@@ -54,6 +65,7 @@ public class JavaHookGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/java/enum.liquid", data);
             String filepath = directory + File.separator + enumeration.getName() + ".java";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + enumeration.getName() + ".java");
         }
     }
 

@@ -27,6 +27,9 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
         options.putIfAbsent("ingredientPostfix", "");
 
         // generate javascript ingredients
+        if (!cookbook.getIngredients().isEmpty()) {
+            System.out.println("Generating ingredients in " + directory + "...");
+        }
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> info = new HashMap<>();
             info.put("requiredTypes", getRequiredTypeMapping(ingredient));
@@ -42,9 +45,13 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/ts/ingredient.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".js";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + ingredient.getName() + options.get("ingredientPostfix") + ".js");
         }
 
         // generate typescript definitions for ingredients
+        if (!cookbook.getIngredients().isEmpty()) {
+            System.out.println("\nGenerating ingredient definitions in " + directory + "...");
+        }
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> info = new HashMap<>();
             info.put("nonPrimitiveTypes", getNonPrimitiveTypes(ingredient, cookbook));
@@ -59,19 +66,13 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/ts/ingredient-types.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".d.ts";
             writeToFile(filepath, rendered);
-        }
-
-        // generate enum definitions
-        for (ca.derekcormier.recipe.cookbook.Enum enumeration: cookbook.getEnums()) {
-            Map<String,Object> data = new HashMap<>();
-            data.put("enum", enumeration);
-            data.put("options", options);
-            String rendered = renderTemplate("templates/ts/enum-types.liquid", data);
-            String filepath = directory + File.separator + enumeration.getName() + ".d.ts";
-            writeToFile(filepath, rendered);
+            System.out.println("  -> " + ingredient.getName() + options.get("ingredientPostfix") + ".d.ts");
         }
 
         // generate enums
+        if (!cookbook.getEnums().isEmpty()) {
+            System.out.println("\nGenerating ingredient enums in " + directory + "...");
+        }
         for (ca.derekcormier.recipe.cookbook.Enum enumeration: cookbook.getEnums()) {
             Map<String,Object> data = new HashMap<>();
             data.put("enum", enumeration);
@@ -79,26 +80,44 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/ts/enum.liquid", data);
             String filepath = directory + File.separator + enumeration.getName() + ".js";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + enumeration.getName() + ".js");
         }
 
-        // generate index definition file
+        // generate enum definitions
+        if (!cookbook.getEnums().isEmpty()) {
+            System.out.println("\nGenerating ingredient enum definitions in " + directory + "...");
+        }
+        for (ca.derekcormier.recipe.cookbook.Enum enumeration: cookbook.getEnums()) {
+            Map<String,Object> data = new HashMap<>();
+            data.put("enum", enumeration);
+            data.put("options", options);
+            String rendered = renderTemplate("templates/ts/enum-types.liquid", data);
+            String filepath = directory + File.separator + enumeration.getName() + ".d.ts";
+            writeToFile(filepath, rendered);
+            System.out.println("  -> " + enumeration.getName() + ".d.ts");
+        }
+
         Map<String, Object> data = new HashMap<>();
+
+        // generate index file
+        System.out.println("\nGenerating index file: " + directory + File.separator + "index.js");
         data.put("ingredients", cookbook.getIngredients());
         data.put("enums", cookbook.getEnums());
         data.put("domain", cookbook.getDomain());
         data.put("options", options);
-        String rendered = renderTemplate("templates/ts/ingredient-index-types.liquid", data);
-        String filepath = directory + File.separator + "index.d.ts";
+        String rendered = renderTemplate("templates/ts/ingredient-index.liquid", data);
+        String filepath = directory + File.separator + "index.js";
         writeToFile(filepath, rendered);
 
-        // generate index file
+        // generate index definition file
+        System.out.println("\nGenerating index definition file: " + directory + File.separator + "index.d.ts");
         data = new HashMap<>();
         data.put("ingredients", cookbook.getIngredients());
         data.put("enums", cookbook.getEnums());
         data.put("domain", cookbook.getDomain());
         data.put("options", options);
-        rendered = renderTemplate("templates/ts/ingredient-index.liquid", data);
-        filepath = directory + File.separator + "index.js";
+        rendered = renderTemplate("templates/ts/ingredient-index-types.liquid", data);
+        filepath = directory + File.separator + "index.d.ts";
         writeToFile(filepath, rendered);
     }
 

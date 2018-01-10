@@ -26,6 +26,9 @@ public class JavaIngredientGenerator extends CookbookGenerator {
         }
         String directory = createDirectories(targetDir);
 
+        if (!cookbook.getIngredients().isEmpty()) {
+            System.out.println("Generating ingredients in " + directory + "...");
+        }
         for (Ingredient ingredient: cookbook.getIngredients()) {
             Map<String,Object> info = new HashMap<>();
             info.put("constantKeys", getConstantKeyValueArrays(ingredient).get(0));
@@ -40,8 +43,12 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/java/ingredient.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + options.get("ingredientPostfix") + ".java";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + ingredient.getName() + options.get("ingredientPostfix") + ".java");
         }
 
+        if (!cookbook.getEnums().isEmpty()) {
+            System.out.println("\nGenerating ingredient enums in " + directory + "...");
+        }
         for (ca.derekcormier.recipe.cookbook.Enum enumeration: cookbook.getEnums()) {
             Map<String,Object> data = new HashMap<>();
             data.put("enum", enumeration);
@@ -49,6 +56,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             String rendered = renderTemplate("templates/java/enum.liquid", data);
             String filepath = directory + File.separator + enumeration.getName() + ".java";
             writeToFile(filepath, rendered);
+            System.out.println("  -> " + enumeration.getName() + ".java");
         }
     }
 
