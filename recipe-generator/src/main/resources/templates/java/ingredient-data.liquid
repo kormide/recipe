@@ -28,14 +28,14 @@ public class {{dataClassName}} extends {{superclass}} {
     }
         {%- if optional.compound != true %}
     public {{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {% if optional.type != 'boolean' and optional.type != 'flag' %}get{% else %}is{% endif %}{{optional.name | capitalize}}() {
-        return getProperty("{{optional.name}}");
+        return getProperty({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %}.class, "{{optional.name}}");
     }
     private void set{{optional.name | capitalize}}({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
         setProperty("{{optional.name}}", {{optional.name}});
     }
         {%- else -%}
     public {{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
-        return getProperty("{{optional.name}}");
+        return getProperty({{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %}.class, "{{optional.name}}");
     }
     private void set{{optional.name | capitalize}}({{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
         setProperty("{{optional.name}}", {{optional.name}});
