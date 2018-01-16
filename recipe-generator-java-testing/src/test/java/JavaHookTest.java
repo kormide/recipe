@@ -218,6 +218,56 @@ public class JavaHookTest {
     }
 
     @Test
+    public void testGeneration_missingIntOptionalDefault() {
+        assertEquals(0, new AllParamsIngredientData().getIntArg());
+    }
+
+    @Test
+    public void testGeneration_missingFloatOptionalDefault() {
+        assertEquals(0.0f, new AllParamsIngredientData().getFloatArg(), 0.0);
+    }
+
+    @Test
+    public void testGeneration_missingBooleanOptionalDefault() {
+        assertEquals(false, new AllParamsIngredientData().isBooleanArg());
+    }
+
+    @Test
+    public void testGeneration_missingFlagOptionalDefault() {
+        assertEquals(false, new AllParamsIngredientData().isFlagArg());
+    }
+
+    @Test
+    public void testGeneration_missingStringOptionalDefault() {
+        assertEquals(null, new AllParamsIngredientData().getStringArg());
+    }
+
+    @Test
+    public void testGeneration_missingArrayOptionalDefault() {
+        assertArrayEquals(new String[0], new AllParamsIngredientData().getStringArrayArg());
+    }
+
+    @Test
+    public void testGeneration_missingEnumOptionalDefault() {
+        assertEquals(TestEnum.A, new AllParamsIngredientData().getEnumArg());
+    }
+
+    @Test
+    public void testGeneration_missingCompoundOptionalObjectDefault() {
+        assertEquals(null, new IngredientWithCompoundOptionalData().getCompoundOptional());
+    }
+
+    @Test
+    public void testGeneration_missingRepeatableOptionalDefault() {
+        assertArrayEquals(new boolean[0], new IngredientWithRepeatableOptionalData().isOptional());
+    }
+
+    @Test
+    public void testGeneration_missingRepeatableCompoundOptionalObjectDefault() {
+        assertArrayEquals(new IngredientWithRepeatableCompoundOptionalData.CompoundOptionalParams[0], new IngredientWithRepeatableCompoundOptionalData().getCompoundOptional());
+    }
+
+    @Test
     public void testBake_deserialization_emptyIngredient() {
         Runnable spy = spy(Runnable.class);
         BackendOven oven = new BackendOven();

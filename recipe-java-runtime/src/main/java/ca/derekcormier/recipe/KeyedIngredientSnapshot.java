@@ -17,4 +17,8 @@ public abstract class KeyedIngredientSnapshot extends IngredientSnapshot {
     public String getKey() {
         return key;
     }
+
+    public boolean hasKey() {
+        return key != null;
+    }
 }
