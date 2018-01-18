@@ -6,3 +6,4 @@ target/
 *.iml
 */node_modules/*
 */yarn-error.log
+**/pom.xml.versionsBackup
