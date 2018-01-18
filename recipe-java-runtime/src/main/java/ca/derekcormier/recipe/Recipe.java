@@ -37,7 +37,7 @@ public class Recipe extends Ingredient {
         this.ingredients = new ArrayList<>();
     }
 
-    private Recipe(Ingredient...ingredients) {
+    protected Recipe(Ingredient...ingredients) {
         super("Recipe");
         this.ingredients = Arrays.asList(ingredients);
     }

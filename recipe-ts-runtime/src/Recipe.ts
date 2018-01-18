@@ -132,7 +132,7 @@ export class Recipe extends Ingredient {
         return jsonObj;
     }
 
-    private constructor(...ingredients: Ingredient[]) {
+    protected constructor(...ingredients: Ingredient[]) {
         super("Recipe");
         this.ingredients = ingredients;
     }
