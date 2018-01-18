@@ -29,7 +29,9 @@ public class Cake {
 
     @SuppressWarnings("unchecked")
     public <T> T get(String... key) {
-        List<String> keys = (key == null) ? new ArrayList<>() : Arrays.asList(key);
+        List<String> keys = ((key == null) ? new ArrayList<String>() : Arrays.asList(key)).stream()
+            .flatMap(k -> Arrays.stream(StringUtils.split(k, Cake.SEPARATOR)))
+            .collect(Collectors.toList());
 
         if (keys.isEmpty()) {
             throw new IllegalArgumentException("cannot get value for empty key");

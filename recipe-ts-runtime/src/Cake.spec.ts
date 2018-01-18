@@ -23,6 +23,13 @@ describe("Cake", () => {
             expect(cake.get("key")).to.equal("value");
         });
 
+        it("should get the value when a subkey contains the namespace separator", () => {
+            cake.inNamespace("foo", () => {
+                cake.publish("bar", 1);
+            });
+            expect(cake.get("foo" + Cake.SEPARATOR + "bar")).to.equal(1);
+        });
+
         it("should find a partial key from the root", () => {
             cake.inNamespace("a", () => {
                 cake.publish("key", "value");

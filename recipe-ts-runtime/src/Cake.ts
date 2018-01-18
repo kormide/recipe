@@ -54,6 +54,7 @@ export class Cake {
         if (key.length === 0) {
             throw new Error("cannot get value for empty key");
         }
+        key = key.reduce((a, v) => a.concat(v ? v.split(Cake.SEPARATOR) : [v]), new Array<string|null>());
 
         key.forEach(Cake.validateKey);
 

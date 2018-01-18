@@ -30,6 +30,16 @@ public class CakeTest {
         cake.get("");
     }
 
+    @Test
+    public void testGet_getsWhenSubkeyContainsSeparator() {
+        cake.inNamespace("foo", () -> {
+            cake.publish("bar", 1);
+        });
+
+        int value = cake.get("foo" + Cake.SEPARATOR + "bar");
+        assertEquals(1, value);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testPublish_throwsOnNullKey() {
         cake.publish(null, "value");
