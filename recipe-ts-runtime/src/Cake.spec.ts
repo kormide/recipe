@@ -30,6 +30,10 @@ describe("Cake", () => {
             expect(cake.get("foo" + Cake.SEPARATOR + "bar")).to.equal(1);
         });
 
+        it("should throw on a null subkey", () => {
+            expect(() => cake.get("foo", null, "bar")).to.throw();
+        });
+
         it("should find a partial key from the root", () => {
             cake.inNamespace("a", () => {
                 cake.publish("key", "value");

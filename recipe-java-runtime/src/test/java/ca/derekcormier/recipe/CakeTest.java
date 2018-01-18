@@ -41,6 +41,11 @@ public class CakeTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void testGet_throwsOnNullSubkey() {
+        cake.get("foo", null, "bar");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testPublish_throwsOnNullKey() {
         cake.publish(null, "value");
     }

@@ -30,7 +30,7 @@ public class Cake {
     @SuppressWarnings("unchecked")
     public <T> T get(String... key) {
         List<String> keys = ((key == null) ? new ArrayList<String>() : Arrays.asList(key)).stream()
-            .flatMap(k -> Arrays.stream(StringUtils.split(k, Cake.SEPARATOR)))
+            .flatMap(k -> Arrays.stream(k == null ? new String[]{null} : StringUtils.split(k, Cake.SEPARATOR)))
             .collect(Collectors.toList());
 
         if (keys.isEmpty()) {
