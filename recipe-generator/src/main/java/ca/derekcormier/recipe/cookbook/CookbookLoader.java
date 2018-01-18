@@ -43,6 +43,7 @@ public class CookbookLoader {
         validateVaragParamsAppearLastInParamLists(cookbook);
         validateConstantNames(cookbook);
         validateNoDuplicateConstantNames(cookbook);
+        validateDefaultKey(cookbook);
     }
 
     private void validateEnums(Cookbook cookbook) {
@@ -164,6 +165,21 @@ public class CookbookLoader {
                     throw new RuntimeException("ingredient '" + ingredient.getName() + "' has duplicate key constant '" + constant + "'");
                 }
                 used.add(constant);
+            }
+        }
+    }
+
+    private void validateDefaultKey(Cookbook cookbook) {
+        for (Ingredient ingredient: cookbook.getIngredients()) {
+            if (ingredient.isKeyed()) {
+                if (ingredient.getDefaultKey() != null && !ingredient.getRequired().stream().map(Required::getName).anyMatch(r -> r.equals(ingredient.getDefaultKey()))) {
+                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has a default key that is not a required string parameter");
+                }
+            }
+            else {
+                if (ingredient.getDefaultKey() != null) {
+                    throw new RuntimeException("ingredient '" + ingredient.getName() + "' has a default key but keyed=false");
+                }
             }
         }
     }

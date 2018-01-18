@@ -4,7 +4,8 @@ import {
     IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
     IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
-    IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant
+    IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant,
+    KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted
 } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
@@ -217,6 +218,14 @@ describe("serialization", () => {
 
     it("should serialize an ingredient with an array of string values with nulls", () => {
         expectJsonEquals(`{"AllParamsIngredient":{"stringArrayArg":["foo", null, "bar"]}}`, new AllParamsIngredient().withStringArrayArg(["foo", null, "bar"]));
+    });
+
+    it("should serialize a keyed ingredient with a default key", () => {
+        expectJsonEquals(`{"KeyedIngredientWithDefaultKey":{"key":"foo","required":"foo"}}`, new KeyedIngredientWithDefaultKey("foo"));
+    });
+
+    it("should serialize a keyed ingredient with a default key which is a defaulted param", () => {
+        expectJsonEquals(`{"KeyedIngredientWithDefaultKeyParamIsDefaulted":{"key":"foo","required":"foo"}}`, new KeyedIngredientWithDefaultKeyParamIsDefaulted());
     });
 });
 

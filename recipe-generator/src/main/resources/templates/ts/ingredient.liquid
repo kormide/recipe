@@ -44,6 +44,9 @@ class {{ingredientName}} extends {{superclass}} {
         this.setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
         {%- endfor %}
         {% endif %}
+        {% if ingredient.keyed and ingredient.defaultKey %}
+        this.setKey(this.properties.get("{{ingredient.defaultKey}}"));
+        {% endif %}
     }
 
     {% for optional in ingredient.optionals %}

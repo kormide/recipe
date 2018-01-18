@@ -8,7 +8,6 @@ public abstract class KeyedIngredient extends Ingredient {
 
     public KeyedIngredient(String name, String domain) {
         super(name, domain);
-        this.key = key;
     }
 
     public KeyedIngredient keyed(String key) {
@@ -19,6 +18,10 @@ public abstract class KeyedIngredient extends Ingredient {
     protected KeyedIngredient(KeyedIngredient other) {
         super(other);
         this.key = other.key;
+    }
+
+    protected void setKey(String key) {
+        this.key = key;
     }
 
     public String getKey() {

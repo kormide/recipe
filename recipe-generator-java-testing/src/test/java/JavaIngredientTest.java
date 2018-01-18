@@ -38,6 +38,8 @@ import testdomain.ingredients.IngredientWithRepeatableVarargOptional;
 import testdomain.ingredients.IngredientWithRequired;
 import testdomain.ingredients.IngredientWithRequiredAndOptional;
 import testdomain.ingredients.IngredientWithStringDefaultContainingQuotes;
+import testdomain.ingredients.KeyedIngredientWithDefaultKey;
+import testdomain.ingredients.KeyedIngredientWithDefaultKeyParamIsDefaulted;
 import testdomain.ingredients.KeyedTestIngredient;
 import testdomain.ingredients.TestEnum;
 
@@ -364,6 +366,30 @@ public class JavaIngredientTest {
 
         assertDispatchedJson(payloadJson(
             "{\"IngredientWithStringDefaultContainingQuotes\":{\"required\":\"\\\"foo\"}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_keyedIngredientWithDefaultKey() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new KeyedIngredientWithDefaultKey("foo")
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"KeyedIngredientWithDefaultKey\":{\"key\": \"foo\",\"required\":\"foo\"}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_keyedIngredientWithDefaultKeyParamIsDefaulted() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new KeyedIngredientWithDefaultKeyParamIsDefaulted()
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"KeyedIngredientWithDefaultKeyParamIsDefaulted\":{\"key\": \"foo\",\"required\":\"foo\"}}"
         ));
     }
 
