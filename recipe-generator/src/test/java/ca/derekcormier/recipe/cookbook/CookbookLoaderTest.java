@@ -947,6 +947,88 @@ public class CookbookLoaderTest {
         loader.load(toStream(yaml));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnUnKeyedIngredientWithNonNullDefaultKey() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyed: false",
+            "    defaultKey: foo"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_doesNotThrowOnUnKeyedIngredientWithNullDefaultKey() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyed: false",
+            "    defaultKey: null"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnDefaultKeyNotARequiredParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyed: true",
+            "    defaultKey: foo"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoad_throwsOnDefaultKeyNotAStringParam() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyed: true",
+            "    defaultKey: foo",
+            "    required:",
+            "      - name: required",
+            "        type: int",
+            "        default: 0"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_nullDefaultKeyDoesNotThrow() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyed: true",
+            "    defaultKey: null"
+        );
+
+        loader.load(toStream(yaml));
+    }
+
+    @Test
+    public void testLoad_keyedIngredientWithDefaultKey() {
+        String yaml = String.join("\n",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    keyed: true",
+            "    defaultKey: required",
+            "    required:",
+            "      - name: required",
+            "        type: string",
+            "        default: foo"
+        );
+
+        Cookbook cookbook = loader.load(toStream(yaml));
+        assertTrue(cookbook.getIngredients().get(0).isKeyed());
+        assertEquals("required", cookbook.getIngredients().get(0).getDefaultKey());
+    }
+
     private InputStream toStream(String str) {
         return new ByteArrayInputStream(str.getBytes());
     }

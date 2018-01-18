@@ -122,6 +122,23 @@ ingredients:
   - name: "KeyedTestIngredient"
     keyed: true
 
+  - name: "KeyedIngredientWithDefaultKey"
+    keyed: true
+    defaultKey: "required"
+    required:
+      - name: "required"
+        type: "string"
+    initializers:
+      - params: ["required"]
+
+  - name: "KeyedIngredientWithDefaultKeyParamIsDefaulted"
+    keyed: true
+    defaultKey: "required"
+    required:
+      - name: "required"
+        type: "string"
+        default: "foo"
+
   - name: "IngredientWithStringDefaultContainingQuotes"
     required:
       - name: "required"

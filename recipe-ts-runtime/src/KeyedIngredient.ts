@@ -7,6 +7,10 @@ export class KeyedIngredient extends Ingredient {
         super(name, domain);
     }
 
+    protected setKey(key: string | null) {
+        this.key = key;
+    }
+
     public getKey(): string | null {
         return this.key;
     }

@@ -11,6 +11,7 @@ import java.util.Map;
 public class Ingredient {
     private final String name;
     private final boolean keyed;
+    private final String defaultKey;
     private final List<Required> required;
     private final List<Initializer> initializers;
     private final List<Optional> optionals;
@@ -20,6 +21,7 @@ public class Ingredient {
     public Ingredient(
         @JsonProperty(value = "name", required = true) String name,
         @JsonProperty(value = "keyed") boolean keyed,
+        @JsonProperty(value = "defaultKey") String defaultKey,
         @JsonProperty(value = "required") List<Required> required,
         @JsonProperty(value = "initializers") List<Initializer> initializers,
         @JsonProperty(value = "optionals") List<Optional> optionals,
@@ -27,6 +29,7 @@ public class Ingredient {
     ) {
         this.name = name;
         this.keyed = keyed;
+        this.defaultKey = defaultKey;
         this.required = required == null ? new ArrayList<>() : required;
         this.initializers = initializers == null ? new ArrayList<>() : initializers;
         this.optionals = optionals == null ? new ArrayList<>() : optionals;
@@ -39,6 +42,10 @@ public class Ingredient {
 
     public boolean isKeyed() {
         return keyed;
+    }
+
+    public String getDefaultKey() {
+        return defaultKey;
     }
 
     public List<Required> getRequired() {

@@ -39,6 +39,11 @@ public class {{ingredientName}} extends {{superclass}} {
         setRequired("{{required.name}}", {{required.default | javavalue:required.type}});
             {%- endif -%}
         {%- endfor %}
+
+        {% if ingredient.keyed and ingredient.defaultKey %}
+        setKey(getProperty("{{ingredient.defaultKey}}"));
+        {% endif %}
+
     }{% endfor %}
 
     {% if ingredient.initializers.size == 0 %}
@@ -47,6 +52,9 @@ public class {{ingredientName}} extends {{superclass}} {
     {%- for required in ingredient.required %}
         setRequired("{{required.name}}", {{required.default | javavalue:required.type}});
     {%- endfor %}
+        {% if ingredient.keyed and ingredient.defaultKey %}
+        setKey(getProperty("{{ingredient.defaultKey}}"));
+        {% endif %}
     }{% endif %}
     protected {{ingredientName}}({{ingredientName}} other) {
         super(other);
