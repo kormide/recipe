@@ -13,15 +13,17 @@ import java.util.Map;
 
 public class Oven {
     private Map<String,Dispatcher> dispatchers = new HashMap<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final SubtypeResolver subtypeResolver = new StdSubtypeResolver();
-
-    public Oven() {
-        objectMapper.setSubtypeResolver(subtypeResolver);
-    }
+    private ObjectMapper objectMapper;
+    private SubtypeResolver subtypeResolver;
 
     public Cake bake(Recipe recipe) {
+        this.subtypeResolver = new StdSubtypeResolver();
+
         registerSubtypes(recipe);
+
+        objectMapper = new ObjectMapper();
+        objectMapper.setSubtypeResolver(subtypeResolver);
+
         Cake cake = _bake(recipe, new Cake());
         return cake;
     }
