@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Recipe extends Ingredient {
     @JsonProperty("context")
     private String context;
-    @JsonProperty("contextIngredient")
-    private KeyedIngredient contextIngredient;
     @JsonProperty("ingredients")
     private final List<Ingredient> ingredients;
 
@@ -21,15 +19,16 @@ public class Recipe extends Ingredient {
     }
 
     public static Recipe context(String context, Ingredient... ingredients) {
-        Recipe recipe = new Recipe(ingredients);
+        Recipe recipe = prepare(ingredients);
         recipe.context = context;
         return recipe;
     }
 
-    public static Recipe context(KeyedIngredient context, Ingredient... ingredients) {
-        Recipe recipe = new Recipe(ingredients);
-        recipe.contextIngredient = context;
-        return recipe;
+    public static Recipe context(KeyedIngredient contextIngredient, Ingredient... ingredients) {
+        Objects.requireNonNull(contextIngredient);
+        return prepare(contextIngredient,
+            context(contextIngredient.getKey(), ingredients)
+        );
     }
 
     protected Recipe() {
@@ -39,7 +38,16 @@ public class Recipe extends Ingredient {
 
     protected Recipe(Ingredient...ingredients) {
         super("Recipe");
-        this.ingredients = Arrays.asList(ingredients);
+        this.ingredients = new ArrayList<>();
+        for (Ingredient ingredient: ingredients) {
+            // flatten context-free recipes
+            if (ingredient instanceof Recipe && ((Recipe)ingredient).context == null) {
+                this.ingredients.addAll(((Recipe)ingredient).ingredients);
+            }
+            else {
+                this.ingredients.add(ingredient);
+            }
+        }
     }
 
     public List<Ingredient> getIngredients() {
@@ -48,10 +56,6 @@ public class Recipe extends Ingredient {
 
     public String getContext() {
         return context;
-    }
-
-    public KeyedIngredient getContextIngredient() {
-        return contextIngredient;
     }
 
     public class Segment {
@@ -71,39 +75,9 @@ public class Recipe extends Ingredient {
     }
 
     private void _segment(Recipe currRecipe, List<Recipe> recipeStack, String currDomain, List<Segment> segments) {
-        if (recipeStack.get(0).contextIngredient != null) {
-            KeyedIngredient contextIngredient = recipeStack.get(0).contextIngredient;
-            if (!contextIngredient.getDomain().equals(currDomain)) {
-                //copy recipe structure
-                Recipe outerRecipe = null;
-                Recipe recipe = null;
-                for (Recipe r : recipeStack) {
-                    if (recipe == null) {
-                        outerRecipe = new Recipe();
-                        recipe = outerRecipe;
-                    }
-                    else {
-                        outerRecipe = Recipe.prepare(outerRecipe);
-                    }
-                    outerRecipe.context = r.context;
-                    outerRecipe.contextIngredient = r.contextIngredient;
-                }
-
-                Segment segmented = new Segment();
-                segmented.domain = contextIngredient.getDomain();
-                segmented.recipe = outerRecipe;
-                segments.add(segmented);
-
-                currRecipe = recipe;
-                currDomain = contextIngredient.getDomain();
-            }
-
-            currRecipe.contextIngredient = contextIngredient;
-        }
         for (Ingredient ingredient: recipeStack.get(0).ingredients) {
             if (ingredient instanceof Recipe) {
                 Recipe recipe = new Recipe();
-                recipe.contextIngredient = ((Recipe) ingredient).contextIngredient;
                 recipe.context = ((Recipe) ingredient).context;
                 recipeStack.add(0, (Recipe) ingredient);
                 _segment(recipe, recipeStack, currDomain, segments);
@@ -126,7 +100,6 @@ public class Recipe extends Ingredient {
                             outerRecipe = Recipe.prepare(outerRecipe);
                         }
                         outerRecipe.context = r.context;
-                        outerRecipe.contextIngredient = r.contextIngredient;
                     }
 
                     Segment segmented = new Segment();

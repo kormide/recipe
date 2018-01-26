@@ -15,7 +15,7 @@ export class KeyedIngredient extends Ingredient {
         return this.key;
     }
 
-    public keyed(key: string): KeyedIngredient {
+    public keyed(key: string | null): KeyedIngredient {
         this.key = key;
         return this;
     }
