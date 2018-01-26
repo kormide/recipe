@@ -9,16 +9,29 @@ export interface Segment {
 export class Recipe extends Ingredient {
     private readonly ingredients: Ingredient[];
     private context: string | null = null;
-    private contextIngredient: KeyedIngredient | null = null;
 
     public static prepare(...ingredients: Ingredient[]): Recipe {
         return new Recipe(...ingredients);
     }
 
     public static context(context: string | KeyedIngredient, ...ingredients: Ingredient[]): Recipe {
-        const recipe = new Recipe(...ingredients);
-        recipe.context = (typeof context === "string") ? context : null;
-        recipe.contextIngredient = (context instanceof KeyedIngredient) ? context : null;
+        let recipe: Recipe;
+        if (typeof context === "string") {
+            recipe = Recipe.prepare(...ingredients);
+            recipe.context = context;
+        }
+        else {
+            const contextKey = context.getKey();
+            if (contextKey) {
+                recipe = Recipe.prepare(context,
+                    Recipe.context(contextKey, ...ingredients)
+                );
+            }
+            else {
+                recipe = Recipe.prepare(context, ...ingredients);
+            }
+        }
+
         return recipe;
     }
 
@@ -30,10 +43,6 @@ export class Recipe extends Ingredient {
         return this.context;
     }
 
-    public getContextIngredient(): KeyedIngredient | null {
-        return this.contextIngredient;
-    }
-
     public segment(): Segment[] {
         const segments: Segment[] = [];
         const recipeStack: Recipe[] = [];
@@ -43,40 +52,9 @@ export class Recipe extends Ingredient {
     }
 
     private _segment(currRecipe: Recipe | null, recipeStack: Recipe[], currDomain: string | null, segments: Segment[]) {
-        const contextIngredient = recipeStack[0].contextIngredient;
-        if (contextIngredient !== null) {
-            if (contextIngredient.getDomain() !== currDomain) {
-                //copy recipe structure
-                let outerRecipe: Recipe | null = null;
-                let recipe: Recipe | null = null;
-                for (const r of recipeStack) {
-                    if (recipe === null) {
-                        outerRecipe = new Recipe();
-                        recipe = outerRecipe;
-                    }
-                    else {
-                        outerRecipe = Recipe.prepare(outerRecipe!);
-                    }
-                    outerRecipe.context = r.context;
-                    outerRecipe.contextIngredient = r.contextIngredient;
-                }
-
-                const segmented: Segment = {
-                    domain: contextIngredient.getDomain(),
-                    recipe: outerRecipe!
-                };
-                segments.push(segmented);
-
-                currRecipe = recipe;
-                currDomain = contextIngredient.getDomain();
-            }
-
-            currRecipe!.contextIngredient = contextIngredient;
-        }
         for (const ingredient of recipeStack[0].ingredients) {
             if (ingredient instanceof Recipe) {
                 let recipe = new Recipe();
-                recipe.contextIngredient = ingredient.contextIngredient;
                 recipe.context = ingredient.context;
                 recipeStack.unshift(ingredient);
                 this._segment(recipe, recipeStack, currDomain, segments);
@@ -99,7 +77,6 @@ export class Recipe extends Ingredient {
                             outerRecipe = Recipe.prepare(outerRecipe!);
                         }
                         outerRecipe.context = r.context;
-                        outerRecipe.contextIngredient = r.contextIngredient;
                     }
 
                     const segmented: Segment = {
@@ -125,15 +102,20 @@ export class Recipe extends Ingredient {
         if (this.context) {
             jsonObj[this.getIngredientType()].context = this.context;
         }
-        else if (this.contextIngredient) {
-            jsonObj[this.getIngredientType()].contextIngredient = this.contextIngredient.toJSON();
-        }
 
         return jsonObj;
     }
 
     protected constructor(...ingredients: Ingredient[]) {
         super("Recipe");
-        this.ingredients = ingredients;
+        this.ingredients = [];
+        for (const ingredient of ingredients) {
+            if (ingredient instanceof Recipe && !ingredient.getContext()) {
+                this.ingredients.push(...ingredient.ingredients);
+            }
+            else {
+                this.ingredients.push(ingredient);
+            }
+        }
     }
 }

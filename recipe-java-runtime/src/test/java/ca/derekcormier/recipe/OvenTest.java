@@ -249,10 +249,11 @@ public class OvenTest {
         Dispatcher spy = setupDispatcherSpy("A");
 
         KeyedIngredient keyedIngredient = new KeyedIngredient("EmptyKeyedIngredient", "A") {};
+        keyedIngredient.setKey("key");
         Ingredient ingredient = new Ingredient("EmptyIngredient", "A") {};
 
         oven.bake(Recipe.context(keyedIngredient, ingredient));
-        verify(spy).dispatch("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"EmptyKeyedIngredient\":{}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+        verify(spy).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyKeyedIngredient\":{\"key\":\"key\"}},{\"Recipe\":{\"context\":\"key\",\"ingredients\":[{\"EmptyIngredient\":{}}]}}]}},\"cake\":{}}");
     }
 
     @Test
@@ -262,14 +263,13 @@ public class OvenTest {
         KeyedIngredient keyedIngredient = new KeyedIngredient("EmptyKeyedIngredient", "A") {};
 
         oven.bake(Recipe.context(keyedIngredient));
-        verify(spy).dispatch("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"EmptyKeyedIngredient\":{}},\"ingredients\":[]}},\"cake\":{}}");
+        verify(spy).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyKeyedIngredient\":{}}]}},\"cake\":{}}");
     }
 
     @Test
     public void testBake_serializesPayload_nestedEmptyRecipeWithIngredientContextInOtherDomain() {
         Dispatcher spyA = setupDispatcherSpy("A");
         Dispatcher spyB = setupDispatcherSpy("B");
-
 
         Ingredient ingredient = new Ingredient("EmptyIngredient", "A") {};
         KeyedIngredient keyedIngredient = new KeyedIngredient("EmptyKeyedIngredient", "B") {};
@@ -280,7 +280,7 @@ public class OvenTest {
         ));
 
         verify(spyA).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
-        verify(spyB).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"Recipe\":{\"contextIngredient\":{\"EmptyKeyedIngredient\":{}},\"ingredients\":[]}}]}},\"cake\":{}}");
+        verify(spyB).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyKeyedIngredient\":{}}]}},\"cake\":{}}");
     }
 
     private String payloadJson(String... ingredientJson) {

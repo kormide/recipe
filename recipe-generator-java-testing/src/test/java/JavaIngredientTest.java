@@ -419,7 +419,7 @@ public class JavaIngredientTest {
 
         oven.bake(Recipe.context(new KeyedTestIngredient()));
 
-        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{}},\"ingredients\":[]}},\"cake\":{}}");
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"KeyedTestIngredient\":{}}]}},\"cake\":{}}");
     }
 
     @Test
@@ -428,7 +428,7 @@ public class JavaIngredientTest {
 
         oven.bake(Recipe.context(new KeyedTestIngredient().keyed("foo")));
 
-        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":\"foo\"}},\"ingredients\":[]}},\"cake\":{}}");
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"KeyedTestIngredient\":{\"key\":\"foo\"}}]}},\"cake\":{}}");
     }
 
     @Test
@@ -439,7 +439,7 @@ public class JavaIngredientTest {
             new EmptyIngredient()
         ));
 
-        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":\"foo\"}},\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
+        assertDispatchedJson("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"KeyedTestIngredient\":{\"key\":\"foo\"}},{\"Recipe\":{\"context\":\"foo\",\"ingredients\":[{\"EmptyIngredient\":{}}]}}]}},\"cake\":{}}");
     }
 
     @Test
