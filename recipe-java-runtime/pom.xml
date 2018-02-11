@@ -5,11 +5,11 @@
     <parent>
         <groupId>ca.derekcormier.recipe</groupId>
         <artifactId>recipe</artifactId>
-        <version>0.2.6-SNAPSHOT</version>
+        <version>0.2.6</version>
     </parent>
 
     <artifactId>recipe-java-runtime</artifactId>
-    <version>0.2.6-SNAPSHOT</version>
+    <version>0.2.6</version>
     <packaging>jar</packaging>
 
     <name>Recipe Java Runtime</name>
