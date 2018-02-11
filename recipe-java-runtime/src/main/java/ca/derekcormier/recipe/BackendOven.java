@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.StdSubtypeResolver;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackendOven {
+public class BackendOven extends AbstractOven {
     private final Map<String,BaseIngredientHook> hooks = new HashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SubtypeResolver subtypeResolver = new StdSubtypeResolver();
@@ -22,6 +22,7 @@ public class BackendOven {
         try {
             BackendPayload payload = objectMapper.readValue(json, BackendPayload.class);
             Cake cake = payload.getCake();
+            getSerializers().forEach(cake::addSerializer);
             bakeIngredient(payload.getRecipe(), cake);
             return objectMapper.writeValueAsString(cake);
         }

@@ -80,6 +80,24 @@ public class CakeTest {
         cake.publish("a" + Cake.SEPARATOR + "", "bar");
     }
 
+    @Test
+    public void testPublish_serializesClass() {
+        cake.addSerializer(new CakeValueSerializer<String,String>(String.class) {
+            @Override
+            public String serialize(String value) {
+                return "_" + value + "_";
+            }
+
+            @Override
+            public String deserialize(Class<? extends String> clazz, String value) {
+                return value.toString();
+            }
+        });
+
+        cake.publish("foo", "bar");
+        assertEquals("_bar_", cake.get("foo"));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testKey_throwsOnNoInputs() {
         Cake.key();
@@ -249,6 +267,24 @@ public class CakeTest {
         assertEquals("foo", cake.getPublishedKeyForValue("5", false));
     }
 
+    @Test
+    public void testGetPublishedKeyForValue_searchesBasesOnSerializedValue() {
+        cake.addSerializer(new CakeValueSerializer<String,String>(String.class) {
+            @Override
+            public String serialize(String value) {
+                return "_" + value + "_";
+            }
+            @Override
+            public String deserialize(Class<? extends String> clazz, String value) {
+                return value.substring(1, value.length() - 1);
+            }
+        });
+
+        cake.publish("foo", "bar");
+
+        assertEquals("foo", cake.getPublishedKeyForValue("bar", false));
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testGetContext_throwsInRootNamespace() {
         cake.getContext();
@@ -279,6 +315,67 @@ public class CakeTest {
             });
         });
     }
+
+    @Test
+    public void testGet_deserializesClass() {
+        cake.addSerializer(new CakeValueSerializer<String,String>(String.class) {
+            @Override
+            public String serialize(String value) {
+                return "_" + value + "_";
+            }
+            @Override
+            public String deserialize(Class<? extends String> clazz, String value) {
+                return value.substring(1, value.length() - 1);
+            }
+        });
+
+        cake.publish("foo", "bar");
+
+        assertEquals("_bar_", cake.get("foo"));
+        assertEquals("bar", cake.get(String.class, "foo"));
+    }
+
+    @Test
+    public void testGetContext_deserializesClass() {
+        cake.addSerializer(new CakeValueSerializer<String,String>(String.class) {
+            @Override
+            public String serialize(String value) {
+                return "_" + value + "_";
+            }
+            @Override
+            public String deserialize(Class<? extends String> clazz, String value) {
+                return value.substring(1, value.length() - 1);
+            }
+        });
+
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            assertEquals("_bar_", cake.getContext());
+            assertEquals("bar", cake.getContext(String.class));
+        });
+    }
+
+    @Test
+    public void testGetOrGetContext_deserializesClass() {
+        cake.addSerializer(new CakeValueSerializer<String,String>(String.class) {
+            @Override
+            public String serialize(String value) {
+                return "_" + value + "_";
+            }
+            @Override
+            public String deserialize(Class<? extends String> clazz, String value) {
+                return value.substring(1, value.length() - 1);
+            }
+        });
+
+        cake.publish("foo", "bar");
+        cake.inNamespace("foo", () -> {
+            cake.publish("a", "b");
+            assertEquals("_b_", cake.getOrGetContext("a"));
+            assertEquals("b", cake.getOrGetContext(String.class, "a"));
+        });
+    }
+
 
     @Test
     public void testHasContext_returnsFalseAtRootNamespace() {
