@@ -5,7 +5,7 @@
     <parent>
         <artifactId>recipe</artifactId>
         <groupId>ca.derekcormier.recipe</groupId>
-        <version>0.2.6</version>
+        <version>0.2.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>ca.derekcormier.recipe</groupId>
             <artifactId>recipe-java-runtime</artifactId>
-            <version>0.2.6</version>
+            <version>0.2.7-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -43,7 +43,7 @@
             <plugin>
                 <groupId>ca.derekcormier.recipe</groupId>
                 <artifactId>recipe-generator-maven-plugin</artifactId>
-                <version>0.2.6</version>
+                <version>0.2.7-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>generate-ingredients</id>
