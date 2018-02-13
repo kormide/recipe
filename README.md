@@ -22,11 +22,11 @@ Recipe is a cross-language, generative framework that uses the metaphor of bakin
 
 ## TL;DR
 
-First, you create a [cookbook.yaml]() file for each of your services. The cookbook contains information about the domain concepts belonging to the service and what information you need to set them up.
+Create a [cookbook.yaml]() that descirbes the domain concepts within a service.
 
-Then, you use the cookbook to generate **ingredients**, builder-style objects that set up some domain concept, and implementation **hooks**, which carry out the actual service logic for instantiating them. Hooks and ingredients can be generated in any of the supported languages.
+Use the cookbook to generate **ingredients**—builder-style objects used to set up domain concepts, and **hooks**—service-side implementations for each of the ingredients. Either can be generated in any of the supported languages.
 
-You can then setup each of your integration tests by baking **recipes** that are composed of ingredients or other recipes:
+Set up the data for integration tests by baking **recipes** of the generated ingredients (or other recipes).
 
 ##### In Java...
 ```java
@@ -58,11 +58,11 @@ const userId: string = cake.get("Bob");
 /* ... test logic here ... */
 ``` 
 
-Baking a recipe will set up the ingredients in order by dispatching them to the service that owns the ingredient and invoking it's implementation hook.
+The ingredients are baked in order by dispatching them to the owning service's hook.
 
-The result of baking is a **cake**, which contains information about what was set up during the baking process—usually IDs of created entities, but really any information you need for your tests. Cakes contain a complex [keying and namespace mechanism]() that allows ingredients to refer to other ingredients before they have been baked.
+Baking returns a **cake**, a dictionary that contains information about what was set up during the baking process—usually IDs of created entities, but really any information you need for your tests. Cakes use a flexible [keying and namespacing]() mechanism.
 
-You can create custom **fixture** classes for common setup configurations. You can combine fixtures with other ingredients to create fine-grained, declarative data setups.
+Create **fixture** classes for commonly used sets of ingredients and add additional ingredients for a fine-grained data setups.
 
 ```java
 Cake cake = oven.bake(Recipe.prepare(
