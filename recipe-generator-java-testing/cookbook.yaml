@@ -96,6 +96,34 @@ ingredients:
         type: "int..."
         repeatable: true
 
+  - name: "IngredientWithRequiredVararg"
+    required:
+      - name: "required"
+        type: "string..."
+    initializers:
+      - params: ["required"]
+
+  - name: "IngredientWithRequiredAndRequiredVararg"
+    required:
+      - name: "requiredVararg"
+        type: "string..."
+      - name: "required"
+        type: "int"
+    initializers:
+      - params: ["required", "requiredVararg"]
+
+  - name: "IngredientWithRequiredStringArrayWithDefault"
+    required:
+      - name: "required"
+        type: "string[]"
+        default: ["foo", "bar"]
+
+  - name: "IngredientWithRequiredVarargStringArrayWithDefault"
+    required:
+      - name: "required"
+        type: "string[]..."
+        default: [["foo", "bar"], ["moo"]]
+
   - name: "AllParamsIngredient"
     optionals:
       - name: "stringArg"

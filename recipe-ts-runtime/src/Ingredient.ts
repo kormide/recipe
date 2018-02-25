@@ -69,6 +69,51 @@ export abstract class Ingredient {
         return copy;
     }
 
+    protected cookbookTypeAndValueMatch(type: string, value: any): boolean {
+        if (type === "string") {
+            return value === null || typeof value === "string" ;
+        } else if (type === "int") {
+            return typeof value === "number";
+        } else if (type === "float") {
+            return typeof value === "number";
+        } else if (type === "boolean" || type === "flag") {
+            return typeof value === "boolean";
+        } else if (type.endsWith("[]")) {
+            return Array.isArray(value) && value.reduce((result, v) => result && this.cookbookTypeAndValueMatch(type.substring(0, type.length - 2), v), true);
+        } else if (type.endsWith("...")) {
+            return Array.isArray(value) && value.reduce((result, v) => result && this.cookbookTypeAndValueMatch(type.substring(0, type.length - 3), v), true);
+        } else {
+            return value.constructor.name === type;
+        }
+    }
+
+    protected argsMatchSignature(args: any[], signature: string[]): boolean {
+        let varargMode = false;
+        let varargType = "";
+
+        const signatureHasVararg = signature.length > 0 && signature[signature.length - 1].endsWith("...");
+        if (args.length < signature.length && !(signatureHasVararg && args.length === signature.length - 1)) {
+            return false;
+        }
+
+        for (let i = 0; i < args.length; i++) {
+            if (i >= signature.length && !varargMode) {
+                return false;
+            }
+
+            if (!varargMode && signature[i].endsWith("...")) {
+                varargMode = true;
+                varargType = signature[i].substring(0, signature[i].length - 3);
+            }
+
+            if (!this.cookbookTypeAndValueMatch(varargMode ? varargType : signature[i], args[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public toJSON() {
         const jsonObj: any = {};
         jsonObj[this.ingredientType] = this.properties;

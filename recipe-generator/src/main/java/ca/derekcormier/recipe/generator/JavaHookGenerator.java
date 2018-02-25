@@ -7,6 +7,7 @@ import java.util.Map;
 
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.Ingredient;
+import ca.derekcormier.recipe.generator.filter.JavaTypeFilter;
 import liqp.filters.Filter;
 
 public class JavaHookGenerator extends CookbookGenerator {
@@ -70,6 +71,6 @@ public class JavaHookGenerator extends CookbookGenerator {
     }
 
     private void registerFilters(Cookbook cookbook) {
-        Filter.registerFilter(JavaFilters.createJavaTypeFilter(cookbook));
+        Filter.registerFilter(new JavaTypeFilter(cookbook));
     }
 }

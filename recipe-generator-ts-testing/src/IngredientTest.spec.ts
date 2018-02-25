@@ -5,7 +5,9 @@ import {
     AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
     IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
     IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant,
-    KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted
+    KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted, IngredientWithRequiredVararg,
+    IngredientWithRequiredStringArrayWithDefault, IngredientWithRequiredVarargStringArrayWithDefault,
+    IngredientWithRequiredAndRequiredVararg
 } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
@@ -210,6 +212,23 @@ describe("serialization", () => {
 
     it("should serialize an ingredient with a string default containing quotes", () => {
         expectJsonEquals(`{"IngredientWithStringDefaultContainingQuotes":{"required":"\\"foo"}}`, new IngredientWithStringDefaultContainingQuotes());
+    });
+
+    it("should serialize an ingredient with a required vararg", () => {
+        expectJsonEquals(`{"IngredientWithRequiredVararg":{"required":["foo","bar"]}}`, new IngredientWithRequiredVararg("foo", "bar"));
+    });
+
+    it("should serialize an ingredient with a required and a required vararg", () => {
+        expectJsonEquals(`{"IngredientWithRequiredAndRequiredVararg":{"required":5,"requiredVararg":[]}}`, new IngredientWithRequiredAndRequiredVararg(5));
+        expectJsonEquals(`{"IngredientWithRequiredAndRequiredVararg":{"required":5,"requiredVararg":["foo"]}}`, new IngredientWithRequiredAndRequiredVararg(5, "foo"));
+    });
+
+    it("should serialize an ingredient with a defaulted required string array", () => {
+        expectJsonEquals(`{"IngredientWithRequiredStringArrayWithDefault":{"required":["foo","bar"]}}`, new IngredientWithRequiredStringArrayWithDefault());
+    });
+
+    it("should serialize an ingredient with a defaulted required vararg of string arrays", () => {
+        expectJsonEquals(`{"IngredientWithRequiredVarargStringArrayWithDefault":{"required":[["foo","bar"],["moo"]]}}`, new IngredientWithRequiredVarargStringArrayWithDefault());
     });
 
     it("should serialize an ingredient with a null string value", () => {
