@@ -37,6 +37,10 @@ import testdomain.ingredients.IngredientWithRepeatableOptional;
 import testdomain.ingredients.IngredientWithRepeatableVarargOptional;
 import testdomain.ingredients.IngredientWithRequired;
 import testdomain.ingredients.IngredientWithRequiredAndOptional;
+import testdomain.ingredients.IngredientWithRequiredAndRequiredVararg;
+import testdomain.ingredients.IngredientWithRequiredStringArrayWithDefault;
+import testdomain.ingredients.IngredientWithRequiredVararg;
+import testdomain.ingredients.IngredientWithRequiredVarargStringArrayWithDefault;
 import testdomain.ingredients.IngredientWithStringDefaultContainingQuotes;
 import testdomain.ingredients.KeyedIngredientWithDefaultKey;
 import testdomain.ingredients.KeyedIngredientWithDefaultKeyParamIsDefaulted;
@@ -203,6 +207,27 @@ public class JavaIngredientTest {
     }
 
     @Test
+    public void testGeneration_ingredientWithRequiredVararg() {
+        new IngredientWithRequiredVararg("foo", "bar");
+    }
+
+    @Test
+    public void testGeneration_ingredientWithRequiredAndRequiredVararg() {
+        new IngredientWithRequiredAndRequiredVararg(5);
+        new IngredientWithRequiredAndRequiredVararg(5, "foo");
+    }
+
+    @Test
+    public void testGeneration_ingredientWithRequiredStringArrayWithDefault() {
+        new IngredientWithRequiredStringArrayWithDefault();
+    }
+
+    @Test
+    public void testGeneration_ingredientWithRequiredVarargStringArrayWithDefault() {
+        new IngredientWithRequiredVarargStringArrayWithDefault();
+    }
+
+    @Test
     public void testGeneration_ingredientsHaveCorrectDomain() {
         setupDispatcherSpy("TestDomain");
         oven.bake(Recipe.prepare(new IngredientWithRequired("foo")));
@@ -366,6 +391,54 @@ public class JavaIngredientTest {
 
         assertDispatchedJson(payloadJson(
             "{\"IngredientWithStringDefaultContainingQuotes\":{\"required\":\"\\\"foo\"}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithRequiredVararg() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new IngredientWithRequiredVararg("foo", "bar")
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"IngredientWithRequiredVararg\":{\"required\":[\"foo\",\"bar\"]}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithRequiredAndRequiredVararg() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new IngredientWithRequiredAndRequiredVararg(5)
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"IngredientWithRequiredAndRequiredVararg\":{\"requiredVararg\":[],\"required\":5}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithRequiredStringArrayWithDefault() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new IngredientWithRequiredStringArrayWithDefault()
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"IngredientWithRequiredStringArrayWithDefault\":{\"required\":[\"foo\",\"bar\"]}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithRequiredVarargStringArrayWithDefault() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new IngredientWithRequiredVarargStringArrayWithDefault()
+        ));
+
+        assertDispatchedJson(payloadJson(
+            "{\"IngredientWithRequiredVarargStringArrayWithDefault\":{\"required\":[[\"foo\",\"bar\"],[\"moo\"]]}}"
         ));
     }
 

@@ -18,9 +18,7 @@ export class {{ingredientName}} extends {{superclass}} {
         {%- for param in initializer.params -%}
             {%- for required in ingredient.required -%}
                 {%- if param == required.name -%}
-                    {%- assign type = required.type | tstype -%}
-                    {%- assign argWithColonAndSpace = param | append: ': ' -%}
-                    {%- assign argument = argWithColonAndSpace | append: type -%}
+                    {{ required | tsparam }}
                 {%- endif -%}
             {%- endfor -%}
             {{- argument -}}

@@ -16,6 +16,10 @@ import ca.derekcormier.recipe.cookbook.type.ArrayType;
 import ca.derekcormier.recipe.cookbook.type.FlagType;
 import ca.derekcormier.recipe.cookbook.type.ParamType;
 import ca.derekcormier.recipe.cookbook.type.Type;
+import ca.derekcormier.recipe.generator.filter.JsParamFilter;
+import ca.derekcormier.recipe.generator.filter.TsParamFilter;
+import ca.derekcormier.recipe.generator.filter.TsTypeFilter;
+import ca.derekcormier.recipe.generator.filter.TsValueFilter;
 import liqp.filters.Filter;
 
 public class TypescriptIngredientGenerator extends CookbookGenerator {
@@ -36,6 +40,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
             info.put("nonPrimitiveTypes", getNonPrimitiveTypes(ingredient, cookbook));
             info.put("constantKeys", getConstantKeyValueArrays(ingredient).get(0));
             info.put("constantValues", getConstantKeyValueArrays(ingredient).get(1));
+            info.put("isVararg", getIsVarargMap(ingredient, cookbook));
 
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
@@ -122,10 +127,11 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
     }
 
     private void registerFilters(Cookbook cookbook) {
-        Filter.registerFilter(TypescriptFilters.createTsTypeFilter(cookbook));
-        Filter.registerFilter(TypescriptFilters.createTsParamFilter(cookbook));
-        Filter.registerFilter(TypescriptFilters.createJsParamFilter(cookbook));
-        Filter.registerFilter(TypescriptFilters.createTsValueFilter(cookbook));
+        TsTypeFilter tsTypeFilter = new TsTypeFilter(cookbook);
+        Filter.registerFilter(tsTypeFilter);
+        Filter.registerFilter(new TsParamFilter(cookbook, tsTypeFilter));
+        Filter.registerFilter(new JsParamFilter(cookbook));
+        Filter.registerFilter(new TsValueFilter(cookbook));
     }
 
     private Map<String,String> getRequiredTypeMapping(Ingredient ingredient) {
@@ -136,6 +142,16 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
         }
 
         return requiredTypes;
+    }
+
+    private Map<String,Boolean> getIsVarargMap(Ingredient ingredient, Cookbook cookbook) {
+        Map<String,Boolean> isVararg = new HashMap<>();
+
+        for (Required required: ingredient.getRequired()) {
+            isVararg.put(required.getName(), CookbookUtils.parseType(required.getType(), cookbook).isVararg());
+        }
+
+        return isVararg;
     }
 
     private Set<String> getNonPrimitiveTypes(Ingredient ingredient, Cookbook cookbook) {
