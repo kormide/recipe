@@ -24,8 +24,7 @@ public class Oven extends AbstractOven {
         objectMapper = new ObjectMapper();
         objectMapper.setSubtypeResolver(subtypeResolver);
 
-        Cake cake = _bake(recipe, new Cake());
-        getSerializers().forEach(cake::addSerializer);
+        Cake cake = _bake(recipe, createCake());
         return cake;
     }
 
@@ -58,12 +57,17 @@ public class Oven extends AbstractOven {
     }
 
     private String serializePayload(Recipe recipe, Cake cake) throws JsonProcessingException {
-        Payload payload = new Payload(recipe, cake);
+        Cake plainCake = new Cake();
+        plainCake.setEntries(cake.getEntries());
+        Payload payload = new Payload(recipe, plainCake);
         return objectMapper.writeValueAsString(payload);
     }
 
     private Cake deserializeCake(String json) throws IOException {
-        return objectMapper.readValue(json, Cake.class);
+        Cake plainCake = objectMapper.readValue(json, Cake.class);
+        Cake cake = createCake();
+        cake.setEntries(plainCake.getEntries());
+        return cake;
     }
 
     private void registerSubtypes(Recipe recipe) {

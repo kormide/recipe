@@ -18,7 +18,6 @@ public class Cake {
     public static final String SEPARATOR = ".";
     private final Map<String,Object> entries = new HashMap<>();
     private final LinkedList<String> prefixStack = new LinkedList<>();
-    private final List<CakeValueSerializer> serializers = new LinkedList<>();
 
     public static String key(String...subKeys) {
         if (subKeys.length == 0) {
@@ -72,28 +71,12 @@ public class Cake {
 
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> clazz, String... key) {
-        Object value = get(key);
-
-        for (CakeValueSerializer serializer: serializers) {
-            if (serializer.getSerializeType().isAssignableFrom(clazz)) {
-                return (T)serializer.deserialize(clazz, value);
-            }
-        }
-
-        return (T)value;
+        return clazz.cast(get(key));
     }
 
     public void publish(String key, Object value) {
         getSubKeysAndValidateFullKey(key);
         String newKey = getPrefixWithSeparator(prefixStack) + key;
-
-        for (CakeValueSerializer serializer: serializers) {
-            if (serializer.getSerializeType().isAssignableFrom(value.getClass())) {
-                value = serializer.serialize(value);
-                break;
-            }
-        }
-
         entries.put(newKey, value);
     }
 
@@ -110,14 +93,7 @@ public class Cake {
     }
 
     public String getPublishedKeyForValue(Object value, boolean fullyQualified) {
-        for (CakeValueSerializer serializer: serializers) {
-            if (serializer.getSerializeType().isAssignableFrom(value.getClass())) {
-                value = serializer.serialize(value);
-                break;
-            }
-        }
-        Object finalValue = value;
-        List<String> matchingKeys = entries.entrySet().stream().filter(e -> e.getValue().equals(finalValue)).map(Map.Entry::getKey).collect(Collectors.toList());
+        List<String> matchingKeys = entries.entrySet().stream().filter(e -> e.getValue().equals(value)).map(Map.Entry::getKey).collect(Collectors.toList());
         if (matchingKeys.size() == 1) {
             if (fullyQualified) {
                 return matchingKeys.get(0);
@@ -147,7 +123,6 @@ public class Cake {
     }
 
     @JsonIgnore
-    @SuppressWarnings("unchecked")
     public <T> T getContext() {
         if (this.prefixStack.isEmpty()) {
             throw new IllegalStateException("cannot get context in root namespace");
@@ -166,15 +141,7 @@ public class Cake {
     @JsonIgnore
     @SuppressWarnings("unchecked")
     public <T> T getContext(Class<T> clazz) {
-        Object value = getContext();
-
-        for (CakeValueSerializer serializer: serializers) {
-            if (serializer.getSerializeType().isAssignableFrom(clazz)) {
-                return (T)serializer.deserialize(clazz, value);
-            }
-        }
-
-        return (T)value;
+        return clazz.cast(getContext());
     }
 
     @JsonIgnore
@@ -190,15 +157,11 @@ public class Cake {
     @JsonIgnore
     public <T> T getOrGetContext(Class<T> clazz, String... key) {
         try {
-            return get(clazz, key);
+            return clazz.cast(get(key));
         }
         catch (RuntimeException e) {
-            return getContext(clazz);
+            return clazz.cast(getContext());
         }
-    }
-
-    public void addSerializer(CakeValueSerializer serializer) {
-        serializers.add(serializer);
     }
 
     private static void validateKey(String key) {
@@ -225,8 +188,13 @@ public class Cake {
     }
 
     @JsonAnyGetter
-    private Map<String,Object> getEntries() {
+    protected Map<String,Object> getEntries() {
         return entries;
+    }
+
+    protected void setEntries(Map<String,Object> entries) {
+        this.entries.clear();
+        this.entries.putAll(entries);
     }
 
     @JsonAnySetter

@@ -197,55 +197,6 @@ public class BackendOvenTest {
         verify(hook2).bake(any(), any());
     }
 
-    @Test
-    public void testAddSerializer_cakeDeserializesValues() {
-        EmptyIngredientHook hook = spy(EmptyIngredientHook.class);
-        oven.registerHook(hook);
-        oven.addCakeValueSerializer(new CakeValueSerializer<String,String>(String.class) {
-            @Override
-            public String serialize(String value) {
-                return "_" + value + "_";
-            }
-            @Override
-            public String deserialize(Class<? extends String> clazz, String value) {
-                return value.substring(1, value.length() - 1);
-            }
-        });
-
-        Mockito.doAnswer(invocation -> {
-            Cake cake = invocation.getArgument(1);
-            assertEquals("bar", cake.get(String.class, "foo"));
-            return null;
-        }).when(hook).bake(any(), any());
-
-        oven.bake("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{\"foo\":\"_bar_\"}}");
-    }
-
-    @Test
-    public void testAddSerializer_cakeSerializesValues() {
-        EmptyIngredientHook hook = spy(EmptyIngredientHook.class);
-        oven.registerHook(hook);
-        oven.addCakeValueSerializer(new CakeValueSerializer<String,String>(String.class) {
-            @Override
-            public String serialize(String value) {
-                return "_" + value + "_";
-            }
-            @Override
-            public String deserialize(Class<? extends String> clazz, String value) {
-                return value.substring(1, value.length() - 1);
-            }
-        });
-
-        Mockito.doAnswer(invocation -> {
-            Cake cake = invocation.getArgument(1);
-            cake.publish("foo", "bar");
-            assertEquals("_bar_", cake.get("foo"));
-            return null;
-        }).when(hook).bake(any(), any());
-
-        oven.bake("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
-    }
-
     public static class EmptyIngredientHook extends BaseIngredientHook<EmptyIngredientData> {
         public EmptyIngredientHook() {
             super("EmptyIngredient", EmptyIngredientData.class);
