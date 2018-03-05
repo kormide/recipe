@@ -5,11 +5,11 @@
     <parent>
         <groupId>ca.derekcormier.recipe</groupId>
         <artifactId>recipe</artifactId>
-        <version>0.2.9-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <artifactId>recipe-ts-runtime</artifactId>
-    <version>0.2.9-SNAPSHOT</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
 
     <name>Recipe TypeScript Runtime</name>
