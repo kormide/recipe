@@ -21,6 +21,8 @@ public class RecipeGeneratorMojo extends AbstractMojo {
     private MavenProject project;
 
     @Parameter
+    private String domain;
+    @Parameter
     private String flavour;
     @Parameter(defaultValue = "${project.basedir}/cookbook.yaml")
     private String cookbook;
@@ -35,6 +37,7 @@ public class RecipeGeneratorMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         List<String> args = new ArrayList<>();
 
+        args.add(domain);
         args.add(flavour);
         args.add(cookbook);
         args.add(targetDir);

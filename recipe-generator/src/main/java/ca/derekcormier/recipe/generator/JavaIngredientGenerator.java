@@ -13,7 +13,7 @@ import liqp.filters.Filter;
 
 public class JavaIngredientGenerator extends CookbookGenerator {
     @Override
-    public void generate(Cookbook cookbook, String targetDir, Map<String,Object> options) {
+    public void generate(String domain, Cookbook cookbook, String targetDir, Map<String,Object> options) {
         registerFilters(cookbook);
 
         if (!options.containsKey("javaPackage")) {
@@ -38,7 +38,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
 
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
-            data.put("domain", cookbook.getDomain());
+            data.put("domain", domain);
             data.put("options", options);
             data.put("info", info);
 

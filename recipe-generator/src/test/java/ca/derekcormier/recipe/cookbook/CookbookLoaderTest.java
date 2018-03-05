@@ -25,20 +25,6 @@ public class CookbookLoaderTest {
     }
 
     @Test
-    public void testLoad_domainDefaultsToEmptyString() {
-        String ingredients = "ingredients: []";
-        Cookbook cookbook = loader.load(toStream(ingredients));
-        assertEquals("", cookbook.getDomain());
-    }
-
-    @Test
-    public void testLoad_withDomain() {
-        String ingredients = "domain: 'Domain'";
-        Cookbook cookbook = loader.load(toStream(ingredients));
-        assertEquals("Domain", cookbook.getDomain());
-    }
-
-    @Test
     public void testLoad_noIngredients() {
         String ingredients = "ingredients: []";
         Cookbook cookbook = loader.load(toStream(ingredients));
@@ -474,7 +460,6 @@ public class CookbookLoaderTest {
     @Test
     public void testLoad_sampleIngredient() {
         String ingredients = String.join("\n",
-            "domain: 'Domain'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    constants: {KEY_A: 'KEY_A', KEY_B: 'KEY_B'}",
@@ -510,7 +495,6 @@ public class CookbookLoaderTest {
 
         Cookbook cookbook = loader.load(toStream(ingredients));
 
-        assertEquals("Domain", cookbook.getDomain());
         assertEquals(1, cookbook.getIngredients().size());
         assertEquals("fooIngredient", cookbook.getIngredients().get(0).getName());
         assertEquals(2, cookbook.getIngredients().get(0).getConstants().size());

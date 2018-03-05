@@ -12,7 +12,7 @@ import liqp.filters.Filter;
 
 public class JavaHookGenerator extends CookbookGenerator {
     @Override
-    public void generate(Cookbook cookbook, String targetDir, Map<String,Object> options) {
+    public void generate(String domain, Cookbook cookbook, String targetDir, Map<String,Object> options) {
         registerFilters(cookbook);
 
         if (!options.containsKey("javaPackage")) {

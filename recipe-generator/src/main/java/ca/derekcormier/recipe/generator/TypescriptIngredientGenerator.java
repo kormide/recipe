@@ -24,7 +24,7 @@ import liqp.filters.Filter;
 
 public class TypescriptIngredientGenerator extends CookbookGenerator {
     @Override
-    public void generate(Cookbook cookbook, String targetDir, Map<String, Object> options) {
+    public void generate(String domain, Cookbook cookbook, String targetDir, Map<String, Object> options) {
         registerFilters(cookbook);
         String directory = createDirectories(targetDir);
 
@@ -44,7 +44,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
 
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
-            data.put("domain", cookbook.getDomain());
+            data.put("domain", domain);
             data.put("options", options);
             data.put("info", info);
             String rendered = renderTemplate("templates/ts/ingredient.liquid", data);
@@ -65,7 +65,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
 
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
-            data.put("domain", cookbook.getDomain());
+            data.put("domain", domain);
             data.put("options", options);
             data.put("info", info);
             String rendered = renderTemplate("templates/ts/ingredient-types.liquid", data);
@@ -108,7 +108,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
         System.out.println("\nGenerating index file: " + directory + File.separator + "index.js");
         data.put("ingredients", cookbook.getIngredients());
         data.put("enums", cookbook.getEnums());
-        data.put("domain", cookbook.getDomain());
+        data.put("domain", domain);
         data.put("options", options);
         String rendered = renderTemplate("templates/ts/ingredient-index.liquid", data);
         String filepath = directory + File.separator + "index.js";
@@ -119,7 +119,7 @@ public class TypescriptIngredientGenerator extends CookbookGenerator {
         data = new HashMap<>();
         data.put("ingredients", cookbook.getIngredients());
         data.put("enums", cookbook.getEnums());
-        data.put("domain", cookbook.getDomain());
+        data.put("domain", domain);
         data.put("options", options);
         rendered = renderTemplate("templates/ts/ingredient-index-types.liquid", data);
         filepath = directory + File.separator + "index.d.ts";
