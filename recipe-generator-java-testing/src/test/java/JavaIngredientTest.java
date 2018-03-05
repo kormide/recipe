@@ -536,7 +536,7 @@ public class JavaIngredientTest {
         when(dispatcherSpyB.dispatch(anyString())).thenReturn("{\"someKey\":\"someValue\"}");
 
         oven.addDispatcher("TestDomain", dispatcherSpy);
-        oven.addDispatcher("B", dispatcherSpyB);
+        oven.addDispatcher("TestDomainB", dispatcherSpyB);
 
         Cake cake = oven.bake(Recipe.prepare(
             new EmptyIngredient(),

@@ -14,7 +14,7 @@ import liqp.filters.Filter;
 public class JsParamFilterTest {
     @Test
     public void testApply_outputsParamName() {
-        Cookbook cookbook = new Cookbook("", new ArrayList<>(), new ArrayList<>());
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
         Filter filter = new JsParamFilter(cookbook);
 
         assertEquals("foo", filter.apply(param("foo", "string")));
@@ -22,7 +22,7 @@ public class JsParamFilterTest {
 
     @Test
     public void testApply_outputsEllipsesWhenParamTypeIsVararg() {
-        Cookbook cookbook = new Cookbook("", new ArrayList<>(), new ArrayList<>());
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
         Filter filter = new JsParamFilter(cookbook);
 
         assertEquals("...foo", filter.apply(param("foo", "int...")));

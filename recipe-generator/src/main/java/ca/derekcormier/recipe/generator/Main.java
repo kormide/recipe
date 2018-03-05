@@ -13,11 +13,13 @@ import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.CookbookLoader;
 
 public class Main {
-    @Argument(index = 0, usage = "type of generation to perform; valid options: java-ingredient, java-hook, ts-ingredient", metaVar = "flavour")
+    @Argument(index = 0, usage = "name of ingredient domain", metaVar = "domain")
+    private String domain;
+    @Argument(index = 1, usage = "type of generation to perform; valid options: java-ingredient, java-hook, ts-ingredient", metaVar = "flavour")
     private String flavour;
-    @Argument(index = 1, usage = "path to the yaml cookbook definition file", metaVar = "cookbook")
+    @Argument(index = 2, usage = "path to the yaml cookbook definition file", metaVar = "cookbook")
     private String cookbook;
-    @Argument(index = 2, usage = "directory to output generated files", metaVar = "targetDir")
+    @Argument(index = 3, usage = "directory to output generated files", metaVar = "targetDir")
     private String targetDir;
 
     @Option(name = "--javaPackage", usage = "java package for generated classes", metaVar = "package")
@@ -44,7 +46,7 @@ public class Main {
             System.exit(1);
         }
 
-        if (null == flavour || null == cookbook || null == targetDir) {
+        if (null == domain || null == flavour || null == cookbook || null == targetDir) {
             printUsage();
             System.exit(1);
         }
@@ -52,9 +54,9 @@ public class Main {
         Map<String,Object> options = createOptions();
 
         try (FileInputStream ingredients = new FileInputStream(cookbook)) {
-            Cookbook domain = new CookbookLoader().load(ingredients);
+            Cookbook cookbook = new CookbookLoader().load(ingredients);
             CookbookGenerator generator = CookbookGeneratorFactory.getGenerator(Flavour.fromAlias(flavour));
-            generator.generate(domain, targetDir, options);
+            generator.generate(domain, cookbook, targetDir, options);
         }
         catch (Exception e) {
             throw new RuntimeException(e);

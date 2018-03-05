@@ -52,6 +52,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <domain>TestDomain</domain>
                             <flavour>java-ingredient</flavour>
                             <cookbook>${project.basedir}/cookbook.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
@@ -65,6 +66,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <domain>TestDomain</domain>
                             <flavour>java-hook</flavour>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
                             <javaPackage>testdomain.hooks</javaPackage>
@@ -77,6 +79,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <domain>TestDomainB</domain>
                             <flavour>java-ingredient</flavour>
                             <cookbook>${project.basedir}/cookbook-b.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
@@ -89,6 +92,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <domain>PostfixDomain</domain>
                             <flavour>java-ingredient</flavour>
                             <cookbook>${project.basedir}/cookbook-postfix.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
@@ -102,6 +106,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <domain>PostfixDomain</domain>
                             <flavour>java-hook</flavour>
                             <cookbook>${project.basedir}/cookbook-postfix.yaml</cookbook>
                             <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>

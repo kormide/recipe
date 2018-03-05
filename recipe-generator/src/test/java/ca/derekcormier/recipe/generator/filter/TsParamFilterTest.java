@@ -16,7 +16,7 @@ import liqp.filters.Filter;
 public class TsParamFilterTest {
     @Test
     public void testApply_separatesNameAndType() {
-        Cookbook cookbook = new Cookbook("", new ArrayList<>(), new ArrayList<>());
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
         Filter filter = new TsParamFilter(cookbook, new TsTypeFilter(cookbook));
 
         assertEquals("foo: number[]", filter.apply(param("foo", "int[]")));
@@ -24,7 +24,7 @@ public class TsParamFilterTest {
 
     @Test
     public void testApply_addsEllipsisToNameWhenVararg() {
-        Cookbook cookbook = new Cookbook("", new ArrayList<>(), new ArrayList<>());
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
         Filter filter = new TsParamFilter(cookbook, new TsTypeFilter(cookbook));
 
         assertEquals("...foo: number[]", filter.apply(param("foo", "int...")));
@@ -32,7 +32,7 @@ public class TsParamFilterTest {
 
     @Test
     public void testApply_defersToTypeFilterForType() {
-        Cookbook cookbook = new Cookbook("", new ArrayList<>(), new ArrayList<>());
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
         Filter mockTypeFilter = Mockito.mock(Filter.class);
         Mockito.when(mockTypeFilter.apply(any())).thenReturn("convertedType");
         Filter filter = new TsParamFilter(cookbook, mockTypeFilter);
