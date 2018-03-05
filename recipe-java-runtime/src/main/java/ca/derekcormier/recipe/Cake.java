@@ -69,6 +69,11 @@ public class Cake {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T get(Class<T> clazz, String... key) {
+        return clazz.cast(get(key));
+    }
+
     public void publish(String key, Object value) {
         getSubKeysAndValidateFullKey(key);
         String newKey = getPrefixWithSeparator(prefixStack) + key;
@@ -134,12 +139,28 @@ public class Cake {
     }
 
     @JsonIgnore
+    @SuppressWarnings("unchecked")
+    public <T> T getContext(Class<T> clazz) {
+        return clazz.cast(getContext());
+    }
+
+    @JsonIgnore
     public <T> T getOrGetContext(String... key) {
         try {
             return get(key);
         }
         catch (RuntimeException e) {
             return getContext();
+        }
+    }
+
+    @JsonIgnore
+    public <T> T getOrGetContext(Class<T> clazz, String... key) {
+        try {
+            return clazz.cast(get(key));
+        }
+        catch (RuntimeException e) {
+            return clazz.cast(getContext());
         }
     }
 
@@ -167,8 +188,13 @@ public class Cake {
     }
 
     @JsonAnyGetter
-    private Map<String,Object> getEntries() {
+    protected Map<String,Object> getEntries() {
         return entries;
+    }
+
+    protected void setEntries(Map<String,Object> entries) {
+        this.entries.clear();
+        this.entries.putAll(entries);
     }
 
     @JsonAnySetter

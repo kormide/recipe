@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Oven {
+public class Oven extends AbstractOven {
     private Map<String,Dispatcher> dispatchers = new HashMap<>();
     private ObjectMapper objectMapper;
     private SubtypeResolver subtypeResolver;
@@ -24,7 +24,7 @@ public class Oven {
         objectMapper = new ObjectMapper();
         objectMapper.setSubtypeResolver(subtypeResolver);
 
-        Cake cake = _bake(recipe, new Cake());
+        Cake cake = _bake(recipe, createCake());
         return cake;
     }
 
@@ -57,12 +57,17 @@ public class Oven {
     }
 
     private String serializePayload(Recipe recipe, Cake cake) throws JsonProcessingException {
-        Payload payload = new Payload(recipe, cake);
+        Cake plainCake = new Cake();
+        plainCake.setEntries(cake.getEntries());
+        Payload payload = new Payload(recipe, plainCake);
         return objectMapper.writeValueAsString(payload);
     }
 
     private Cake deserializeCake(String json) throws IOException {
-        return objectMapper.readValue(json, Cake.class);
+        Cake plainCake = objectMapper.readValue(json, Cake.class);
+        Cake cake = createCake();
+        cake.setEntries(plainCake.getEntries());
+        return cake;
     }
 
     private void registerSubtypes(Recipe recipe) {
