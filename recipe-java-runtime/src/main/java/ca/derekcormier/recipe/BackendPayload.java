@@ -13,7 +13,7 @@ public class BackendPayload {
         @JsonProperty("cake") Cake cake
     ) {
         this.recipe = recipe;
-        this.cake = cake == null ? new Cake(): cake;
+        this.cake = cake;
     }
 
     public RecipeSnapshot getRecipe() {

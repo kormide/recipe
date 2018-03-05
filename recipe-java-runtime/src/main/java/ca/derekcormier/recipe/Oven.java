@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Oven extends AbstractOven {
+public class Oven {
     private Map<String,Dispatcher> dispatchers = new HashMap<>();
     private ObjectMapper objectMapper;
     private SubtypeResolver subtypeResolver;
@@ -25,7 +25,6 @@ public class Oven extends AbstractOven {
         objectMapper.setSubtypeResolver(subtypeResolver);
 
         Cake cake = _bake(recipe, new Cake());
-        getSerializers().forEach(cake::addSerializer);
         return cake;
     }
 

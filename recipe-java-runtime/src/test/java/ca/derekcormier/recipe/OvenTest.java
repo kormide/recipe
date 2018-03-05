@@ -1,6 +1,5 @@
 package ca.derekcormier.recipe;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -282,46 +281,6 @@ public class OvenTest {
 
         verify(spyA).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}]}},\"cake\":{}}");
         verify(spyB).dispatch("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyKeyedIngredient\":{}}]}},\"cake\":{}}");
-    }
-
-    @Test
-    public void testAddSerializer_deserializesReceivedCakeValues() {
-        Dispatcher spyA = setupDispatcherSpy("A", "{\"foo\":\"_bar_\"}");
-        Ingredient ingredient = new Ingredient("EmptyIngredient", "A") {};
-
-        oven.addCakeValueSerializer(new CakeValueSerializer<String,String>(String.class) {
-            @Override
-            public String serialize(String value) {
-                return "_" + value + "_";
-            }
-            @Override
-            public String deserialize(Class<? extends String> clazz, String value) {
-                return value.substring(1, value.length() - 1);
-            }
-        });
-
-        Cake cake = oven.bake(Recipe.prepare(ingredient));
-        assertEquals("bar", cake.get(String.class, "foo"));
-    }
-
-    @Test
-    public void testAddSerializer_bakeReturnsCakeThatSerializesValues() {
-        oven.addCakeValueSerializer(new CakeValueSerializer<String,String>(String.class) {
-            @Override
-            public String serialize(String value) {
-                return "_" + value + "_";
-            }
-            @Override
-            public String deserialize(Class<? extends String> clazz, String value) {
-                return value.substring(1, value.length() - 1);
-            }
-        });
-
-        Cake cake = oven.bake(Recipe.prepare());
-
-        cake.publish("foo", "bar");
-        assertEquals("_bar_", cake.get("foo"));
-        assertEquals("bar", cake.get(String.class, "foo"));
     }
 
     private String payloadJson(String... ingredientJson) {
