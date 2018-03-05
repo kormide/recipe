@@ -172,6 +172,18 @@ ingredients:
         type: "string"
         default: "\"foo"
 
+  - name: "IngredientWithMultipleInitializersWithEnumAndStringInSamePosition"
+    required:
+      - name: "requiredString"
+        type: "string"
+        default: null
+      - name: "requiredEnum"
+        type: "TestEnum"
+        default: "A"
+    initializers:
+      - params: ["requiredEnum"]
+      - params: ["requiredString"]
+
 enums:
   - name: "TestEnum"
     values:

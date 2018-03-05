@@ -83,7 +83,7 @@ export abstract class Ingredient {
         } else if (type.endsWith("...")) {
             return Array.isArray(value) && value.reduce((result, v) => result && this.cookbookTypeAndValueMatch(type.substring(0, type.length - 3), v), true);
         } else {
-            return value.constructor.name === type;
+            return value && value.constructor.name === type;
         }
     }
 

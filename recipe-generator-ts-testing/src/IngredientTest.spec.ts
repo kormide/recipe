@@ -1,14 +1,5 @@
 import { expect } from "chai";
-import {
-    EmptyIngredient, IngredientWithOptional, IngredientWithDefaultRequired, IngredientWithRequired, TestEnum,
-    IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional,
-    AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional,
-    IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers,
-    IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant,
-    KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted, IngredientWithRequiredVararg,
-    IngredientWithRequiredStringArrayWithDefault, IngredientWithRequiredVarargStringArrayWithDefault,
-    IngredientWithRequiredAndRequiredVararg
-} from "../target/ingredients";
+import { EmptyIngredient, IngredientWithOptional, IngredientWithDefaultRequired, IngredientWithRequired, TestEnum, IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional, AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional, IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers, IngredientWithMultipleInitializersWithEnumAndStringInSamePosition, IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant, KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted, IngredientWithRequiredVararg, IngredientWithRequiredStringArrayWithDefault, IngredientWithRequiredVarargStringArrayWithDefault, IngredientWithRequiredAndRequiredVararg } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
 describe("generation", () => {
@@ -84,6 +75,12 @@ describe("generation", () => {
 
     it("should generate an ingredient with enum params", () => {
         new AllParamsIngredient().withEnumArg(TestEnum.C);
+    });
+
+    it("should generate and ingredient with a required string an enum param with initailizers that have each in the same position", () => {
+        new IngredientWithMultipleInitializersWithEnumAndStringInSamePosition(TestEnum.A);
+        new IngredientWithMultipleInitializersWithEnumAndStringInSamePosition("foo");
+        new IngredientWithMultipleInitializersWithEnumAndStringInSamePosition(null);
     });
 
     it("should generate an ingredient with primitive array params", () => {
