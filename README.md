@@ -1,4 +1,6 @@
-# Recipe
+# Recipe ![](sketchy_enjoy.svg?sanitize=true)
+
+
 Recipe is a cross-language framework that uses the metaphor of baking to setup data fixtures for integration testing. It suppports testing within a service as well as across microservices. 
 
 ##### Table of Contents
