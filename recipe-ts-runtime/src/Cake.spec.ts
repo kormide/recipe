@@ -60,6 +60,15 @@ describe("Cake", () => {
 
             expect(() => cake.get("key")).to.throw();
         });
+
+        it("should get a key that is the substring of another key in a namespace", () => {
+            cake.inNamespace("foo", () => {
+                cake.publish("B", "B");
+                cake.publish("AB", "AB");
+            });
+
+            expect(cake.get("B")).to.equal("B");
+        });
     });
 
     describe("publish", () => {

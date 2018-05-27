@@ -79,7 +79,17 @@ export class Cake {
         // search within any other namespace (if unambiguous)
         const candidates: string[] = [];
         for (const k in this.entries) {
-            if (k.endsWith(fullKey)) {
+            const subkeys = k.split(Cake.SEPARATOR);
+            if (key.length > subkeys.length) {
+                continue;
+            }
+            let match = true;
+            for (let i = 0; i < key.length && match; i++) {
+                if (key[key.length - 1 - i] !== subkeys[subkeys.length - 1 - i]) {
+                    match = false;
+                }
+            }
+            if (match) {
                 candidates.push(k);
             }
         }

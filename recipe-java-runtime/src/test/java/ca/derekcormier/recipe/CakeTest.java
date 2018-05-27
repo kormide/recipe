@@ -45,6 +45,16 @@ public class CakeTest {
         cake.get("foo", null, "bar");
     }
 
+    @Test
+    public void testGet_keySubstringOfOtherKeyInNamespaceNotAmbiguous() {
+        cake.inNamespace("foo", () -> {
+            cake.publish("B", "B");
+            cake.publish("AB", "AB");
+        });
+
+        assertEquals("B", cake.get("B"));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testPublish_throwsOnNullKey() {
         cake.publish(null, "value");

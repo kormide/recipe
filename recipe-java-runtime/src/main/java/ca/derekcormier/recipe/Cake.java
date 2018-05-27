@@ -57,7 +57,19 @@ public class Cake {
         }
 
         // search within any other namespace (if unambiguous)
-        List<String> candidates = entries.keySet().stream().filter(k -> k.endsWith(fullKey)).collect(Collectors.toList());
+        List<String> candidates = entries.keySet().stream().filter(k -> {
+            String[] subkeys = StringUtils.split(k, SEPARATOR);
+            if (keys.size() > subkeys.length) {
+                return false;
+            }
+            for (int i = 0; i < keys.size(); i++) {
+                if (!keys.get(keys.size() - 1 - i).equals(subkeys[subkeys.length - 1 - i])) {
+                    return false;
+                }
+            }
+            return true;
+        }).collect(Collectors.toList());
+
         if (candidates.size() == 1) {
             return (T)entries.get(candidates.get(0));
         }
