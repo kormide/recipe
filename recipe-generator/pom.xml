@@ -5,11 +5,11 @@
     <parent>
         <groupId>ca.derekcormier.recipe</groupId>
         <artifactId>recipe</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
 
     <artifactId>recipe-generator</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>jar</packaging>
 
     <name>Recipe Generator</name>
