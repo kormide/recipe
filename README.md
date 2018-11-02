@@ -1160,7 +1160,7 @@ When you bake a recipe (1), it first gets segmented into groups of contiguous sa
 
 ---
 
-*Thanks to Lisa Dimyadi for the cake logo.*
+*Thanks to [Elle Chau](https://www.instagram.com/artof_elle/?fbclid=IwAR2LxIdYmwUo8TDvbOTzt80yD9MSYTrY1ToC2T22QIEnK9c9STr-z_LbdC4) for the logo.*
 
 
 
