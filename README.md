@@ -17,6 +17,8 @@ Recipe myRecipe = Recipe.prepare(
 Cake cake = oven.bake(myRecipe);
 
 /* run test logic */
+String customerId = cake.get("Jim");
+...
  ```
 You provide the implementation hooks that correspond to each ingredient. The hooks invoke the service or API that owns the data, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support).
 
