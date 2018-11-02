@@ -154,7 +154,7 @@ In general, you should have one cookbook per service.
 
 ### Writing hooks
 
-Hooks take the information supplied by ingredients and instantiate the underlying objects that they represent. Hooks live in the service that is responsible for the object(s). You generate base hooks using the [generator](#recipe-generator) and extend them to provide an implementation.
+Hooks take the information supplied by ingredients and instantiate the underlying domain object(s) that they represent. Hooks should live in one place. While an ingredient can be generated in different test projects in different languages, all usages of the ingredient should invoke the same hook. You generate base hooks using the [generator](#recipe-generator) and extend them to provide an implementation.
 
 Let's look at an example of a hook using our Hero ingredient from above:
 
@@ -194,17 +194,23 @@ public HeroHook extends AbstractHeroHook {  /* AbstractHeroHook is generated */
 
 The extended class must override the `bake` method, which in this case simply invokes the existing hero service to perform validation and persist the hero to the database.
 
-*Note: It is **HIGHLY** recommended that you invoke top-most layer of your architecture from the hook, for example, via the controller or service layers, so that all test data is validated and follows the same code path as real data in production. The hook should act as a wrapper around your service logic, not re-implement it, to prevent impossible data states. Exceptions can be made in cases where not all data creation is exposed through endpoints or top-level service methods, for example, where the database is assumed to have been bootstrapped with initial data.*
+#### Where should hooks live?
+
+Now that we know how to write a hook, where should we put it? This really depends on how you wish to integrate recipe into your system.
+
+Hooks could be classes that live within your service and have direct access to service/controller needed to set up data (as in the above example). This requires creating a special recipe endpoint within your service to receive recipe payloads that are dispatched by the oven (discussed in detail later). If you take this approach, you should disable the recipe endpoint in production. I recommend setting up the data such that it goes through service validation, whether this means instantiating it from a service or controller class or some higher layer. This approach is ideal when there is some data (for example, initial database state) that cannot be set up via an exposed API.
+
+If your service exposes an API that is capable of setting up all of the required data, you could move all hooks into a separate project. The hooks could just make API calls to your service to set up the appropriate data.
 
 <a name="configure-oven"/>
 
 ### Configuring the oven
 
-Ovens are the persistence engines that bake recipes and deliver ingredients to hooks across services for persistence. There are two types of ovens: an `Oven`, which exists in the same project as your tests, and a `BackendOven` which exists within each service that owns ingredients.
+Ovens are the persistence engines that bake recipes and deliver ingredients to hooks across services for persistence. There are two types of ovens: an `Oven`, which exists in the same project as your tests, and a `BackendOven` which exists in the same project as your hooks.
 
 #### Oven
 
-An Oven is what you call to bake a recipe in your tests. Internally, the baking process produces json payloads that must be delivered to the services that own ingredients. Recipe makes no assumptions about which delivery mechanisms you use, so you must configure a **dispatchers** for each domain to perform the delivery.
+An Oven is what you call to bake a recipe in your tests. Internally, the baking process produces json payloads that must be delivered to the services that own ingredients. Recipe makes no assumptions about which delivery mechanisms you use, so you must configure **dispatchers** for each domain to perform the delivery.
  
 ```java
 Oven oven = new Oven(); // our oven instance
@@ -227,7 +233,7 @@ A dispatcher accepts a json payload, delivers it, and returns the response paylo
 
 #### Backend oven
 
-A backend oven exists in each service and is at the receiving end of the payloads produced by the oven above. As such, you must provide an endpoint capable of receving the json payload using your own transport mechanism. *Note: make sure you disable or exclude this endpoint in a production build.* 
+A backend oven is at the receiving end of the payloads produced by the oven above. As such, your project must provide some endpoint capable of receiving the json payload using your own transport mechanism.
 
 Upon receiving a payload, the endpoint should pass the payload to the backend oven instance. The backend oven interprets the payload, invokes the appropriate hook(s), and returns a response payload that must then be returned to the calling test service. This response is the payload that gets returned in the previous section.
 
