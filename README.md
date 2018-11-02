@@ -2,11 +2,27 @@
 
 # Recipe
 
-Recipe gives your team a powerful, cross-language interface for delcaring data fixtures that makes your integration tests easier to read, write, and maintain.
+Recipe is a framework that makes it easy to set up data fixtures dynamically prior to running integration tests. Recipe generates ingredients based on your application's domain, which you combine into recipes that describe what to prepare.
+
+e.g., set up preconditions for an e-commerce test in  Java
+```java
+Recipe myRecipe = Recipe.prepare(
+    new Customer("Jim"),
+    new Product("Cat Slippers", "#01234", 14.99)
+        .withAvailability(Region.CANADA, Region.TAIWAN),
+    new PurchaseOrder("Jim", "Cat Slippers", 2)
+        .withExpressShipping(true)
+);
+
+Cake cake = oven.bake(myRecipe);
+
+/* run test logic */
+ ```
+You provide the implementation hooks that correspond to each ingredient. The hooks invoke the service or API that owns the data, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support).
+
+Overall, Recipe is a wrapper around your service logic which makes it easier to read, write, and maintain your test code by giving you declarative data fixtures that can be combined or re-used across tests. It's an alternative to pre-loading snapshots or making API calls to set up data (see [static vs dynamic](#static-vs-dynamic) data setup).
 
 ##### Table of Contents
-1. [TL;DR](#tldr)<br>
-1. [Why?](#why)<br>
 1. [Getting started](#getting-started)<br>
    1. [Concepts](#concepts)<br>
    1. [Your first cookbook](#first-cookbook)<br>
@@ -21,71 +37,16 @@ Recipe gives your team a powerful, cross-language interface for delcaring data f
 1. [Language support](#lang-support)<br>
 1. [Cookbook spec](#cookbook-spec)<br>
 1. [Miscellaneous topics](#miscellaneous-topics)<br>
+    1. [Static vs. Dynamic Setup](#static-vs-dynamic)<br>
     1. [Setup for within-service ITs](#setup-for-within-service-its)<br>
     1. [Dealing with singleton data](#dealing-with-singleton-data)<br>
     1. [Recipe segmentation](#segmentation)<br>
-
-<a name="tldr"/>
-
-## TL;DR
-
-Recipe makes it easy to set up data fixtures across microservices (or within a service) for tests. It is an alternative to pre-loading snapshots or making API/service calls to prepare data.
-
-You declare your domain concepts in a file (cookbook) which generates builder objects (ingredients) which you can combine to form data fixtures (recipes). Recipes describe all the data you need to be persisted (baked) before a test runs.  Here's an example in Java:  
-
-```java
-/* declare a test fixture */
-Cake cake = oven.bake(Recipe.prepare(
-    new BasicShoppingScenario(), // another recipe that sets up a base shopping state
-    new Customer("Jim")
-    new Product("Cat Slippers", "#01234", 14.99, BasicShoppingScenario.MAIN_WAREHOUSE)
-        .withShippingAvailability(Region.CANADA, Region.TAIWAN),
-    new ShoppingCart("Jim")
-    new Purchase("Jim", "Cat Slippers", 2)
-        .withExpressShipping(true)
-));
-
-/* run test logic */
-...
- ``` 
-
-Recipes describe data to be baked across any number of services. Because ingredients are generated in your [language of choice](#lang-support), your recipes will look the same across all of your integration and end-to-end testing projects. 
-
-Ready to start baking? Grab your apron and head over to [Getting started](#getting-started)!
-
-<a name="why"/>
-
-## Why?
-
-Setting up data for integration tests is challenging.
-
-Each integration test requires a carefully planned set of data to be prepared before running the test logic. In a microservice architecture, this data may be persisted across several data stores. But how do you set up the data in the first place?
-
-#### Snapshot approach
-
-Some developers maintain a set of database snapshots and load them up for each test or family of tests. Although this is usually faster than re-creating data at run-time, there are a few downsides:
-* *Lack of precision*: snapshots require a lot of work to create so they are often reused for several tests despite containing more data than a particular test needs; the presence of extra data may introduce false positives
-* *Lack of clarity*: depending on the snapshot format (sql, xml, etc.), it can be difficult to determine at a glance exactly what data is being set up for a test, making the test harder to debug and modify
-* *Migration overhead*: databases and snapshots need to be migrated whenever the data schema changes
-* *Difficult to extend*: if two tests require similar but slightly different setups, it is tempting to duplicate the original snapshot and modify it slightly; not being able to break up and re-use common parts of snapshots leads to a lot of duplicated setup
-
-#### Dynamic approach
-
-Other developers set up data using a series of API calls, or, if testing within-service, calls to the controller, service, or data access layers of an application. This is slower but avoids migration issues since all setup is done at run-time and (ideally) undergoes  validation, preventing impossible data states. However, there are still issues:
-* *Convoluted setup*: a long series of api/service calls at the beginning of each test is hard to read, and similar to the snapshot approach it can be difficult to see the full picture of what is being set up 
-* *Language differences*: two services written in different languages may want to set up the same data on a common third service, but that setup may look different depending on how the services implement their interface to the third service 
-
-What's missing is a simple way to *declare*, *combine*, and *maintain* data fixtures such that each test sets up only the data it actually needs and in a language agnostic way. As architectures become less monolithic and more distrubuted with different languages and stacks, it is important to be to able to easily configure fine-grained data states for cross-service testing.
-
-This is where Recipe comes in.
 
 <a name="getting-started"/>
 
 ## Getting started
 
-Recipe applies the metaphor of baking cakes to setting up data fixtures. Let's go over the main concepts.
-
-*Note: Most of the examples you will see use Java, but the interfaces should be similar across the supported languages.*
+Recipe applies the metaphor of baking cakes to setting up data fixtures. Let's go over the main concepts using Java examples (other supported languages will have the same or similar interfaces).
 
 <a name="concepts"/>
 
@@ -93,7 +54,7 @@ Recipe applies the metaphor of baking cakes to setting up data fixtures. Let's g
 
 A **recipe** is an all-in-one declaration of a test's data preconditions. It describes what state you want to exist across all of your service datastores before your test runs. Baking a recipe will instantiate a fresh copy of all of the described data at run-time. Here's what a typical recipe test looks like:
 ```java
-/* declare a data fixture */
+/* 1. declare a recipe */
 Recipe recipe = Recipe.prepare(
     new IngredientA()
         .withFoo("abc")
@@ -102,14 +63,13 @@ Recipe recipe = Recipe.prepare(
     new IngredientC()
 );
 
-/* persist it */
+/* 2. persist the data  */
 Cake cake = oven.bake(recipe);
 
-/* run your test logic */
-...
-```  
+/* 3. run your test logic */
+```
 
-Recipes are made up of **ingredients**—builder-style objects that describe the corresponding entities in your domain (see [domain-driven design](https://en.wikipedia.org/wiki/Domain-driven_design)). Ingredients are generated from a **cookbook**—a yaml description of the entities—in your [language of choice](#lang-support). While ingredients may be owned by different services, they can all be baked together in a single recipe.
+Recipes are made up of **ingredients**—builder-style objects that describe the corresponding entities in your domain (see [domain-driven design](https://en.wikipedia.org/wiki/Domain-driven_design))—or other recipes. Ingredients are generated from a **cookbook**—a yaml description of the entities—in your [language of choice](#lang-support). While ingredients may be owned by different services, they can all be baked together in a single recipe.
 
 Recipes are composable and extendable. You can create a library of recipes that encapsulate common scenarios and share them between tests to avoid duplicated code and effort.
 
@@ -1085,6 +1045,32 @@ new MyIngredient()
 I'm considering adding support for generated objects to be used as parameters, but I'll likely wait until there is demand. Given that ingredients are intended to collect just enough information to set up a domain entity, I'm convinced this can be done in 99% of cases using the combination of primitives, compound optionals, repeatability, and enums.
 
 ## Miscellaneous topics
+
+<a name="static-vs-dynamic"/>
+
+### Static vs. Dynamic Setup
+
+Setting up data for integration tests is challenging.
+
+Each integration test requires a carefully planned set of data to be prepared before running the test logic. In a distributed service architecture, this data may be persisted across several data stores. But how do you set up the data in the first place?
+
+#### Snapshot approach
+
+One approach is to maintain a set of database snapshots and load them up for each test or family of tests. Although this is usually faster than re-creating data at run-time, there are a few downsides:
+* *Lack of precision*: snapshots require a lot of work to create. This encourages them to (sometimes innaproproately) be reused for several tests to save effort, despite containing more data than a particular test may need. The presence of extra data may introduce false positives.
+* *Lack of clarity*: depending on the snapshot format (sql, xml, etc.), it can be difficult to determine at a glance exactly what data is being set up for a test, making the test harder to debug and modify.
+* *Migration overhead*: databases and snapshots need to be migrated whenever the data schema changes. If the data format was text-based and laid out in a way to make it more readable, automatic migrations could muddle this organization.
+* *Difficult to extend*: if two tests require similar but slightly different setups, it is tempting to duplicate the original snapshot and modify it slightly; not being able to break up and re-use common parts of snapshots leads to a lot of duplicated setup that is difficult to maintain.
+
+#### Dynamic approach
+
+Another approach is to set up data using a series of API calls, or, if testing within-service, calls to the controller, service, or data access layers of an application. This is slower but avoids migration issues since all setup is done at run-time and (ideally) undergoes  validation, preventing impossible data states. However, there are still issues:
+* *Convoluted setup*: a long series of api/service calls at the beginning of each test is hard to read, and similar to the snapshot approach it can be difficult to see the full picture of what is being set up.
+* *Language differences*: two services written in different languages may want to set up the same data on a common third service, but that setup may look different depending on how the services implement their interface to the third service.
+
+What's missing is a simple way to *declare*, *combine*, and *maintain* data fixtures such that each test sets up only the data it actually needs and in a language agnostic way. As architectures become less monolithic and more distrubuted with different languages and stacks, it is important to be to able to easily configure fine-grained data states for cross-service testing.
+
+This is where Recipe comes in.
 
 ### Setup for within-service ITs
 
