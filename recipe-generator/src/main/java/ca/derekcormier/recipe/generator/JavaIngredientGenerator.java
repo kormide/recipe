@@ -7,16 +7,14 @@ import java.util.Map;
 
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.Ingredient;
-import ca.derekcormier.recipe.generator.filter.JavaParamFilter;
-import ca.derekcormier.recipe.generator.filter.JavaTypeFilter;
-import ca.derekcormier.recipe.generator.filter.JavaValueFilter;
-import liqp.filters.Filter;
 
-public class JavaIngredientGenerator extends CookbookGenerator {
+public class JavaIngredientGenerator extends JavaCookbookGenerator {
+    public JavaIngredientGenerator(Cookbook cookbook) {
+        super(cookbook);
+    }
+
     @Override
-    public void generate(String domain, Cookbook cookbook, String targetDir, Map<String,Object> options) {
-        registerFilters(cookbook);
-
+    public void generate(String domain, String targetDir, Map<String,Object> options) {
         if (!options.containsKey("javaPackage")) {
             options.put("javaPackage", "");
         }
@@ -29,6 +27,7 @@ public class JavaIngredientGenerator extends CookbookGenerator {
         }
         String directory = createDirectories(targetDir);
 
+        Cookbook cookbook = getCookbook();
         if (!cookbook.getIngredients().isEmpty()) {
             System.out.println("Generating ingredients in " + directory + "...");
         }
@@ -61,11 +60,5 @@ public class JavaIngredientGenerator extends CookbookGenerator {
             writeToFile(filepath, rendered);
             System.out.println("  -> " + enumeration.getName() + ".java");
         }
-    }
-
-    private void registerFilters(Cookbook cookbook) {
-        Filter.registerFilter(new JavaParamFilter(cookbook, new JavaTypeFilter(cookbook)));
-        Filter.registerFilter(new JavaTypeFilter(cookbook));
-        Filter.registerFilter(new JavaValueFilter(cookbook));
     }
 }

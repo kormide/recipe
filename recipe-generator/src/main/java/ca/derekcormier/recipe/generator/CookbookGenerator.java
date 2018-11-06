@@ -20,8 +20,13 @@ import liqp.Template;
 
 public abstract class CookbookGenerator {
     private ObjectMapper objectMapper = new ObjectMapper();
+    private final Cookbook cookbook;
 
-    public abstract void generate(String domain, Cookbook cookbook, String targetDir, Map<String,Object> options);
+    public CookbookGenerator(Cookbook cookbook) {
+        this.cookbook = cookbook;
+    }
+
+    public abstract void generate(String domain, String targetDir, Map<String,Object> options);
 
     protected String renderTemplate(String templatePath, Map<String,Object> data) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(templatePath);
@@ -72,5 +77,9 @@ public abstract class CookbookGenerator {
         keyValues.add(keys);
         keyValues.add(values);
         return keyValues;
+    }
+
+    public Cookbook getCookbook() {
+        return cookbook;
     }
 }

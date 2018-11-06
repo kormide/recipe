@@ -22,15 +22,19 @@ import ca.derekcormier.recipe.generator.filter.TsTypeFilter;
 import ca.derekcormier.recipe.generator.filter.TsValueFilter;
 import liqp.filters.Filter;
 
-public class TypescriptIngredientGenerator extends CookbookGenerator {
+public class TypeScriptIngredientGenerator extends TypeScriptCookbookGenerator {
+    public TypeScriptIngredientGenerator(Cookbook cookbook) {
+        super(cookbook);
+    }
+
     @Override
-    public void generate(String domain, Cookbook cookbook, String targetDir, Map<String, Object> options) {
-        registerFilters(cookbook);
+    public void generate(String domain, String targetDir, Map<String, Object> options) {
         String directory = createDirectories(targetDir);
 
         options.putIfAbsent("ingredientPostfix", "");
 
         // generate javascript ingredients
+        Cookbook cookbook = getCookbook();
         if (!cookbook.getIngredients().isEmpty()) {
             System.out.println("Generating ingredients in " + directory + "...");
         }
