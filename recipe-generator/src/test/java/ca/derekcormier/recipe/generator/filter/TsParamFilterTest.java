@@ -1,10 +1,12 @@
 package ca.derekcormier.recipe.generator.filter;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,31 +15,31 @@ import java.util.Map;
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import liqp.filters.Filter;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TsParamFilterTest {
-    @Test
-    public void testApply_separatesNameAndType() {
-        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
-        Filter filter = new TsParamFilter(cookbook, new TsTypeFilter(cookbook));
+    @Mock
+    private TsTypeFilter typeFilter;
+    @Mock
+    private TsIdentifierFilter identifierFilter;
 
-        assertEquals("foo: number[]", filter.apply(param("foo", "int[]")));
+    @Test
+    public void testApply_combinesNameAndTypeFromFilters() {
+        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+        Filter filter = new TsParamFilter(cookbook, typeFilter, identifierFilter);
+        when(typeFilter.apply("int[]")).thenReturn("number[]");
+        when(identifierFilter.apply("foo")).thenReturn("bar");
+
+        assertEquals("bar: number[]", filter.apply(param("foo", "int[]")));
     }
 
     @Test
     public void testApply_addsEllipsisToNameWhenVararg() {
         Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
-        Filter filter = new TsParamFilter(cookbook, new TsTypeFilter(cookbook));
+        Filter filter = new TsParamFilter(cookbook, typeFilter, identifierFilter);
+        when(typeFilter.apply("int...")).thenReturn("number[]");
+        when(identifierFilter.apply("foo")).thenReturn("foo");
 
         assertEquals("...foo: number[]", filter.apply(param("foo", "int...")));
-    }
-
-    @Test
-    public void testApply_defersToTypeFilterForType() {
-        Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
-        Filter mockTypeFilter = Mockito.mock(Filter.class);
-        Mockito.when(mockTypeFilter.apply(any())).thenReturn("convertedType");
-        Filter filter = new TsParamFilter(cookbook, mockTypeFilter);
-
-        assertEquals("foo: convertedType", filter.apply(param("foo", "string")));
     }
 
     private Map param(String name, String type) {

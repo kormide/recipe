@@ -9,10 +9,12 @@ import liqp.filters.Filter;
 
 public class TsParamFilter extends RecipeFilter {
     private final Filter typeFiler;
+    private final Filter identifierFilter;
 
-    public TsParamFilter(Cookbook cookbook, Filter typeFilter) {
+    public TsParamFilter(Cookbook cookbook, Filter typeFilter, Filter identifierFilter) {
         super("tsparam", cookbook);
         this.typeFiler = typeFilter;
+        this.identifierFilter = identifierFilter;
     }
 
     @Override
@@ -21,6 +23,6 @@ public class TsParamFilter extends RecipeFilter {
         String name = param.get("name");
         ParamType type = CookbookUtils.parseType(param.get("type"), getCookbook());
 
-        return (type.isVararg() ? "..." : "") + name + ": " + typeFiler.apply(param.get("type"));
+        return (type.isVararg() ? "..." : "") + identifierFilter.apply(name) + ": " + typeFiler.apply(param.get("type"));
     }
 }

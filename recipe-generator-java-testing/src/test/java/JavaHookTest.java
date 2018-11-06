@@ -16,6 +16,7 @@ import testdomain.hooks.AbstractEmptyIngredientHook;
 import testdomain.hooks.AbstractIngredientWithCompoundOptionalHook;
 import testdomain.hooks.AbstractIngredientWithConstantHook;
 import testdomain.hooks.AbstractIngredientWithDefaultRequiredNoInitializersHook;
+import testdomain.hooks.AbstractIngredientWithJavaKeywordsHook;
 import testdomain.hooks.AbstractIngredientWithNullStringDefaultHook;
 import testdomain.hooks.AbstractIngredientWithOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRepeatableCompoundOptionalHook;
@@ -29,6 +30,7 @@ import testdomain.hooks.AllParamsIngredientData;
 import testdomain.hooks.EmptyIngredientData;
 import testdomain.hooks.IngredientWithCompoundOptionalData;
 import testdomain.hooks.IngredientWithDefaultRequiredNoInitializersData;
+import testdomain.hooks.IngredientWithJavaKeywordsData;
 import testdomain.hooks.IngredientWithNullStringDefaultData;
 import testdomain.hooks.IngredientWithOptionalData;
 import testdomain.hooks.IngredientWithRepeatableCompoundOptionalData;
@@ -204,6 +206,15 @@ public class JavaHookTest {
         new AllParamsIngredientData();
         AllParamsIngredientData.class.getMethod("getVarargArrayArg");
         assertEquals(int[][].class, AllParamsIngredientData.class.getMethod("getVarargArrayArg").getReturnType());
+    }
+
+    @Test
+    public void testGeneration_ingredientWithJavaKeywords() throws NoSuchMethodException {
+        new IngredientWithJavaKeywordsData();
+        IngredientWithJavaKeywordsData.class.getMethod("isSynchronized");
+        IngredientWithJavaKeywordsData.class.getMethod("getClass_");
+        IngredientWithJavaKeywordsData.class.getMethod("isBoolean");
+        IngredientWithJavaKeywordsData.class.getMethod("getPackage");
     }
 
     @Test
@@ -724,6 +735,27 @@ public class JavaHookTest {
         });
 
         oven.bake(payloadJson("{\"IngredientWithStringDefaultContainingQuotes\":{\"required\":\"\\\"foo\"}}"));
+        verify(spy).run();
+    }
+
+    @Test
+    public void testBake_deserialization_ingredientWithJavaKeywords() {
+        Runnable spy = spy(Runnable.class);
+        BackendOven oven = new BackendOven();
+        oven.registerHook(new AbstractIngredientWithJavaKeywordsHook() {
+            @Override
+            public void bake(IngredientWithJavaKeywordsData data, Cake cake) {
+                assertEquals(true, data.isSynchronized());
+                assertEquals(false, data.isBoolean());
+                assertEquals(4, data.getClass_());
+                assertEquals(2, data.getPackage()._super);
+                assertEquals("foobar", data.getPackage()._break);
+
+                spy.run();
+            }
+        });
+
+        oven.bake(payloadJson("{\"IngredientWithJavaKeywords\":{\"synchronized\":true,\"boolean\":false,\"class\":4,\"package\":{\"super\":2,\"break\":\"foobar\"}}}"));
         verify(spy).run();
     }
 

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { EmptyIngredient, IngredientWithOptional, IngredientWithDefaultRequired, IngredientWithRequired, TestEnum, IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional, AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional, IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers, IngredientWithMultipleInitializersWithEnumAndStringInSamePosition, IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant, KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted, IngredientWithRequiredVararg, IngredientWithRequiredStringArrayWithDefault, IngredientWithRequiredVarargStringArrayWithDefault, IngredientWithRequiredAndRequiredVararg } from "../target/ingredients";
+import { EmptyIngredient, IngredientWithOptional, IngredientWithDefaultRequired, IngredientWithRequired, TestEnum, IngredientWithRepeatableOptional, IngredientWithRepeatableVarargOptional, IngredientWithRequiredAndOptional, AllParamsIngredient, IngredientWithCompoundOptional, IngredientWithRepeatableCompoundOptional, IngredientWithCompoundOptionalWithOneParam, IngredientWithDefaultRequiredNoInitializers, IngredientWithMultipleInitializersWithEnumAndStringInSamePosition, IngredientWithStringDefaultContainingQuotes, IngredientWithNullStringDefault, IngredientWithConstant, KeyedIngredientWithDefaultKey, KeyedIngredientWithDefaultKeyParamIsDefaulted, IngredientWithRequiredVararg, IngredientWithRequiredStringArrayWithDefault, IngredientWithRequiredVarargStringArrayWithDefault, IngredientWithRequiredAndRequiredVararg, IngredientWithTypeScriptKeywords } from "../target/ingredients";
 import { PostfixIngredientFoo } from "../target/ingredients/postfix";
 
 describe("generation", () => {
@@ -112,6 +112,13 @@ describe("generation", () => {
 
     it("should generate and ingredient with a string default containing quotes", () => {
         new IngredientWithStringDefaultContainingQuotes();
+    });
+
+    it("should generate and ingredient with typescript keywords", () => {
+        new IngredientWithTypeScriptKeywords(true)
+            .withConst(5)
+            .withNumber(true)
+            .withDelete(5, "foobar");
     });
 
     it("should generate ingredients with the correct domain", () => {
@@ -234,6 +241,10 @@ describe("serialization", () => {
 
     it("should serialize an ingredient with an array of string values with nulls", () => {
         expectJsonEquals(`{"AllParamsIngredient":{"stringArrayArg":["foo", null, "bar"]}}`, new AllParamsIngredient().withStringArrayArg(["foo", null, "bar"]));
+    });
+
+    it("should serialize an ingredient with typescript keywords", () => {
+        expectJsonEquals(`{"IngredientWithTypeScriptKeywords":{"any":true,"const":4,"number":false,"delete":{"enum":5,"false":"foobar"}}}`, new IngredientWithTypeScriptKeywords(true).withConst(4).withNumber(false).withDelete(5, "foobar"));
     });
 
     it("should serialize a keyed ingredient with a default key", () => {
