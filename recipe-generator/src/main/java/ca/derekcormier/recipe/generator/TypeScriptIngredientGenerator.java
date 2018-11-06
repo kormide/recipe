@@ -16,11 +16,6 @@ import ca.derekcormier.recipe.cookbook.type.ArrayType;
 import ca.derekcormier.recipe.cookbook.type.FlagType;
 import ca.derekcormier.recipe.cookbook.type.ParamType;
 import ca.derekcormier.recipe.cookbook.type.Type;
-import ca.derekcormier.recipe.generator.filter.JsParamFilter;
-import ca.derekcormier.recipe.generator.filter.TsParamFilter;
-import ca.derekcormier.recipe.generator.filter.TsTypeFilter;
-import ca.derekcormier.recipe.generator.filter.TsValueFilter;
-import liqp.filters.Filter;
 
 public class TypeScriptIngredientGenerator extends TypeScriptCookbookGenerator {
     public TypeScriptIngredientGenerator(Cookbook cookbook) {
@@ -128,14 +123,6 @@ public class TypeScriptIngredientGenerator extends TypeScriptCookbookGenerator {
         rendered = renderTemplate("templates/ts/ingredient-index-types.liquid", data);
         filepath = directory + File.separator + "index.d.ts";
         writeToFile(filepath, rendered);
-    }
-
-    private void registerFilters(Cookbook cookbook) {
-        TsTypeFilter tsTypeFilter = new TsTypeFilter(cookbook);
-        Filter.registerFilter(tsTypeFilter);
-        Filter.registerFilter(new TsParamFilter(cookbook, tsTypeFilter));
-        Filter.registerFilter(new JsParamFilter(cookbook));
-        Filter.registerFilter(new TsValueFilter(cookbook));
     }
 
     private Map<String,String> getRequiredTypeMapping(Ingredient ingredient) {
