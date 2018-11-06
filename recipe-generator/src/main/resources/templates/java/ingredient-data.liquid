@@ -18,7 +18,7 @@ public class {{dataClassName}} extends {{superclass}} {
     public {{required.type | javatype:true}} {% if required.type != 'boolean' %}get{% else %}is{% endif %}{{required.name | capitalize}}() {
         return getProperty("{{required.name}}");
     }
-    public void set{{required.name | capitalize}}({{required.type | javatype}} {{required.name}}) {
+    public void set{{required.name | capitalize}}({{required | javaparam}}) {
         setProperty("{{required.name}}", {{required.name}});
     }
     {%- endfor %}
@@ -46,7 +46,7 @@ public class {{dataClassName}} extends {{superclass}} {
         {%- if optional.compound %}
     public static class {{optional.name | capitalize}}Params {
             {%- for param in optional.params %}
-        public {{param.type | javatype:true}} {{param.name}};
+        public {{param | javaparam:true}};
             {%- endfor %}
     }{%- endif %}
     {%- endfor %}

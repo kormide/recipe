@@ -22,12 +22,9 @@ public class {{ingredientName}} extends {{superclass}} {
         {%- for param in initializer.params -%}
             {%- for required in ingredient.required -%}
                 {%- if param == required.name -%}
-                    {%- assign type = required.type | javatype -%}
-                    {%- assign typeWithSpace = type | append: ' ' -%}
-                    {%- assign argument = typeWithSpace | append: param -%}
+                    {{- required | javaparam -}}
                 {%- endif -%}
             {%- endfor -%}
-            {{- argument -}}
             {%- unless forloop.last -%}, {% endunless -%}
         {%- endfor -%}
     ) {
@@ -63,14 +60,11 @@ public class {{ingredientName}} extends {{superclass}} {
     public {{ingredientName}} with{{optional.name | capitalize}}(
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' -%}
-            {{optional.type | javatype}} {{optional.name}}
+            {{optional | javaparam}}
             {%- endif -%}
         {%- else -%}
             {%- for param in optional.params -%}
-                {%- assign type = param.type | javatype -%}
-                {%- assign typeWithSpace = type | append: ' ' -%}
-                {%- assign argument = typeWithSpace | append: param.name -%}
-                {{- argument -}}
+                {{- param | javaparam -}}
                 {%- unless forloop.last -%}, {% endunless -%}
             {%- endfor -%}
         {%- endif -%}
