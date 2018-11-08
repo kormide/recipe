@@ -438,7 +438,7 @@ Cake cake = oven.bake(Recipe.prepare(
     new Armor(SimpleBattleFixture.JASON, "Plate", 50)
 ));
 
-String heroId = cake.get(SimpleBattleFixture.HERO1);
+String heroId = cake.get(SimpleBattleFixture.JASON);
 
 /* test damage reduction on hero from presence of armor */
 ...
