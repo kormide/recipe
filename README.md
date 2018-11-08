@@ -2,7 +2,7 @@
 
 # Recipe
 
-Recipe is a framework that makes it easy to set up data fixtures dynamically prior to running integration tests. Recipe generates ingredients based on your application's domain, which you combine into recipes that describe what to prepare.
+Recipe is a framework that makes it easy to set up data fixtures dynamically prior to running integration tests. Recipe generates ingredients based on your application's domain, which you combine into recipes that describe what data to prepare.
 
 e.g., set up preconditions for an e-commerce test in  Java
 ```java
@@ -20,9 +20,9 @@ Cake cake = oven.bake(myRecipe);
 String customerId = cake.get("Jim");
 ...
  ```
-You provide the implementation hooks that correspond to each ingredient. The hooks invoke the service or API that owns the data, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support).
+Recipes can be re-used, combined, or added to for fine-grained data setup. You can bake recipes with ingredients belonging to different services, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support) and behave the same because they invoke a single implementation hook.
 
-Overall, Recipe is a wrapper around your service logic which makes it easier to read, write, and maintain your test code by giving you declarative data fixtures that can be combined or re-used across tests. It's an alternative to pre-loading snapshots or making API calls to set up data (see [static vs dynamic](#static-vs-dynamic) data setup).
+Overall, Recipe is a wrapper around your service logic or APIs which makes it easier to read, write, and maintain your test code. It gives you cross-language consistency when setting up test data in different suites (e.g., fixtures for your integration tests written in Java and your e2e protractor tests written in TypeScript will look identical). It's an alternative to pre-loading snapshots or making API calls to set up data (see [static vs dynamic](#static-vs-dynamic) data setup).
 
 ##### Table of Contents
 1. [Getting started](#getting-started)<br>
