@@ -862,6 +862,10 @@ dependencies: {
 | Ingredients 	|   ✓  	|       ✓       	| (coming soon) 	|
 | Hooks       	|   ✓  	| (coming soon) 	| (coming soon) 	|
 
+### When will you add support for more languages?
+
+In response to demand. If you'd like to use recipe and your current language isn't supported, let me know by creating an issue! I'll probably get to it very quickly.
+
 <a name="cookbook-spec"/>
 
 ## Cookbook spec
