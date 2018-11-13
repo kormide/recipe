@@ -1,5 +1,7 @@
 package ca.derekcormier.recipe.cookbook;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import ca.derekcormier.recipe.cookbook.type.ArrayType;
@@ -44,6 +46,46 @@ public class CookbookUtils {
 
     public static boolean isPrimitiveType(Type type) {
         return type instanceof PrimitiveType || type instanceof ArrayType && isPrimitiveType(((ArrayType)type).getBaseType());
+    }
+
+    public static boolean isNonPrimitive(String type, Cookbook cookbook) {
+        Type t = CookbookUtils.parseType(type, cookbook).getType();
+        return !CookbookUtils.isPrimitiveType(t) && !(t instanceof FlagType);
+    }
+
+    public static Set<String> getNonPrimitiveTypes(Ingredient ingredient, Cookbook cookbook) {
+        Set<String> types = new HashSet<>();
+        for (Required required: ingredient.getRequired()) {
+            if (CookbookUtils.isNonPrimitive(required.getType(), cookbook)) {
+                types.add(getBaseType(required.getType(), cookbook));
+            }
+        }
+
+        for (Optional optional: ingredient.getOptionals()) {
+            if (!optional.isCompound() && CookbookUtils.isNonPrimitive(optional.getType(), cookbook)) {
+                types.add(getBaseType(optional.getType(), cookbook));
+            }
+            else if (optional.isCompound()) {
+                for (Param param: optional.getParams()) {
+                    if (CookbookUtils.isNonPrimitive(param.getType(), cookbook)) {
+                        types.add(getBaseType(param.getType(), cookbook));
+                    }
+                }
+            }
+        }
+
+        return types;
+    }
+
+    public static String getBaseType(String type, Cookbook cookbook) {
+        ParamType paramType = CookbookUtils.parseType(type, cookbook);
+
+        if (paramType.getType() instanceof ArrayType) {
+            return getBaseType(((ArrayType)paramType.getType()).getBaseType().name(), cookbook);
+        }
+        else {
+            return paramType.getType().name();
+        }
     }
 
     public static ParamType parseType(String type, Cookbook cookbook) {

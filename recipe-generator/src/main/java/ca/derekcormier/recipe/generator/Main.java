@@ -15,7 +15,7 @@ import ca.derekcormier.recipe.cookbook.CookbookLoader;
 public class Main {
     @Argument(index = 0, usage = "name of ingredient domain", metaVar = "domain")
     private String domain;
-    @Argument(index = 1, usage = "type of generation to perform; valid options: java-ingredient, java-hook, ts-ingredient", metaVar = "flavour")
+    @Argument(index = 1, usage = "type of generation to perform; valid options: java-ingredient, java-hook, js-ingredient, ts-ingredient", metaVar = "flavour")
     private String flavour;
     @Argument(index = 2, usage = "path to the yaml cookbook definition file", metaVar = "cookbook")
     private String cookbook;

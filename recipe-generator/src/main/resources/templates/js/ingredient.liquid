@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
     {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
 {%- assign ingredientName = ingredient.name | append:options.ingredientPostfix -%}
-const {{superclass}} = require("recipe-ts-runtime").{{superclass}};
+const {{superclass}} = require("{{options.runtimeLibrary}}").{{superclass}};
 {% for type in info.nonPrimitiveTypes -%}
 const {{type}} = require("./{{type}}").{{type}};
 {% endfor %}
