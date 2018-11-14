@@ -5,9 +5,7 @@ package {{options.javaPackage}};
 import ca.derekcormier.recipe.BaseIngredientHook;
 import ca.derekcormier.recipe.Cake;
 
-{% assign className = 'Abstract' | append: ingredient.name -%}
-{%- assign className = className | append: 'Hook' -%}
-
+{% assign className = 'Abstract' | append: ingredient.name | append: 'Hook' -%}
 {%- assign dataClassName = ingredient.name | append: 'Data' -%}
 
 public abstract class {{className}} extends BaseIngredientHook<{{dataClassName}}> {

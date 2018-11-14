@@ -55,7 +55,7 @@
         <dependency>
             <groupId>nl.big-o</groupId>
             <artifactId>liqp</artifactId>
-            <version>0.7.3</version>
+            <version>0.7.6</version>
         </dependency>
 
         <!-- Test dependencies -->
