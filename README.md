@@ -754,7 +754,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 #### Arguments
 `domain` - name of the domain represented by the cookbook
 
-`flavour` - generation type; one of: `java-ingredient`, `java-hook`, `ts-ingredient`
+`flavour` - generation type; one of: `java-ingredient`, `java-hook`, `js-ingredient`, `ts-ingredient`
 
 `cookbook` - path to the cookbook; defaults to `cookbook.yaml` in the project directory
 
@@ -846,6 +846,12 @@ The run-time libraries contain the core classes required by Recipe.
     <version>0.3.3</version>
 </dependency>
 ```
+#### JavaScript
+```json
+dependencies: {
+  "recipe-js-runtime": "0.3.3",
+}
+```
 #### TypeScript
 ```json
 dependencies: {
@@ -859,7 +865,7 @@ dependencies: {
 
 |             	| Java 	| TypeScript    	| JavaScript    	|
 |-------------	|------	|---------------	|---------------	|
-| Ingredients 	|   ✓  	|       ✓       	| (coming soon) 	|
+| Ingredients 	|   ✓  	|       ✓       	|       ✓       	|
 | Hooks       	|   ✓  	| (coming soon) 	| (coming soon) 	|
 
 ### When will you add support for more languages?
