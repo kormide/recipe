@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>recipe</artifactId>
+        <groupId>ca.derekcormier.recipe</groupId>
+        <version>0.3.3</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>recipe-js-runtime</artifactId>
+    <version>0.3.3</version>
+
+    <name>Recipe JavaScript Runtime</name>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>ca.derekcormier.recipe</groupId>
+            <artifactId>recipe-ts-runtime</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <outputDirectory>${project.basedir}/target/dist</outputDirectory>
+                    <resources>
+                        <resource>
+                            <directory>${project.basedir}/../recipe-ts-runtime/target/dist</directory>
+                            <includes>
+                                <include>index.js</include>
+                                <include>Cake.js</include>
+                                <include>Ingredient.js</include>
+                                <include>KeyedIngredient.js</include>
+                                <include>Oven.js</include>
+                                <include>Recipe.js</include>
+                            </includes>
+                            <filtering>false</filtering>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

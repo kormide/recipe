@@ -13,8 +13,8 @@ import ca.derekcormier.recipe.cookbook.type.ParamType;
 import ca.derekcormier.recipe.cookbook.type.PrimitiveType;
 import ca.derekcormier.recipe.cookbook.type.Type;
 
-public class TsValueFilter extends RecipeFilter {
-    public TsValueFilter(Cookbook cookbook) {
+public class JsValueFilter extends RecipeFilter {
+    public JsValueFilter(Cookbook cookbook) {
         super("tsvalue", cookbook);
     }
 

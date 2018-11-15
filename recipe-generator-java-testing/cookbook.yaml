@@ -220,6 +220,24 @@ ingredients:
       - name: "false"
         type: "string"
 
+  - name: "IngredientWithJavaScriptKeywords"
+    required:
+    - name: "null"
+      type: "boolean"
+    initializers:
+    - params: ["null"]
+    optionals:
+    - name: "undefined"
+      type: "int"
+    - name: "try"
+      type: "boolean"
+    - name: "this"
+      params:
+      - name: "instanceof"
+        type: "int"
+      - name: "import"
+        type: "string"
+
 enums:
   - name: "TestEnum"
     values:

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>recipe</artifactId>
+        <groupId>ca.derekcormier.recipe</groupId>
+        <version>0.3.3</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Recipe Generator JavaScript Testing</name>
+    <artifactId>recipe-generator-js-testing</artifactId>
+    <version>0.3.3</version>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>ca.derekcormier.recipe</groupId>
+            <artifactId>recipe-generator</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.derekcormier.recipe</groupId>
+            <artifactId>recipe-js-runtime</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Simulate installing recipe-ts-runtime as an npm package -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need -->
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/node_modules/recipe-js-runtime</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../recipe-js-runtime/target/dist</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate test ingredients -->
+            <plugin>
+                <groupId>ca.derekcormier.recipe</groupId>
+                <artifactId>recipe-generator-maven-plugin</artifactId>
+                <version>0.3.3</version>
+                <executions>
+                    <execution>
+                        <id>generate-ingredients</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <domain>TestDomain</domain>
+                            <flavour>js-ingredient</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook.yaml</cookbook>
+                            <targetDir>${project.build.directory}/ingredients</targetDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-ingredients-postfix</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <domain>PostfixDomain</domain>
+                            <flavour>js-ingredient</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook-postfix.yaml</cookbook>
+                            <targetDir>${project.build.directory}/ingredients/postfix</targetDir>
+                            <ingredientPostfix>Foo</ingredientPostfix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+
+                <configuration>
+                    <installDirectory>target</installDirectory>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>install-node-and-yarn</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v8.9.3</nodeVersion>
+                            <yarnVersion>v1.3.2</yarnVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn-install</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn-run-lint</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run lint</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn-run-test</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run test</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
