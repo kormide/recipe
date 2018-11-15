@@ -20,9 +20,21 @@ Cake cake = oven.bake(myRecipe);
 String customerId = cake.get("Jim");
 ...
  ```
-Recipes can be re-used, combined, or added to for fine-grained data setup. You can bake recipes with ingredients belonging to different services, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support) and behave the same because they invoke a single implementation hook.
+Recipes can be re-used, combined, or added to for fine-grained data setup. You can bake recipes with ingredients belonging to different services, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support) and behave the same because they invoke a single implementation hook, giving you a consistent, cross-language interface for setting up data.
 
-Overall, Recipe is a wrapper around your service logic or APIs which makes it easier to read, write, and maintain your test code. It gives you cross-language consistency when setting up test data in different suites (e.g., fixtures for your integration tests written in Java and your e2e protractor tests written in TypeScript will look identical). It's an alternative to pre-loading snapshots or making API calls to set up data (see [static vs dynamic](#static-vs-dynamic) data setup).
+Overall, recipe makes it easier to read, write, and maintain your tests. It is an alternative to pre-loading snapshots or making API calls to set up data (see [static vs dynamic](#static-vs-dynamic) data setup).
+
+<a name="lang-support"/>
+
+## Language support
+
+|             	| Java 	| TypeScript    	| JavaScript    	|
+|-------------	|------	|---------------	|---------------	|
+| Ingredients 	|   ✓  	|       ✓       	|       ✓       	|
+| Hooks       	|   ✓  	| (coming soon) 	| (coming soon) 	|
+
+I will add new languages in response to demand. Please create an issue if you need support for another language.
+
 
 ##### Table of Contents
 1. [Getting started](#getting-started)<br>
@@ -36,7 +48,6 @@ Overall, Recipe is a wrapper around your service logic or APIs which makes it ea
 1. [Usage](#usage)<br>
    1. [Generating ingredients and hooks](#generator)<br>
    1. [Run-time library](#runtime)<br>
-1. [Language support](#lang-support)<br>
 1. [Cookbook spec](#cookbook-spec)<br>
 1. [Miscellaneous topics](#miscellaneous-topics)<br>
     1. [Static vs. Dynamic Setup](#static-vs-dynamic)<br>
@@ -858,19 +869,6 @@ dependencies: {
   "recipe-ts-runtime": "0.3.4",
 }
 ```
-
-<a name="lang-support"/>
-
-## Language support
-
-|             	| Java 	| TypeScript    	| JavaScript    	|
-|-------------	|------	|---------------	|---------------	|
-| Ingredients 	|   ✓  	|       ✓       	|       ✓       	|
-| Hooks       	|   ✓  	| (coming soon) 	| (coming soon) 	|
-
-### When will you add support for more languages?
-
-In response to demand. If you'd like to use recipe and your current language isn't supported, let me know by creating an issue! I'll probably get to it very quickly.
 
 <a name="cookbook-spec"/>
 
