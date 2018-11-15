@@ -1,4 +1,15 @@
-<a name="0.3.2"></a>
+<a name="0.3.4"></a>
+## 0.3.4 (2018-11-14)
+
+### New Features
+
+* can now generate JavaScript ingredients using the js-ingredient flavour
+
+### Bug Fixes
+
+* **generator:** sanitize keywords that conflict with language being generated ([#50](https://github.com/kormide/recipe/issues/50)) ([afad9c6](https://github.com/kormide/recipe/commit/afad9c6))
+
+<a name="0.3.3"></a>
 ## 0.3.3 (2018-11-01)
 
 
