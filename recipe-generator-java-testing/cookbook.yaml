@@ -184,6 +184,42 @@ ingredients:
       - params: ["requiredEnum"]
       - params: ["requiredString"]
 
+  - name: "IngredientWithJavaKeywords"
+    required:
+      - name: "synchronized"
+        type: "boolean"
+    initializers:
+      - params: ["synchronized"]
+    optionals:
+      - name: "class"
+        type: "int"
+      - name: "boolean"
+        type: "boolean"
+      - name: "package"
+        params:
+          - name: "super"
+            type: "int"
+          - name: "break"
+            type: "string"
+
+  - name: "IngredientWithTypeScriptKeywords"
+    required:
+    - name: "any"
+      type: "boolean"
+    initializers:
+    - params: ["any"]
+    optionals:
+    - name: "const"
+      type: "int"
+    - name: "number"
+      type: "boolean"
+    - name: "delete"
+      params:
+      - name: "enum"
+        type: "int"
+      - name: "false"
+        type: "string"
+
 enums:
   - name: "TestEnum"
     values:

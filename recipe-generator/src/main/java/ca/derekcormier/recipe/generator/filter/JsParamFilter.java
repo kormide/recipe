@@ -5,10 +5,14 @@ import java.util.Map;
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.CookbookUtils;
 import ca.derekcormier.recipe.cookbook.type.ParamType;
+import liqp.filters.Filter;
 
 public class JsParamFilter extends RecipeFilter {
-    public JsParamFilter(Cookbook cookbook) {
+    private final Filter identifierFilter;
+
+    public JsParamFilter(Cookbook cookbook, Filter identifierFilter) {
         super("jsparam", cookbook);
+        this.identifierFilter = identifierFilter;
     }
 
     @Override
@@ -17,6 +21,6 @@ public class JsParamFilter extends RecipeFilter {
         String name = param.get("name");
         ParamType type = CookbookUtils.parseType(param.get("type"), getCookbook());
 
-        return (type.isVararg() ? "..." : "") + name;
+        return (type.isVararg() ? "..." : "") + identifierFilter.apply(name);
     }
 }

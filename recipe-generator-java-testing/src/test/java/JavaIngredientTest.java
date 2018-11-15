@@ -30,6 +30,7 @@ import testdomain.ingredients.IngredientWithCompoundOptionalWithOneParam;
 import testdomain.ingredients.IngredientWithDefaultRequired;
 import testdomain.ingredients.IngredientWithDefaultRequiredNoInitializers;
 import testdomain.ingredients.IngredientWithConstant;
+import testdomain.ingredients.IngredientWithJavaKeywords;
 import testdomain.ingredients.IngredientWithNullStringDefault;
 import testdomain.ingredients.IngredientWithOptional;
 import testdomain.ingredients.IngredientWithRepeatableCompoundOptional;
@@ -225,6 +226,14 @@ public class JavaIngredientTest {
     @Test
     public void testGeneration_ingredientWithRequiredVarargStringArrayWithDefault() {
         new IngredientWithRequiredVarargStringArrayWithDefault();
+    }
+
+    @Test
+    public void testGeneration_ingredientWithJavaKeywords() {
+        new IngredientWithJavaKeywords(true)
+            .withBoolean(false)
+            .withClass(5)
+            .withPackage(2, "foo");
     }
 
     @Test
@@ -439,6 +448,20 @@ public class JavaIngredientTest {
 
         assertDispatchedJson(payloadJson(
             "{\"IngredientWithRequiredVarargStringArrayWithDefault\":{\"required\":[[\"foo\",\"bar\"],[\"moo\"]]}}"
+        ));
+    }
+
+    @Test
+    public void testBake_serialization_ingredientWithJavaKeywords() {
+        setupDispatcherSpy("TestDomain");
+        oven.bake(Recipe.prepare(
+            new IngredientWithJavaKeywords(true)
+                .withBoolean(false)
+                .withClass(4)
+                .withPackage(2, "foobar")
+        ));
+        assertDispatchedJson(payloadJson(
+            "{\"IngredientWithJavaKeywords\":{\"synchronized\":true,\"boolean\":false,\"class\":4,\"package\":{\"super\":2,\"break\":\"foobar\"}}}"
         ));
     }
 

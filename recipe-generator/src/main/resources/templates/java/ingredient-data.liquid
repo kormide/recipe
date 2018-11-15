@@ -6,7 +6,8 @@
 {%- if options.javaPackage != "" -%}
 package {{options.javaPackage}};
 {% endif %}
-{%- assign dataClassName = ingredient.name | append: 'Data' -%}
+import com.fasterxml.jackson.annotation.JsonProperty;
+{% assign dataClassName = ingredient.name | append: 'Data' -%}
 import ca.derekcormier.recipe.{{superclass}};
 
 public class {{dataClassName}} extends {{superclass}} {
@@ -15,11 +16,11 @@ public class {{dataClassName}} extends {{superclass}} {
     }
 
     {%- for required in ingredient.required %}
-    public {{required.type | javatype:true}} {% if required.type != 'boolean' %}get{% else %}is{% endif %}{{required.name | capitalize}}() {
+    public {{required.type | javatype:true}} {{required | javagetter}}() {
         return getProperty("{{required.name}}");
     }
     public void set{{required.name | capitalize}}({{required | javaparam}}) {
-        setProperty("{{required.name}}", {{required.name}});
+        setProperty("{{required.name}}", {{required.name | javaidentifier}});
     }
     {%- endfor %}
     {%- for optional in ingredient.optionals %}
@@ -27,18 +28,18 @@ public class {{dataClassName}} extends {{superclass}} {
         return hasProperty("{{optional.name}}");
     }
         {%- if optional.compound != true %}
-    public {{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {% if optional.type != 'boolean' and optional.type != 'flag' %}get{% else %}is{% endif %}{{optional.name | capitalize}}() {
+    public {{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {{optional | javagetter}}() {
         return getProperty({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %}.class, "{{optional.name}}");
     }
-    public void set{{optional.name | capitalize}}({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
-        setProperty("{{optional.name}}", {{optional.name}});
+    public void set{{optional.name | capitalize}}({{optional.type | javatype:true}}{% if optional.repeatable == true %}[]{% endif %} {{optional.name | javaidentifier}}) {
+        setProperty("{{optional.name}}", {{optional.name | javaidentifier}});
     }
         {%- else -%}
-    public {{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} get{{optional.name | capitalize}}() {
+    public {{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} {{optional | javagetter}}() {
         return getProperty({{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %}.class, "{{optional.name}}");
     }
-    public void set{{optional.name | capitalize}}({{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} {{optional.name}}) {
-        setProperty("{{optional.name}}", {{optional.name}});
+    public void set{{optional.name | capitalize}}({{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %} {{optional.name | javaidentifier}}) {
+        setProperty("{{optional.name}}", {{optional.name | javaidentifier}});
     }
         {% endif %}
     {%- endfor %}
@@ -46,6 +47,7 @@ public class {{dataClassName}} extends {{superclass}} {
         {%- if optional.compound %}
     public static class {{optional.name | capitalize}}Params {
             {%- for param in optional.params %}
+        @JsonProperty("{{param.name}}")
         public {{param | javaparam:true}};
             {%- endfor %}
     }{%- endif %}

@@ -20,25 +20,28 @@ import liqp.filters.Filter;
 public class JavaParamFilterTest {
     @Mock
     private JavaTypeFilter javaTypeFilter;
+    @Mock
+    private JavaIdentifierFilter javaIdentifierFilter;
 
     @Test
-    public void testApply_combinesTypeFromTypeFilterWithName() {
+    public void testApply_combinesTypeAndNameFromFilters() {
         Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
-        Filter filter = new JavaParamFilter(cookbook, javaTypeFilter);
+        Filter filter = new JavaParamFilter(cookbook, javaTypeFilter, javaIdentifierFilter);
 
         Map param = new HashMap();
         param.put("name", "foo");
         param.put("type", "int[]");
 
         when(javaTypeFilter.apply(param.get("type"), false)).thenReturn("type");
+        when(javaIdentifierFilter.apply(param.get("name"))).thenReturn("identifier");
 
-        assertEquals("type foo", filter.apply(param));
+        assertEquals("type identifier", filter.apply(param));
     }
 
     @Test
     public void testApply_passesCollapseVarargOptionToTypeFilter() {
         Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
-        Filter filter = new JavaParamFilter(cookbook, javaTypeFilter);
+        Filter filter = new JavaParamFilter(cookbook, javaTypeFilter, javaIdentifierFilter);
 
         Map param = new HashMap();
         param.put("name", "foo");
