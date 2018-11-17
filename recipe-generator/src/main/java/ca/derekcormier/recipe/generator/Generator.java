@@ -18,11 +18,11 @@ import ca.derekcormier.recipe.cookbook.Ingredient;
 import liqp.RenderSettings;
 import liqp.Template;
 
-public abstract class CookbookGenerator {
+public abstract class Generator {
     private ObjectMapper objectMapper = new ObjectMapper();
     private final Cookbook cookbook;
 
-    public CookbookGenerator(Cookbook cookbook) {
+    public Generator(Cookbook cookbook) {
         this.cookbook = cookbook;
     }
 

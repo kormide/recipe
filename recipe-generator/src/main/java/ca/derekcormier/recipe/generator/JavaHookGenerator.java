@@ -8,7 +8,7 @@ import java.util.Map;
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.Ingredient;
 
-public class JavaHookGenerator extends JavaCookbookGenerator {
+public class JavaHookGenerator extends JavaGenerator {
     public JavaHookGenerator(Cookbook cookbook) {
         super(cookbook);
     }

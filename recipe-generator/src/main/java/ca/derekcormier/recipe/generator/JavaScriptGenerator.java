@@ -6,8 +6,8 @@ import ca.derekcormier.recipe.generator.filter.JsValueFilter;
 import ca.derekcormier.recipe.generator.filter.TsIdentifierFilter;
 import liqp.filters.Filter;
 
-public abstract class JavaScriptCookbookGenerator extends CookbookGenerator {
-    public JavaScriptCookbookGenerator(Cookbook cookbook) {
+public abstract class JavaScriptGenerator extends Generator {
+    public JavaScriptGenerator(Cookbook cookbook) {
         super(cookbook);
         Filter identifierFilter = new TsIdentifierFilter();
         Filter.registerFilter(new JsParamFilter(cookbook, identifierFilter));

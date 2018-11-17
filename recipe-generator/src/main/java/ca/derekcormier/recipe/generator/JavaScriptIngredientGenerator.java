@@ -9,7 +9,7 @@ import ca.derekcormier.recipe.cookbook.CookbookUtils;
 import ca.derekcormier.recipe.cookbook.Ingredient;
 import ca.derekcormier.recipe.cookbook.Required;
 
-public class JavaScriptIngredientGenerator extends JavaScriptCookbookGenerator {
+public class JavaScriptIngredientGenerator extends JavaScriptGenerator {
     public JavaScriptIngredientGenerator(Cookbook cookbook) {
         super(cookbook);
     }

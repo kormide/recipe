@@ -7,8 +7,8 @@ import ca.derekcormier.recipe.generator.filter.TsParamFilter;
 import ca.derekcormier.recipe.generator.filter.TsTypeFilter;
 import liqp.filters.Filter;
 
-public abstract class TypeScriptCookbookGenerator extends CookbookGenerator {
-    public TypeScriptCookbookGenerator(Cookbook cookbook) {
+public abstract class TypeScriptGenerator extends Generator {
+    public TypeScriptGenerator(Cookbook cookbook) {
         super(cookbook);
 
         Filter tsTypeFilter = new TsTypeFilter(cookbook);

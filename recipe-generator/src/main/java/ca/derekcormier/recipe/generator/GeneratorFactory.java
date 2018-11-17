@@ -2,8 +2,8 @@ package ca.derekcormier.recipe.generator;
 
 import ca.derekcormier.recipe.cookbook.Cookbook;
 
-public class CookbookGeneratorFactory {
-    public static CookbookGenerator getGenerator(Flavour flavour, Cookbook cookbook) {
+public class GeneratorFactory {
+    public static Generator getGenerator(Flavour flavour, Cookbook cookbook) {
         switch (flavour) {
             case JAVA_HOOK:
                 return new JavaHookGenerator(cookbook);

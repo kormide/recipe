@@ -8,7 +8,7 @@ import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.CookbookUtils;
 import ca.derekcormier.recipe.cookbook.Ingredient;
 
-public class TypeScriptIngredientGenerator extends TypeScriptCookbookGenerator {
+public class TypeScriptIngredientGenerator extends TypeScriptGenerator {
     public TypeScriptIngredientGenerator(Cookbook cookbook) {
         super(cookbook);
     }

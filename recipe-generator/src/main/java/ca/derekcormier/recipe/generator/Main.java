@@ -55,7 +55,7 @@ public class Main {
 
         try (FileInputStream ingredients = new FileInputStream(cookbook)) {
             Cookbook cookbook = new CookbookLoader().load(ingredients);
-            CookbookGenerator generator = CookbookGeneratorFactory.getGenerator(Flavour.fromAlias(flavour), cookbook);
+            Generator generator = GeneratorFactory.getGenerator(Flavour.fromAlias(flavour), cookbook);
             generator.generate(domain, targetDir, options);
         }
         catch (Exception e) {

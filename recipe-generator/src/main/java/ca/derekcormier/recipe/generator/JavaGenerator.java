@@ -8,8 +8,8 @@ import ca.derekcormier.recipe.generator.filter.JavaTypeFilter;
 import ca.derekcormier.recipe.generator.filter.JavaValueFilter;
 import liqp.filters.Filter;
 
-public abstract class JavaCookbookGenerator extends CookbookGenerator {
-    public JavaCookbookGenerator(Cookbook cookbook) {
+public abstract class JavaGenerator extends Generator {
+    public JavaGenerator(Cookbook cookbook) {
         super(cookbook);
 
         Filter javaTypeFilter = new JavaTypeFilter(cookbook);
