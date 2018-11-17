@@ -1,5 +1,8 @@
 package ca.derekcormier.recipe.generator;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.generator.filter.JavaGetterFilter;
 import ca.derekcormier.recipe.generator.filter.JavaIdentifierFilter;
@@ -11,13 +14,19 @@ import liqp.filters.Filter;
 public abstract class JavaGenerator extends Generator {
     public JavaGenerator(Cookbook cookbook) {
         super(cookbook);
+    }
 
-        Filter javaTypeFilter = new JavaTypeFilter(cookbook);
+    @Override
+    protected List<Filter> getTemplateFilters() {
+        Filter javaTypeFilter = new JavaTypeFilter(getCookbook());
         Filter javaIdentifierFilter = new JavaIdentifierFilter();
-        Filter.registerFilter(javaTypeFilter);
-        Filter.registerFilter(javaIdentifierFilter);
-        Filter.registerFilter(new JavaParamFilter(cookbook, javaTypeFilter, javaIdentifierFilter));
-        Filter.registerFilter(new JavaValueFilter(cookbook));
-        Filter.registerFilter(new JavaGetterFilter());
+
+        return Arrays.asList(
+            javaTypeFilter,
+            javaIdentifierFilter,
+            new JavaParamFilter(getCookbook(), javaTypeFilter, javaIdentifierFilter),
+            new JavaValueFilter(getCookbook()),
+            new JavaGetterFilter()
+        );
     }
 }

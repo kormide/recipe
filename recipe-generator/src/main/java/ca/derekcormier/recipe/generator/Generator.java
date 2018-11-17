@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -17,6 +18,7 @@ import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.cookbook.Ingredient;
 import liqp.RenderSettings;
 import liqp.Template;
+import liqp.filters.Filter;
 
 public abstract class Generator {
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -33,12 +35,21 @@ public abstract class Generator {
         Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         String templateContent = scanner.hasNext() ? scanner.next() : "";
         Template template = Template.parse(templateContent).withRenderSettings(new RenderSettings.Builder().withStrictVariables(false).build());
+
+        for (Filter filter: getTemplateFilters()) {
+            template = template.with(filter);
+        }
+
         try {
             return template.render(objectMapper.writeValueAsString(data));
         }
         catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected List<Filter> getTemplateFilters() {
+        return Collections.emptyList();
     }
 
     protected String createDirectories(String targetDir) {

@@ -1,5 +1,8 @@
 package ca.derekcormier.recipe.generator;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ca.derekcormier.recipe.cookbook.Cookbook;
 import ca.derekcormier.recipe.generator.filter.JsValueFilter;
 import ca.derekcormier.recipe.generator.filter.TsIdentifierFilter;
@@ -10,12 +13,18 @@ import liqp.filters.Filter;
 public abstract class TypeScriptGenerator extends Generator {
     public TypeScriptGenerator(Cookbook cookbook) {
         super(cookbook);
+    }
 
-        Filter tsTypeFilter = new TsTypeFilter(cookbook);
+    @Override
+    protected List<Filter> getTemplateFilters() {
+        Filter tsTypeFilter = new TsTypeFilter(getCookbook());
         Filter tsIdentifierFilter = new TsIdentifierFilter();
-        Filter.registerFilter(tsTypeFilter);
-        Filter.registerFilter(new TsParamFilter(cookbook, tsTypeFilter, tsIdentifierFilter));
-        Filter.registerFilter(new JsValueFilter(cookbook));
-        Filter.registerFilter(tsIdentifierFilter);
+
+        return Arrays.asList(
+            tsTypeFilter,
+            tsIdentifierFilter,
+            new TsParamFilter(getCookbook(), tsTypeFilter, tsIdentifierFilter),
+            new JsValueFilter(getCookbook())
+        );
     }
 }
