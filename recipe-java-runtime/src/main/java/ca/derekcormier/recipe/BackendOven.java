@@ -41,12 +41,12 @@ public class BackendOven extends AbstractOven {
         subtypeResolver.registerSubtypes(new NamedType(hook.getDataClass(), hook.getIngredientName()));
     }
 
-    private void bakeIngredient(IngredientSnapshot ingredient, Cake cake) {
+    private void bakeIngredient(Ingredient ingredient, Cake cake) {
         if (ingredient instanceof RecipeSnapshot) {
             RecipeSnapshot recipe = (RecipeSnapshot)ingredient;
 
             Runnable bakeRecipeIngredients = () -> {
-                for (IngredientSnapshot i: recipe.getIngredients()) {
+                for (Ingredient i: recipe.getIngredients()) {
                     bakeIngredient(i, cake);
                 }
             };

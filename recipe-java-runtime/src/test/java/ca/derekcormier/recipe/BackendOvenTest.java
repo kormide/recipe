@@ -207,7 +207,7 @@ public class BackendOvenTest {
         }
     }
 
-    public static class EmptyIngredientData extends IngredientSnapshot {
+    public static class EmptyIngredientData extends Ingredient {
         public EmptyIngredientData() {
             super("EmptyIngredient");
         }
@@ -223,7 +223,7 @@ public class BackendOvenTest {
         }
     }
 
-    public static class IngredientWithRequiredData extends IngredientSnapshot {
+    public static class IngredientWithRequiredData extends Ingredient {
         public IngredientWithRequiredData() {
             super("IngredientWithRequired");
         }
@@ -239,9 +239,9 @@ public class BackendOvenTest {
         }
     }
 
-    public static class KeyedIngredientData extends KeyedIngredientSnapshot {
+    public static class KeyedIngredientData extends KeyedIngredient {
         public KeyedIngredientData() {
-            super("KeyedIngredient");
+            super("KeyedIngredient", "A");
         }
     }
 

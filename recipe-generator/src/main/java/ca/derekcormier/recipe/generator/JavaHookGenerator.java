@@ -51,6 +51,7 @@ public class JavaHookGenerator extends JavaGenerator {
             Map<String,Object> data = new HashMap<>();
             data.put("ingredient", ingredient);
             data.put("options", options);
+            data.put("domain", domain);
             String rendered = renderTemplate("templates/java/ingredient-data.liquid", data);
             String filepath = directory + File.separator + ingredient.getName() + "Data.java";
             writeToFile(filepath, rendered);

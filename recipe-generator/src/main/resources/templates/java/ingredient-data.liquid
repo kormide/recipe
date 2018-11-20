@@ -1,7 +1,7 @@
 {%- if ingredient.keyed -%}
-    {%- assign superclass = 'KeyedIngredientSnapshot' -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
 {%- else -%}
-    {%- assign superclass = 'IngredientSnapshot' -%}
+    {%- assign superclass = 'Ingredient' -%}
 {%- endif -%}
 {%- if options.javaPackage != "" -%}
 package {{options.javaPackage}};
@@ -12,7 +12,7 @@ import ca.derekcormier.recipe.{{superclass}};
 
 public class {{dataClassName}} extends {{superclass}} {
     public {{dataClassName}}() {
-        super("{{ingredient.name}}");
+        super("{{ingredient.name}}", "{{domain}}");
     }
 
     {%- for required in ingredient.required %}

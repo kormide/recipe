@@ -5,19 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeSnapshot extends IngredientSnapshot {
+public class RecipeSnapshot extends Ingredient {
     @JsonProperty("ingredients")
-    private final List<IngredientSnapshot> ingredients = new ArrayList<>();
+    private final List<Ingredient> ingredients = new ArrayList<>();
     @JsonProperty("context")
     private String context = null;
     @JsonProperty("contextIngredient")
-    private KeyedIngredientSnapshot contextIngredient = null;
+    private KeyedIngredient contextIngredient = null;
 
     public RecipeSnapshot() {
         super("Recipe");
     }
 
-    List<IngredientSnapshot> getIngredients() {
+    List<Ingredient> getIngredients() {
         return ingredients;
     }
 
@@ -25,7 +25,7 @@ public class RecipeSnapshot extends IngredientSnapshot {
         return context;
     }
 
-    public KeyedIngredientSnapshot getContextIngredient() {
+    public KeyedIngredient getContextIngredient() {
         return contextIngredient;
     }
 }
