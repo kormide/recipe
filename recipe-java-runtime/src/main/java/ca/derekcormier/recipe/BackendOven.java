@@ -15,12 +15,12 @@ public class BackendOven extends AbstractOven {
 
     public BackendOven() {
         objectMapper.setSubtypeResolver(subtypeResolver);
-        subtypeResolver.registerSubtypes(new NamedType(RecipeSnapshot.class, "Recipe"));
+        subtypeResolver.registerSubtypes(new NamedType(Recipe.class, "Recipe"));
     }
 
     public String bake(String json) {
         try {
-            BackendPayload payload = objectMapper.readValue(json, BackendPayload.class);
+            Payload payload = objectMapper.readValue(json, Payload.class);
             Cake deserializedCake = payload.getCake();
 
             Cake cake = createCake();
@@ -42,8 +42,8 @@ public class BackendOven extends AbstractOven {
     }
 
     private void bakeIngredient(Ingredient ingredient, Cake cake) {
-        if (ingredient instanceof RecipeSnapshot) {
-            RecipeSnapshot recipe = (RecipeSnapshot)ingredient;
+        if (ingredient instanceof Recipe) {
+            Recipe recipe = (Recipe)ingredient;
 
             Runnable bakeRecipeIngredients = () -> {
                 for (Ingredient i: recipe.getIngredients()) {
@@ -53,15 +53,6 @@ public class BackendOven extends AbstractOven {
 
             if (recipe.getContext() != null) {
                 cake.inNamespace(recipe.getContext(), bakeRecipeIngredients);
-            }
-            else if (recipe.getContextIngredient() != null) {
-                bakeIngredient(recipe.getContextIngredient(), cake);
-                if (recipe.getContextIngredient().getKey() != null) {
-                    cake.inNamespace(recipe.getContextIngredient().getKey(), bakeRecipeIngredients);
-                }
-                else {
-                    bakeRecipeIngredients.run();
-                }
             }
             else {
                 bakeRecipeIngredients.run();

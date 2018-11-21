@@ -25,7 +25,6 @@ import testdomain.hooks.AbstractIngredientWithRepeatableVarargOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRequiredAndOptionalHook;
 import testdomain.hooks.AbstractIngredientWithRequiredHook;
 import testdomain.hooks.AbstractIngredientWithStringDefaultContainingQuotesHook;
-import testdomain.hooks.AbstractKeyedTestIngredientHook;
 import testdomain.hooks.AllParamsIngredientData;
 import testdomain.hooks.EmptyIngredientData;
 import testdomain.hooks.IngredientWithCompoundOptionalData;
@@ -39,7 +38,6 @@ import testdomain.hooks.IngredientWithRepeatableVarargOptionalData;
 import testdomain.hooks.IngredientWithRequiredAndOptionalData;
 import testdomain.hooks.IngredientWithRequiredData;
 import testdomain.hooks.IngredientWithStringDefaultContainingQuotesData;
-import testdomain.hooks.KeyedTestIngredientData;
 import testdomain.hooks.TestEnum;
 
 public class JavaHookTest {
@@ -790,27 +788,6 @@ public class JavaHookTest {
         });
 
         oven.bake("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}],\"context\":\"foo\"}},\"cake\":{}}");
-        verify(spy).run();
-    }
-
-    @Test
-    public void testBake_bakesIngredientInContextOfIngredient() {
-        Runnable spy = spy(Runnable.class);
-        BackendOven oven = new BackendOven();
-        oven.registerHook(new AbstractKeyedTestIngredientHook() {
-            @Override
-            public void bake(KeyedTestIngredientData data, Cake cake) {}
-        });
-        oven.registerHook(new AbstractEmptyIngredientHook() {
-            @Override
-            public void bake(EmptyIngredientData data, Cake cake) {
-                cake.publish("bar", "value");
-                assertEquals(Cake.key("foo", "bar"), cake.getPublishedKeyForValue("value", true));
-                spy.run();
-            }
-        });
-
-        oven.bake("{\"recipe\":{\"Recipe\":{\"ingredients\":[{\"EmptyIngredient\":{}}],\"contextIngredient\":{\"KeyedTestIngredient\":{\"key\":\"foo\"}}}},\"cake\":{}}");
         verify(spy).run();
     }
 
