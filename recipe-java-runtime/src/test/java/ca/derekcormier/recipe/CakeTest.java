@@ -15,6 +15,17 @@ public class CakeTest {
         cake = new Cake();
     }
 
+    @Test
+    public void testCopyConstructor_copiesEntries() {
+        Cake cake = new Cake();
+        cake.publish("foo", "bar");
+        cake.publish("json", 123);
+
+        Cake copy = new Cake(cake);
+        assertEquals("bar", copy.get("foo"));
+        assertEquals(123, (int)copy.get("json"));
+    }
+
     @Test(expected = RuntimeException.class)
     public void testGet_throwsOnMissingKey() {
         cake.get("foo");

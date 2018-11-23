@@ -1,6 +1,6 @@
 export class Cake {
     public static readonly SEPARATOR = ".";
-    private entries: {[key: string]: any} = {};
+    private entries: {[key: string]: any};
     private readonly prefixStack: string[] = [];
 
     public static key(...subKeys: string[]): string {
@@ -20,6 +20,10 @@ export class Cake {
         if (key.includes(Cake.SEPARATOR)) {
             throw new Error("keys cannot contain the namespace separator: " + Cake.SEPARATOR);
         }
+    }
+
+    public constructor(other?: Cake) {
+        this.entries = other ? {...other.entries} : {};
     }
 
     public publish(key: string, value: any) {

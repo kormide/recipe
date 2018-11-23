@@ -27,6 +27,12 @@ public class Cake {
         return StringUtils.join(subKeys, Cake.SEPARATOR);
     }
 
+    public Cake() {}
+
+    public Cake(Cake other) {
+        this.entries.putAll(other.entries);
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T get(String... key) {
         List<String> keys = ((key == null) ? new ArrayList<String>() : Arrays.asList(key)).stream()
@@ -202,11 +208,6 @@ public class Cake {
     @JsonAnyGetter
     protected Map<String,Object> getEntries() {
         return entries;
-    }
-
-    protected void setEntries(Map<String,Object> entries) {
-        this.entries.clear();
-        this.entries.putAll(entries);
     }
 
     @JsonAnySetter
