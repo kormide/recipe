@@ -57,17 +57,14 @@ public class Oven extends AbstractOven {
     }
 
     private String serializePayload(Recipe recipe, Cake cake) throws JsonProcessingException {
-        Cake plainCake = new Cake();
-        plainCake.setEntries(cake.getEntries());
+        Cake plainCake = new Cake(cake);
         Payload payload = new Payload(recipe, plainCake);
         return objectMapper.writeValueAsString(payload);
     }
 
     private Cake deserializeCake(String json) throws IOException {
         Cake plainCake = objectMapper.readValue(json, Cake.class);
-        Cake cake = createCake();
-        cake.setEntries(plainCake.getEntries());
-        return cake;
+        return createCake(plainCake);
     }
 
     private void registerSubtypes(Recipe recipe) {

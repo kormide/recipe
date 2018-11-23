@@ -21,14 +21,11 @@ public class BackendOven extends AbstractOven {
     public String bake(String json) {
         try {
             Payload payload = objectMapper.readValue(json, Payload.class);
-            Cake deserializedCake = payload.getCake();
+            Cake cake = createCake(payload.getCake());
 
-            Cake cake = createCake();
-            cake.setEntries(deserializedCake.getEntries());
             bakeIngredient(payload.getRecipe(), cake);
 
-            Cake cakeToSerialize = new Cake();
-            cakeToSerialize.setEntries(cake.getEntries());
+            Cake cakeToSerialize = new Cake(cake);
             return objectMapper.writeValueAsString(cakeToSerialize);
         }
         catch (Exception e) {
