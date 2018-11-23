@@ -8,6 +8,7 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": false,
+        "noImplicitAny": false,
         "removeComments": false,
         "sourceMap": true,
         "declaration": true,
