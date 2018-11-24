@@ -9,11 +9,17 @@ class TestIngredientA1 extends Ingredient {
     constructor() {
         super("TestIngredientA1", "A");
     }
+    public static fromJSON(json: any) {
+        return new TestIngredientA1();
+    }
 }
 
 class TestIngredientA2 extends Ingredient {
     constructor() {
         super("TestIngredientA2", "A");
+    }
+    public static fromJSON(json: any) {
+        return new TestIngredientA2();
     }
 }
 
@@ -21,11 +27,17 @@ class TestIngredientA3 extends Ingredient {
     constructor() {
         super("TestIngredientA3", "A");
     }
+    public static fromJSON(json: any) {
+        return new TestIngredientA3();
+    }
 }
 
 class TestIngredientB1 extends Ingredient {
     constructor() {
         super("TestIngredientB1", "B");
+    }
+    public static fromJSON(json: any) {
+        return new TestIngredientB1();
     }
 }
 
@@ -33,11 +45,17 @@ class TestKeyedIngredientA extends KeyedIngredient {
     constructor() {
         super("TestKeyedIngredientA", "A");
     }
+    public static fromJSON(json: any) {
+        return new TestKeyedIngredientA();
+    }
 }
 
 class TestKeyedIngredientB extends KeyedIngredient {
     constructor() {
         super("TestKeyedIngredientB", "B");
+    }
+    public static fromJSON(json: any) {
+        return new TestKeyedIngredientB();
     }
 }
 
@@ -343,6 +361,61 @@ describe("Recipe", () => {
 
         it("should serialize a recipe with an ingredient context", () => {
             expectJsonEquals(`{"Recipe":{"ingredients":[${JSON.stringify(new EmptyKeyedIngredient().keyed("key"))},${JSON.stringify(Recipe.context("key", new TestIngredientA1()))}]}}`, Recipe.context(new EmptyKeyedIngredient().keyed("key"), new TestIngredientA1()));
+        });
+    });
+
+    describe("fromJSON", () => {
+        const TYPES = {TestIngredientA1, TestIngredientA2};
+
+        it("should deserialize an empty recipe", () => {
+            const json = JSON.parse(`{"Recipe":{"context":null,"ingredients":[]}}`);
+            const recipe = Recipe.fromJSON(json, TYPES);
+
+            expect(recipe instanceof Recipe).to.equal(true);
+            expect(recipe.getIngredients().length).to.equal(0);
+            expect(recipe.getContext()).to.equal(null);
+        });
+
+        it("should deserialize a recipe and its ingredients", () => {
+            const json = JSON.parse(`{"Recipe":{"context":null,"ingredients":[{"TestIngredientA1":{}},{"TestIngredientA2":{}}]}}`);
+            const recipe = Recipe.fromJSON(json, TYPES);
+
+            expect(recipe instanceof Recipe).to.equal(true);
+            expect(recipe.getIngredients().length).to.equal(2);
+            expect(recipe.getIngredients()[0] instanceof TestIngredientA1).to.equal(true);
+            expect(recipe.getIngredients()[1] instanceof TestIngredientA2).to.equal(true);
+        });
+
+        it("should deserialize a contextful recipe", () => {
+            const json = JSON.parse(`{"Recipe":{"context":"foo","ingredients":[]}}`);
+            const recipe = Recipe.fromJSON(json, TYPES);
+
+            expect(recipe instanceof Recipe).to.equal(true);
+            expect(recipe.getIngredients().length).to.equal(0);
+            expect(recipe.getContext()).to.equal("foo");
+        });
+
+        it("should deserialize a recipe with a nested recipe", () => {
+            const json = JSON.parse(`{"Recipe":{"context":null,"ingredients":[{"Recipe":{"context":null,"ingredients":[{"TestIngredientA1":{}}]}}]}}`);
+            const recipe = Recipe.fromJSON(json, TYPES);
+
+            expect(recipe instanceof Recipe).to.equal(true);
+            expect(recipe.getIngredients().length).to.equal(1);
+            expect(recipe.getIngredients()[0] instanceof Recipe).to.equal(true);
+            expect((recipe.getIngredients()[0] as Recipe).getIngredients().length).to.equal(1);
+            expect((recipe.getIngredients()[0] as Recipe).getIngredients()[0] instanceof TestIngredientA1).to.equal(true);
+        });
+
+        it("should throw when deserializing a recipe with an unknown ingedient", () => {
+            const json = JSON.parse(`{"Recipe":{"context":null,"ingredients":[{"UnknownIngredient":{}}]}}`);
+            expect(() => Recipe.fromJSON(json, TYPES)).to.throw();
+        });
+
+        it("should deserialize the context into null when it is missing from the json", () => {
+            const json = JSON.parse(`{"Recipe":{"ingredients":[{"TestIngredientA2":{}}]}}`);
+            const recipe = Recipe.fromJSON(json, TYPES);
+
+            expect(recipe.getContext()).to.equal(null);
         });
     });
 });

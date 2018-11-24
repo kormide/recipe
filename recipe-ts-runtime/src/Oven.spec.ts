@@ -98,8 +98,8 @@ describe("Oven", () => {
                 expect(dispatcherA).callCount(1);
                 expect(dispatcherB).callCount(1);
                 expect(dispatcherC).callCount(1);
-                expect(dispatcherA).calledBefore(dispatcherB);
-                expect(dispatcherB).calledBefore(dispatcherC);
+                expect(dispatcherA).calledBefore(dispatcherB as any);
+                expect(dispatcherB).calledBefore(dispatcherC as any);
             });
         });
 
@@ -122,8 +122,8 @@ describe("Oven", () => {
                 expect(dispatcherA).callCount(1);
                 expect(dispatcherB).callCount(1);
                 expect(dispatcherC).callCount(1);
-                expect(dispatcherA).calledBefore(dispatcherB);
-                expect(dispatcherB).calledBefore(dispatcherC);
+                expect(dispatcherA).calledBefore(dispatcherB as any);
+                expect(dispatcherB).calledBefore(dispatcherC as any);
             });
         });
 
@@ -141,8 +141,8 @@ describe("Oven", () => {
             )).then(() => {
                 expect(dispatcherA).callCount(2);
                 expect(dispatcherB).callCount(1);
-                expect(dispatcherA).calledBefore(dispatcherB);
-                expect(dispatcherB).calledBefore(dispatcherA);
+                expect(dispatcherA).calledBefore(dispatcherB as any);
+                expect(dispatcherB).calledBefore(dispatcherA as any);
             });
         });
 
@@ -167,7 +167,7 @@ describe("Oven", () => {
             )).then(() => {
                 expect(dispatcherA).callCount(1);
                 expect(dispatcherB).callCount(1);
-                expect(dispatcherA).calledBefore(dispatcherB);
+                expect(dispatcherA).calledBefore(dispatcherB as any);
             });
         });
 

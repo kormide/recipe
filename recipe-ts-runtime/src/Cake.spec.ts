@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { describe, it } from "mocha";
 
 import { Cake } from "./Cake";
 
@@ -7,6 +8,17 @@ describe("Cake", () => {
 
     beforeEach(() => {
         cake = new Cake();
+    });
+
+    describe("constructor", () => {
+        it("should copy cake entries when called with another cake", () => {
+            cake.publish("foo", "bar");
+            cake.publish("json", 123);
+
+            const copy = new Cake(cake);
+            expect(copy.get("foo")).to.equal("bar");
+            expect(copy.get("json")).to.equal(123);
+        });
     });
 
     describe("get", () => {
@@ -294,6 +306,24 @@ describe("Cake", () => {
                     expect(cake.getOrGetContext("key")).to.equal("value");
                 });
             });
+        });
+    });
+
+    describe("toJSON", () => {
+        it("should return an object containing the cake entries", () => {
+            cake.publish("foo", "bar");
+            cake.publish("json", 123);
+
+            expect(cake.toJSON()).to.deep.equal({foo: "bar", json: 123});
+        });
+    });
+
+    describe("fromJSON", () => {
+        it("should construct a cake from cake json", () => {
+            cake = Cake.fromJSON(JSON.parse(`{"foo":"bar","json":123}`));
+
+            expect(cake.get("foo")).to.equal("bar");
+            expect(cake.get("json")).to.equal(123);
         });
     });
 });

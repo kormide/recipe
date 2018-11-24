@@ -106,6 +106,21 @@ export class Recipe extends Ingredient {
         return jsonObj;
     }
 
+    public static fromJSON(json: any, ingredientTypes: {[key: string]: Function}): Recipe {
+        ingredientTypes["Recipe"] = Recipe;
+        const context = json.Recipe.context || null;
+        const ingredients = json.Recipe.ingredients.map((ingredient: any) => {
+            return "Recipe" in ingredient
+                ? Recipe.fromJSON(ingredient, ingredientTypes)
+                : Ingredient.fromJSON(ingredient, ingredientTypes);
+        });
+
+        return Object.assign(new Recipe(), {
+            context,
+            ingredients
+        });
+    }
+
     protected constructor(...ingredients: Ingredient[]) {
         super("Recipe");
         this.ingredients = [];

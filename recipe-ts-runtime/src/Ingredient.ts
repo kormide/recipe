@@ -116,12 +116,42 @@ export abstract class Ingredient {
 
     public toJSON() {
         const jsonObj: any = {};
-        jsonObj[this.ingredientType] = this.properties;
+        jsonObj[this.ingredientType] = {};
 
         for (const entry of this.properties) {
             jsonObj[this.ingredientType][entry[0]] = entry[1];
         }
 
         return jsonObj;
+    }
+
+    public static fromJSON(json: any, ingredientTypes: {[key: string]: Function}): Ingredient {
+        const name = Object.getOwnPropertyNames(json)[0];
+
+        if (name in ingredientTypes === false) {
+            throw new TypeError(`unknown ingredient type ${name}`);
+        }
+
+        return (ingredientTypes[name] as any).fromJSON(json);
+    }
+
+    protected static deserialize(value: any, type: string, types: {[key: string]: Function}) {
+        if (type.endsWith("[]")) {
+            return value.map((v: any) => Ingredient.deserialize(v, type.substring(0, type.length - 2), types));
+        }
+        if (type.endsWith("...")) {
+            return value.map((v: any) => Ingredient.deserialize(v, type.substring(0, type.length - 3), types));
+        }
+        switch (type) {
+            case "string":
+            case "int":
+            case "float":
+            case "boolean":
+            case "flag":
+                return value;
+            default:
+                return (types[type] as any).fromJSON(value);
+            break;
+        }
     }
 }
