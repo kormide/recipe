@@ -31,19 +31,19 @@ class {{ingredientName}} extends {{superclass}} {
                 {%- endif %}
             {%- endfor %}
             {%- if info.isVararg[required.name] == true %}
-            this.setRequired("{{required.name}}", args.slice({{paramIndex}}));
+            this._setRequired("{{required.name}}", args.slice({{paramIndex}}));
             {%- else %}
-            this.setRequired("{{required.name}}", args[{{paramIndex}}]);
+            this._setRequired("{{required.name}}", args[{{paramIndex}}]);
             {%- endif -%}
             {%- else %}
-            this.setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
+            this._setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
             {%- endif -%}
             {%- endfor %}
         }
         {%- endfor %}
         {%- if ingredient.initializers.size == 0 %}
         {%- for required in ingredient.required %}
-        this.setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
+        this._setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
         {%- endfor %}
         {%- endif %}
         {%- if ingredient.keyed and ingredient.defaultKey %}
@@ -67,12 +67,12 @@ class {{ingredientName}} extends {{superclass}} {
         const copy = this.duplicate();
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' %}
-        copy.setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name | tsidentifier}});
+        copy._setOptional("{{optional.name}}", {{optional.repeatable}}, {{optional.name | tsidentifier}});
             {%- else %}
-        copy.setOptional("{{optional.name}}", {{optional.repeatable}}, true);
+        copy._setOptional("{{optional.name}}", {{optional.repeatable}}, true);
             {%- endif -%}
         {%- else %}
-        copy.setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
+        copy._setCompoundOptional("{{optional.name}}", {{optional.repeatable}}
         {%- for param in optional.params -%}
         , "{{param.name}}", {{param.name | tsidentifier}}
         {%- endfor -%});

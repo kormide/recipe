@@ -17,45 +17,45 @@ export class EmptyIngredient extends Ingredient {
 class IngredientWithRequired extends Ingredient {
     constructor() {
         super("IngredientWithRequired", "A");
-        this.setRequired("required", "foo");
+        this._setRequired("required", "foo");
     }
 }
 
 class IngredientWithOptional extends Ingredient {
     constructor() {
         super("IngredientWithOptional", "A");
-        this.setOptional("optional", false, true);
+        this._setOptional("optional", false, true);
     }
 }
 
 class IngredientWithOptionalSetTwice extends Ingredient {
     constructor() {
         super("IngredientWithOptionalSetTwice", "A");
-        this.setOptional("optional", false, true);
-        this.setOptional("optional", false, false);
+        this._setOptional("optional", false, true);
+        this._setOptional("optional", false, false);
     }
 }
 
 class IngredientWithRepeatableOptional extends Ingredient {
     constructor() {
         super("IngredientWithRepeatableOptional", "A");
-        this.setOptional("optional", true, true);
-        this.setOptional("optional", true, false);
+        this._setOptional("optional", true, true);
+        this._setOptional("optional", true, false);
     }
 }
 
 class IngredientWithCompoundOptional extends Ingredient {
     constructor() {
         super("IngredientWithCompoundOptional", "A");
-        this.setCompoundOptional("optional", false, "a", 1, "b", "foo");
+        this._setCompoundOptional("optional", false, "a", 1, "b", "foo");
     }
 }
 
 class IngredientWithRepeatableCompoundOptional extends Ingredient {
     constructor() {
         super("IngredientWithRepeatableCompoundOptional", "A");
-        this.setCompoundOptional("optional", true, "a", 1, "b", "foo");
-        this.setCompoundOptional("optional", true, "a", -1, "b", "bar");
+        this._setCompoundOptional("optional", true, "a", 1, "b", "foo");
+        this._setCompoundOptional("optional", true, "a", -1, "b", "bar");
     }
 }
 
