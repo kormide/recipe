@@ -19,11 +19,19 @@ export abstract class Ingredient {
         return this.domain;
     }
 
-    protected setRequired(name: string, value: any) {
+    protected _getProperty<T>(name: string): T {
+        return <T>this.properties.get(name);
+    }
+
+    protected _hasProperty(name: string) {
+        return this.properties.has(name);
+    }
+
+    protected _setRequired(name: string, value: any) {
         this.properties.set(name, value);
     }
 
-    protected setOptional(name: string, repeatable: boolean, value: any) {
+    protected _setOptional(name: string, repeatable: boolean, value: any) {
         if (!repeatable) {
             this.properties.set(name, value);
         }
@@ -34,7 +42,7 @@ export abstract class Ingredient {
         }
     }
 
-    protected setCompoundOptional(name: string, repeatable: boolean, ...keyValuePairs: any[]) {
+    protected _setCompoundOptional(name: string, repeatable: boolean, ...keyValuePairs: any[]) {
         if (keyValuePairs.length % 2 !== 0) {
             throw new Error("must have an even number of key-value pairs for compound optional");
         }
