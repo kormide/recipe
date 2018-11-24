@@ -42,7 +42,6 @@
         "switch-default": true,
         "triple-equals": [true, "allow-null-check"],
         "typedef": [true, "property-declaration"],
-        "typeof-compare": true,
         "radix": true,
 
         //Maintainability

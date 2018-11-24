@@ -175,9 +175,9 @@ export class Cake {
         return this.entries;
     }
 
-    public static fromJson(jsonCake: string): Cake {
+    public static fromJSON(json: any): Cake {
         const cake = new Cake();
-        cake.entries = JSON.parse(jsonCake);
+        cake.entries = json || {};
         return cake;
     }
 }

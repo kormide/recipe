@@ -38,10 +38,14 @@
                             <directory>${project.basedir}/../recipe-ts-runtime/target/dist</directory>
                             <includes>
                                 <include>index.js</include>
+                                <include>AbstractOven.js</include>
+                                <include>BackendOven.js</include>
+                                <include>BaseIngredientHook.js</include>
                                 <include>Cake.js</include>
                                 <include>Ingredient.js</include>
                                 <include>KeyedIngredient.js</include>
                                 <include>Oven.js</include>
+                                <include>Payload.js</include>
                                 <include>Recipe.js</include>
                             </includes>
                             <filtering>false</filtering>

@@ -1,26 +1,28 @@
 import { Cake } from "./Cake";
 import { Recipe } from "./Recipe";
+import { AbstractOven } from "./AbstractOven";
+import { Payload } from "./Payload";
 
 export type Dispatcher = (payload: string) => Promise<string>;
 
-export class Oven {
+export class Oven extends AbstractOven {
     private readonly dispatchers: {[key: string]: Dispatcher} = {};
 
     public bake(recipe: Recipe): Promise<Cake> {
-        let promise: Promise<string> = Promise.resolve(JSON.stringify(new Cake()));
+        let promise: Promise<Cake> = Promise.resolve(this.createCake());
 
         for (const segment of recipe.segment()) {
             if (!(segment.domain! in this.dispatchers)) {
                 throw new Error(`cannot dispatch ingredient; no dispatcher registered for domain '${segment.domain}'`);
             }
 
-            promise = promise.then(jsonCake => {
-                const payload = `{"recipe":${JSON.stringify(segment.recipe)},"cake":${jsonCake}}`;
-                return this.dispatchers[segment.domain!](payload);
+            promise = promise.then(cake => {
+                const payload = new Payload(segment.recipe, cake);
+                return this.dispatchers[segment.domain!](JSON.stringify(payload)).then(jsonCake => Cake.fromJSON(JSON.parse(jsonCake)));
             });
         }
 
-        return promise.then(jsonCake => Cake.fromJson(jsonCake));
+        return promise;
     }
 
     public addDispatcher(domain: string, dispatcher: Dispatcher) {

@@ -1,7 +1,12 @@
-import { Ingredient } from "./Ingredient";
+import { expect, use } from "chai";
+import { describe, it } from "mocha";
+import { fake, replace, restore } from "sinon";
+import * as sinnonChai from "sinon-chai";
 
-import { expect } from "chai";
+import { Ingredient } from "./Ingredient";
 import { KeyedIngredient } from "./KeyedIngredient";
+
+use(sinnonChai);
 
 export class EmptyIngredient extends Ingredient {
     constructor() {
@@ -102,6 +107,24 @@ describe("Ingredient", () => {
 
         it("should serialize a keyed ingredient with a key", () => {
             expectJsonEquals(`{"EmptyKeyedIngredient":{"key":"foo"}}`, new EmptyKeyedIngredient().keyed("foo"));
+        });
+    });
+
+    describe("fromJSON", () => {
+        const TYPES = {EmptyIngredient, IngredientWithRequired, IngredientWithOptional, IngredientWithCompoundOptional};
+
+        it("should defer to a known ingredient subclass to perform deserialization", () => {
+            const fromJSON = fake.returns(new EmptyIngredient());
+            replace(EmptyIngredient, "fromJSON", fromJSON);
+
+            Ingredient.fromJSON({EmptyIngredient: {}}, TYPES);
+
+            expect(fromJSON.args[0][0]).to.deep.equal({EmptyIngredient: {}});
+            restore();
+        });
+
+        it("should throw when attempting to deserialize an unknown ingredient", () =>  {
+            expect(() => Ingredient.fromJSON({UnknownIngredient: {}}, TYPES)).to.throw();
         });
     });
 });
