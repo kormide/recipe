@@ -1,0 +1,12 @@
+{%- assign className = 'Abstract' | append: ingredient.name | append: 'Hook' -%}
+{%- assign dataClassName = ingredient.name | append: 'Data' -%}
+import { BaseIngredientHook, Cake } from "{{options.runtimeLibrary}}";
+import { {{dataClassName}} } from "./{{dataClassName}}";
+
+export abstract class {{className}} extends BaseIngredientHook<{{dataClassName}}> {
+    {%- for key in info.constantKeys %}
+    public static readonly {{key}} = "{{info.constantValues[forloop.index0]}}";
+    {%- endfor %}
+    public constructor();
+    public abstract bake(data: {{dataClassName}}, cake: Cake): void;
+}

@@ -1,0 +1,74 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+{%- if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
+{%- else -%}
+    {%- assign superclass = 'Ingredient' -%}
+{%- endif -%}
+{%- if options.javaPackage != "" -%}
+{% endif %}
+{% for type in info.nonPrimitiveTypes -%}
+const {{type}} = require("./{{type}}").{{type}};
+{% endfor %}
+{% assign ingredientSnapshotName = ingredient.name | append: 'Snapshot' -%}
+const {{superclass}} = require("{{options.runtimeLibrary}}").{{superclass}};
+
+class {{ingredientSnapshotName}} extends {{superclass}} {
+    constructor() {
+        super("{{ingredient.name}}", "{{domain}}");
+    }
+}
+
+{{ingredientSnapshotName}}.fromJSON = function(json) {
+    const TYPES = {
+        {%- for type in info.nonPrimitiveTypes %}
+        {{type}}{%- unless forloop.last -%}, {% endunless -%}
+        {%- endfor %}
+    };
+
+    const ingredient = new {{ingredientSnapshotName}}();
+
+    {%- for required in ingredient.required %}
+    if (!("{{required.name}}" in json.{{ingredient.name}})) {
+        throw new TypeError(`missing required property '{{required.name}}' from ingredient ${name}`);
+    }
+    ingredient.properties.set("{{required.name}}", Ingredient.deserialize(json.{{ingredient.name}}.{{required.name}}, "{{required.type}}", TYPES));
+    {%- endfor %}
+
+    {%- for optional in ingredient.optionals %}
+    if ("{{optional.name}}" in json.{{ingredient.name}} && json.{{ingredient.name}}.{{optional.name}} !== undefined) {
+        {%- if optional.compound != true %}
+            {%- if optional.repeatable != true %}
+        const value = Ingredient.deserialize(json.{{ingredient.name}}.{{optional.name}}, "{{optional.type}}", TYPES);
+            {%- else %}
+        const value = json.{{ingredient.name}}.{{optional.name}}.map(v => Ingredient.deserialize(v, "{{optional.type}}", TYPES));
+            {%- endif %}
+        {%- else %}
+            {%- if optional.repeatable != true %}
+        const value = {};
+        {%- for param in optional.params %}
+        value.{{param.name}} = Ingredient.deserialize(json.{{ingredient.name}}.{{optional.name}}.{{param.name}}, "{{param.type}}", TYPES);
+        {%- endfor %}
+            {%- else %}
+        const value = json.{{ingredient.name}}.{{optional.name}}.map(v => {
+            const val = {};
+            {%- for param in optional.params %}
+            val.{{param.name}} = Ingredient.deserialize(v.{{param.name}}, "{{param.type}}", TYPES);
+            {%- endfor %}
+            return val;
+        });
+            {%- endif %}
+        {%- endif %}
+        ingredient.properties.set("{{optional.name}}", value);
+    }
+    {%- endfor %}
+    {%- if ingredient.keyed %}
+    if ("key" in json.{{ingredient.name}}) {
+        ingredient.setKey(json.{{ingredient.name}}.key);
+    }
+    {%- endif %}
+
+    return ingredient;
+}
+
+exports.{{ingredientSnapshotName}} = {{ingredientSnapshotName}};

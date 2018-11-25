@@ -9,8 +9,12 @@ public class GeneratorFactory {
                 return new JavaHookGenerator(cookbook);
             case JAVA_INGREDIENT:
                 return new JavaIngredientGenerator(cookbook);
+            case JAVASCRIPT_HOOK:
+                return new JavaScriptHookGenerator(cookbook);
             case JAVASCRIPT_INGREDIENT:
                 return new JavaScriptIngredientGenerator(cookbook);
+            case TYPESCRIPT_HOOK:
+                return new TypeScriptHookGenerator(cookbook);
             case TYPESCRIPT_INGREDIENT:
                 return new TypeScriptIngredientGenerator(cookbook);
             default:
