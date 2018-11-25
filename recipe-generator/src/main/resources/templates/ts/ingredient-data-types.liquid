@@ -1,0 +1,36 @@
+{% assign dataInterfaceName = ingredient.name | append: 'Data' -%}
+{%- if ingredient.keyed -%}
+    {%- assign superclass = 'KeyedIngredient' -%}
+{%- else -%}
+    {%- assign superclass = 'Ingredient' -%}
+{%- endif -%}
+import { {{ superclass}} } from "recipe-ts-runtime";
+
+{% for type in info.nonPrimitiveTypes %}
+import { {{type}} } from "./{{type}}";
+{%- endfor %}
+{%- for optional in ingredient.optionals %}
+    {%- if optional.compound %}
+declare interface {{optional.name | capitalize}}Params {
+        {%- for param in optional.params %}
+    {{param.name}}: {{param.type | tstype:true}};
+        {%- endfor %}
+}
+    {%- endif %}
+{%- endfor %}
+
+export interface {{dataInterfaceName}} {
+    {%- if ingredient.keyed %}
+    key: string | null;
+    {%- endif %}
+    {%- for required in ingredient.required %}
+    {{required.name}}: {{required.type | tstype:true}};
+    {%- endfor %}
+    {%- for optional in ingredient.optionals %}
+        {%- if optional.compound != true %}
+    {{optional.name}}?: {{optional.type | tstype:true}}{% if optional.repeatable == true %}[]{% endif %};
+        {%- else -%}
+    {{optional.name}}?: {{optional.name | capitalize}}Params{% if optional.repeatable == true %}[]{% endif %};
+        {%- endif %}
+    {%- endfor %}
+}

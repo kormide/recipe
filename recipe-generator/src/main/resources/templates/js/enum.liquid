@@ -11,6 +11,9 @@ class {{enum.name}} {
         return this.value;
     }
 }
+{{enum.name}}.fromJSON = function(json) {
+    return {{enum.name}}[json];
+};
 {% for value in enum.values %}
 {{enum.name}}.{{value}} = new {{enum.name}}("{{value}}");
 {% endfor %}

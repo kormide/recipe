@@ -14,7 +14,7 @@ public class TsIdentifierFilter extends Filter {
             "constructor", "continue", "debugger", "declare", "default", "delete", "do", "else", "enum", "export", "extends", "false",
             "finally", "for", "from", "function", "get", "if", "implements", "import", "in", "instanceof", "interface", "let", "module",
             "new", "null", "number", "of", "package", "private", "protected", "public", "require", "return", "set", "static", "string",
-            "super", "switch", "symbol", "this", "throw", "true", "try", "type", "typeof", "var", "void", "while", "with", "yield");
+            "super", "switch", "symbol", "this", "throw", "true", "try", "type", "typeof", "undefined", "var", "void", "while", "with", "yield");
     };
 
     public TsIdentifierFilter() {

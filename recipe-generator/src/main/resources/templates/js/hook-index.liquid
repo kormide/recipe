@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+{% for ingredient in ingredients %}
+{%- assign hookName = 'Abstract' | append:ingredient.name | append:'Hook' -%}
+exports.{{hookName}} = require("./{{hookName}}").{{hookName}};
+{% endfor %}
+{% for enum in enums %}
+exports.{{enum.name}} = require("./{{enum.name}}").{{enum.name}}; 
+{% endfor %}

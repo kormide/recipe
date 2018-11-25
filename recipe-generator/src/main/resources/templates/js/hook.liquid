@@ -1,0 +1,21 @@
+{%- assign className = 'Abstract' | append: ingredient.name | append: 'Hook' -%}
+{%- assign ingredientSnapshotName = ingredient.name | append: 'Snapshot' -%}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+const BaseIngredientHook = require("{{options.runtimeLibrary}}").BaseIngredientHook;
+const {{ingredientSnapshotName}} = require("./{{ingredient.name}}Data").{{ingredientSnapshotName}};
+
+class {{className}} extends BaseIngredientHook {
+    constructor() {
+        super("{{ingredient.name}}", {{ingredientSnapshotName}});
+        if (new.target === {{className}}) {
+            throw new TypeError("cannot instantiate {{className}} directly");
+        }
+    }
+}
+{%- for key in info.constantKeys %}
+{{className}}.{{key}} = "{{info.constantValues[forloop.index0]}}";
+{%- endfor %}
+
+exports.{{className}} = {{className}};
