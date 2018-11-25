@@ -10,7 +10,7 @@
   "private": true,
   "devDependencies": {
     "@types/chai": "4.0.10",
-    "@types/mocha": "2.2.44",
+    "@types/mocha": "5.2.5",
     "@types/node": "8.5.2",
     "chai": "4.1.2",
     "mocha": "4.0.1",
