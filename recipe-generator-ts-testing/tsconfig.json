@@ -7,7 +7,7 @@
         "lib": ["es6"],
 
         "strict": true,
-        "noUnusedLocals": true,
+        "noUnusedLocals": false,
         "noUnusedParameters": false,
         "removeComments": false,
         "sourceMap": false,
