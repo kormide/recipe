@@ -92,6 +92,42 @@
                 </executions>
             </plugin>
 
+            <!-- Generate test hooks -->
+            <plugin>
+                <groupId>ca.derekcormier.recipe</groupId>
+                <artifactId>recipe-generator-maven-plugin</artifactId>
+                <version>0.3.4</version>
+                <executions>
+                    <execution>
+                        <id>generate-hooks</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <domain>TestDomain</domain>
+                            <flavour>ts-hook</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook.yaml</cookbook>
+                            <targetDir>${project.build.directory}/hooks</targetDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-hooks-postfix</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <domain>PostfixDomain</domain>
+                            <flavour>ts-hook</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook-postfix.yaml</cookbook>
+                            <targetDir>${project.build.directory}/hooks/postfix</targetDir>
+                            <ingredientPostfix>Foo</ingredientPostfix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
