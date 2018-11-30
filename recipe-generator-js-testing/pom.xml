@@ -56,12 +56,12 @@
                 </executions>
             </plugin>
 
-            <!-- Generate test ingredients -->
             <plugin>
                 <groupId>ca.derekcormier.recipe</groupId>
                 <artifactId>recipe-generator-maven-plugin</artifactId>
                 <version>0.3.4</version>
                 <executions>
+                    <!-- Generate test ingredients -->
                     <execution>
                         <id>generate-ingredients</id>
                         <phase>generate-resources</phase>
@@ -89,6 +89,34 @@
                             <ingredientPostfix>Foo</ingredientPostfix>
                         </configuration>
                     </execution>
+                    <!-- Generate test hooks -->
+                    <execution>
+                        <id>generate-hooks</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <domain>TestDomain</domain>
+                            <flavour>js-hook</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook.yaml</cookbook>
+                            <targetDir>${project.build.directory}/hooks</targetDir>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-hooks-postfix</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <domain>PostfixDomain</domain>
+                            <flavour>js-hook</flavour>
+                            <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook-postfix.yaml</cookbook>
+                            <targetDir>${project.build.directory}/hooks/postfix</targetDir>
+                            <ingredientPostfix>Foo</ingredientPostfix>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -109,8 +137,8 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v8.9.3</nodeVersion>
-                            <yarnVersion>v1.3.2</yarnVersion>
+                            <nodeVersion>v11.2.0</nodeVersion>
+                            <yarnVersion>v1.12.3</yarnVersion>
                         </configuration>
                     </execution>
                     <execution>
