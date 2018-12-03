@@ -15,21 +15,21 @@ class {{ingredientName}} extends {{superclass}} {
     constructor(...args) {
         super("{{ingredient.name}}", "{{domain}}");
         const constructorSignatures = [
-            {% for initializer in ingredient.initializers -%}
+            {%- for initializer in ingredient.initializers %}
             [{%- for param in initializer.params -%}"{{info.requiredTypes[param]}}"{%- unless forloop.last %},{% endunless -%}{% endfor %}]
             {%- unless forloop.last %},
-            {% endunless -%}
+            {%- endunless -%}
             {%- endfor %}
         ];
         {% for initializer in ingredient.initializers %}
-        {% if forloop.first %}if{% else %}else if{% endif %} (this.argsMatchSignature(args, constructorSignatures[{{forloop.index0}}])) {
-            {% for required in ingredient.required -%}
-            {% if initializer.params contains required.name %}
-            {% for param in initializer.params %}
-                {% if param == required.name %}
-                    {% assign paramIndex = forloop.index0 %}
-                {% endif %}
-            {% endfor %}
+        {%- if forloop.first %}if{% else %} else if{% endif %} (this.argsMatchSignature(args, constructorSignatures[{{forloop.index0}}])) {
+            {%- for required in ingredient.required %}
+            {%- if initializer.params contains required.name %}
+            {%- for param in initializer.params %}
+                {%- if param == required.name %}
+                    {%- assign paramIndex = forloop.index0 -%}
+                {%- endif %}
+            {%- endfor %}
             {%- if info.isVararg[required.name] == true %}
             this.setRequired("{{required.name}}", args.slice({{paramIndex}}));
             {%- else %}
@@ -40,18 +40,18 @@ class {{ingredientName}} extends {{superclass}} {
             {%- endif -%}
             {%- endfor %}
         }
-        {% endfor %}
-        {% if ingredient.initializers.size == 0 %}
+        {%- endfor %}
+        {%- if ingredient.initializers.size == 0 %}
         {%- for required in ingredient.required %}
         this.setRequired("{{required.name}}", {{required.default | tsvalue:required.type}});
         {%- endfor %}
-        {% endif %}
-        {% if ingredient.keyed and ingredient.defaultKey %}
+        {%- endif %}
+        {%- if ingredient.keyed and ingredient.defaultKey %}
         this.setKey(this.properties.get("{{ingredient.defaultKey}}"));
-        {% endif %}
+        {%- endif %}
     }
 
-    {% for optional in ingredient.optionals %}
+    {%- for optional in ingredient.optionals %}
     with{{optional.name | capitalize}}(
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' -%}

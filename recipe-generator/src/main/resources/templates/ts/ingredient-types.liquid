@@ -10,7 +10,7 @@ import { {{ type }} } from "./{{type}}";
 {% endfor %}
 
 export class {{ingredientName}} extends {{superclass}} {
-    {% for key in info.constantKeys %}
+    {% for key in info.constantKeys -%}
     static readonly {{key}}: string;
     {% endfor %}
     {%- for initializer in ingredient.initializers %}
@@ -29,7 +29,7 @@ export class {{ingredientName}} extends {{superclass}} {
     {%- if ingredient.initializers.size == 0 %}
     constructor();{%- endif %}
 
-    {% for optional in ingredient.optionals %}
+    {%- for optional in ingredient.optionals %}
     public with{{optional.name | capitalize}}(
         {%- if optional.compound != true -%}
             {%- if optional.type != 'flag' -%}
@@ -42,5 +42,5 @@ export class {{ingredientName}} extends {{superclass}} {
             {%- endfor -%}
         {%- endif -%}
     ): {{ingredientName}};
-    {% endfor %}
+    {%- endfor %}
 }
