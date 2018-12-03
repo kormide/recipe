@@ -52,6 +52,7 @@
             <modules>
                 <module>recipe-generator</module>
                 <module>recipe-generator-maven-plugin</module>
+                <module>recipe-generator-node</module>
                 <module>recipe-java-runtime</module>
                 <module>recipe-ts-runtime</module>
                 <module>recipe-js-runtime</module>

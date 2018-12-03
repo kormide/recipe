@@ -1,0 +1,36 @@
+{
+    "name": "recipe-generator",
+    "version": "0.3.4",
+    "description": "Node wrapper to run generation for the Recipe Framework",
+    "author": "Derek Cormier",
+    "homepage": "https://github.com/kormide/recipe",
+    "license": "MIT",
+    "keywords": [
+        "recipe",
+        "ingredient",
+        "integration",
+        "testing"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kormide/recipe"
+    },
+    "private": false,
+    "main": "index.js",
+    "files": [
+        "download-generator-jar.js",
+        "index.js",
+        "vars.js"
+    ],
+    "bin": "./index.js",
+    "devDependencies": {
+        "eslint": "5.9.0"
+    },
+    "dependencies": {
+        "argparse": "^1.0.10"
+    },
+    "scripts": {
+        "lint": "eslint -c ./.eslintrc.json ./*.js",
+        "postinstall": "node ./download-generator-jar.js"
+    }
+}
