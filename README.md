@@ -31,7 +31,7 @@ Overall, recipe makes it easier to read, write, and maintain your tests. It is a
 |             	| Java 	| TypeScript    	| JavaScript    	|
 |-------------	|------	|---------------	|---------------	|
 | Ingredients 	|   ✓  	|       ✓       	|       ✓       	|
-| Hooks       	|   ✓  	| (coming soon) 	| (coming soon) 	|
+| Hooks       	|   ✓  	|       ✓       	|       ✓       	|
 
 I will add new languages in response to demand. Please create an issue if you need support for another language.
 
@@ -765,7 +765,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 #### Arguments
 `domain` - name of the domain represented by the cookbook
 
-`flavour` - generation type; one of: `java-ingredient`, `java-hook`, `js-ingredient`, `ts-ingredient`
+`flavour` - generation type; one of: `java-ingredient`, `java-hook`, `js-ingredient`, `js-hook`, `ts-ingredient`, `ts-hook`
 
 `cookbook` - path to the cookbook; defaults to `cookbook.yaml` in the project directory
 
