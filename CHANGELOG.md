@@ -1,3 +1,12 @@
+<a name="0.3.5"></a>
+## 0.3.5 (2018-12-05)
+
+### New Features
+
+* can now generate TypeScript and JavaScript hooks
+* added a node module to perform generation
+* generated code has better whitespace control and formatting
+
 <a name="0.3.4"></a>
 ## 0.3.4 (2018-11-14)
 

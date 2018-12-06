@@ -28,10 +28,10 @@ Overall, recipe makes it easier to read, write, and maintain your tests. It is a
 
 ## Language support
 
-|             	| Java 	| TypeScript    	| JavaScript    	|
-|-------------	|------	|---------------	|---------------	|
-| Ingredients 	|   ✓  	|       ✓       	|       ✓       	|
-| Hooks       	|   ✓  	|       ✓       	|       ✓       	|
+|             | Java | TypeScript | JavaScript | Python |
+|-------------|------|------------|------------|--------|
+| Ingredients | ✓    | ✓          | ✓          | TODO   |
+| Hooks       | ✓    | ✓          | ✓          | TODO   |
 
 I will add new languages in response to demand. Please create an issue if you need support for another language.
 
@@ -786,7 +786,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 <plugin>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.3.4</version>
+    <version>0.3.5</version>
     <executions>
         <execution>
             <id>generate-ingredients</id>
@@ -812,7 +812,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 <plugin>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.3.4</version>
+    <version>0.3.5</version>
     <executions>
         <execution>
             <id>generate-hooks</id>
@@ -832,8 +832,23 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 </plugin>
 ```
 
-#### npm package
-Coming soon...
+#### Node module
+```json
+"dependencies": {
+  "recipe-generator-node": "0.3.5"
+}
+```
+
+##### Example: generate ingredients
+```json
+"scripts": {
+  "generate": "recipe-generator MyDomain ts-ingredient cookbook.yaml ./target/ingredients"
+}
+```
+
+```bash
+npm run generate
+```
 
 #### Invoke jar directly
 
@@ -854,19 +869,19 @@ The run-time libraries contain the core classes required by Recipe.
 <dependency>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-java-runtime</artifactId>
-    <version>0.3.4</version>
+    <version>0.3.5</version>
 </dependency>
 ```
 #### JavaScript
 ```json
-dependencies: {
-  "recipe-js-runtime": "0.3.4",
+"dependencies": {
+  "recipe-js-runtime": "0.3.5"
 }
 ```
 #### TypeScript
 ```json
-dependencies: {
-  "recipe-ts-runtime": "0.3.4",
+"dependencies": {
+  "recipe-ts-runtime": "0.3.5"
 }
 ```
 

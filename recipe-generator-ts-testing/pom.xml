@@ -5,7 +5,7 @@
     <parent>
         <artifactId>recipe</artifactId>
         <groupId>ca.derekcormier.recipe</groupId>
-        <version>0.3.4</version>
+        <version>0.3.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,12 +20,12 @@
         <dependency>
             <groupId>ca.derekcormier.recipe</groupId>
             <artifactId>recipe-generator</artifactId>
-            <version>0.3.4</version>
+            <version>0.3.5</version>
         </dependency>
         <dependency>
             <groupId>ca.derekcormier.recipe</groupId>
             <artifactId>recipe-ts-runtime</artifactId>
-            <version>0.3.4</version>
+            <version>0.3.5</version>
         </dependency>
     </dependencies>
 
@@ -60,7 +60,7 @@
             <plugin>
                 <groupId>ca.derekcormier.recipe</groupId>
                 <artifactId>recipe-generator-maven-plugin</artifactId>
-                <version>0.3.4</version>
+                <version>0.3.5</version>
                 <executions>
                     <execution>
                         <id>generate-ingredients</id>
@@ -96,7 +96,7 @@
             <plugin>
                 <groupId>ca.derekcormier.recipe</groupId>
                 <artifactId>recipe-generator-maven-plugin</artifactId>
-                <version>0.3.4</version>
+                <version>0.3.5</version>
                 <executions>
                     <execution>
                         <id>generate-hooks</id>
