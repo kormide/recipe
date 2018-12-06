@@ -763,6 +763,8 @@ Contextful recipes help you reduce the number of arguments you need to provide t
 The recipe generator is an executable jar that generates ingredients and hooks in all [supported languages](#lang-support). For convenience, the generator can be invoked via the following build tools/plugins. If your particular build system is not supported, download and invoke the jar directly to perform the generation.
 
 #### Arguments
+
+##### Required args
 `domain` - name of the domain represented by the cookbook
 
 `flavour` - generation type; one of: `java-ingredient`, `java-hook`, `js-ingredient`, `js-hook`, `ts-ingredient`, `ts-hook`
@@ -771,11 +773,12 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 
 `targetDir` - output directory for generated files
 
-`ingredientPostfix` (optional) - string postfix to add to each ingredient class name
 
-##### Java-specific arguments
+##### Optional args
+`ingredientPostfix` - string postfix to add to each ingredient class name
 
-`javaPackage` - java package for generated classes
+`javaPackage` - (java only) java package for generated classes
+
 
 
 #### Maven plugin
@@ -842,7 +845,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 ##### Example: generate ingredients
 ```json
 "scripts": {
-  "generate": "recipe-generator MyDomain ts-ingredient cookbook.yaml ./target/ingredients"
+  "generate": "recipe-generator MyDomain ts-ingredient cookbook.yaml ./target/ingredients --ingredientPostfix Ingredient"
 }
 ```
 
