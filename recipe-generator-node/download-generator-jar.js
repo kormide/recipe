@@ -12,6 +12,11 @@ console.log(`downloading recipe generator jar ${VERSION} from ${FILE_URL}...`);
 const file = fs.createWriteStream(FILEPATH);
 
 https.get(FILE_URL, response => {
+    if (response.statusCode !== 200) {
+        console.error("download failed with response code " + response.statusCode);
+        fs.unlinkSync(FILEPATH);
+        process.exit(1);
+    }
     response.pipe(file);
     file.on("finish", () => {
         console.log("finished downloading");
