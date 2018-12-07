@@ -838,7 +838,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 #### Node module
 ```json
 "dependencies": {
-  "recipe-generator-node": "0.3.5"
+  "recipe-generator-node": "0.3.6"
 }
 ```
 
