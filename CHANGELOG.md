@@ -1,3 +1,10 @@
+<a name="0.3.6"></a>
+## 0.3.6 (2018-12-14)
+
+### Bug Fixes
+
+* previously the node generator was bumped to 0.3.6 due to a publishing error, but that caused the build to fail; bumping up the other projects to 0.3.6
+
 <a name="0.3.5"></a>
 ## 0.3.5 (2018-12-05)
 

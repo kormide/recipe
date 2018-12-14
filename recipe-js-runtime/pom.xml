@@ -5,12 +5,12 @@
     <parent>
         <artifactId>recipe</artifactId>
         <groupId>ca.derekcormier.recipe</groupId>
-        <version>0.3.5</version>
+        <version>0.3.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>recipe-js-runtime</artifactId>
-    <version>0.3.5</version>
+    <version>0.3.6</version>
 
     <name>Recipe JavaScript Runtime</name>
 
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>ca.derekcormier.recipe</groupId>
             <artifactId>recipe-ts-runtime</artifactId>
-            <version>0.3.5</version>
+            <version>0.3.6</version>
         </dependency>
     </dependencies>
 
