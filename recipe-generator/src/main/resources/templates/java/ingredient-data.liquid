@@ -15,6 +15,11 @@ public class {{dataClassName}} extends {{superclass}} {
         super("{{ingredient.name}}", "{{domain}}");
     }
 
+    {% if ingredient.keyed -%}
+    public void setKey(String key) {
+        super.setKey(key);
+    }{% endif %}
+
     {%- for required in ingredient.required %}
     public {{required.type | javatype:true}} {{required | javagetter}}() {
         return getProperty("{{required.name}}");

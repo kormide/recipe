@@ -38,6 +38,7 @@ import testdomain.hooks.IngredientWithRepeatableVarargOptionalData;
 import testdomain.hooks.IngredientWithRequiredAndOptionalData;
 import testdomain.hooks.IngredientWithRequiredData;
 import testdomain.hooks.IngredientWithStringDefaultContainingQuotesData;
+import testdomain.hooks.KeyedTestIngredientData;
 import testdomain.hooks.TestEnum;
 
 public class JavaHookTest {
@@ -274,6 +275,12 @@ public class JavaHookTest {
     @Test
     public void testGeneration_missingRepeatableCompoundOptionalObjectDefault() {
         assertArrayEquals(new IngredientWithRepeatableCompoundOptionalData.CompoundOptionalParams[0], new IngredientWithRepeatableCompoundOptionalData().getCompoundOptional());
+    }
+
+    @Test
+    public void testGeneration_canSetKeyOnKeyedIngredientDataClass() {
+        KeyedTestIngredientData data = new KeyedTestIngredientData();
+        data.setKey("foo");
     }
 
     @Test

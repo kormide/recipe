@@ -4,7 +4,7 @@ import { Cake, BackendOven } from "recipe-ts-runtime";
 import { fake, SinonSpy } from "sinon";
 import * as sinnonChai from "sinon-chai";
 
-import { AbstractEmptyIngredientHook, EmptyIngredientData, AbstractAllParamsIngredientHook, AllParamsIngredientData, IngredientWithRequiredData, IngredientWithRequiredAndOptionalData, IngredientWithRepeatableOptionalData, IngredientWithRepeatableVarargOptionalData, IngredientWithCompoundOptionalData, IngredientWithRepeatableCompoundOptionalData, TestEnum, IngredientWithTypeScriptKeywordsData, AbstractIngredientWithConstantHook, AbstractIngredientWithRequiredHook, AbstractIngredientWithDefaultRequiredNoInitializersHook, AbstractIngredientWithNullStringDefaultHook, AbstractIngredientWithRequiredAndOptionalHook, AbstractIngredientWithOptionalHook, AbstractIngredientWithRepeatableOptionalHook, AbstractIngredientWithRepeatableVarargOptionalHook, AbstractIngredientWithCompoundOptionalHook, AbstractIngredientWithRepeatableCompoundOptionalHook, AbstractIngredientWithStringDefaultContainingQuotesHook, AbstractIngredientWithTypeScriptKeywordsHook } from "../target/hooks";
+import { AbstractEmptyIngredientHook, EmptyIngredientData, AbstractAllParamsIngredientHook, AllParamsIngredientData, IngredientWithRequiredData, IngredientWithRequiredAndOptionalData, IngredientWithRepeatableOptionalData, IngredientWithRepeatableVarargOptionalData, IngredientWithCompoundOptionalData, IngredientWithRepeatableCompoundOptionalData, TestEnum, IngredientWithTypeScriptKeywordsData, AbstractIngredientWithConstantHook, AbstractIngredientWithRequiredHook, AbstractIngredientWithDefaultRequiredNoInitializersHook, AbstractIngredientWithNullStringDefaultHook, AbstractIngredientWithRequiredAndOptionalHook, AbstractIngredientWithOptionalHook, AbstractIngredientWithRepeatableOptionalHook, AbstractIngredientWithRepeatableVarargOptionalHook, AbstractIngredientWithCompoundOptionalHook, AbstractIngredientWithRepeatableCompoundOptionalHook, AbstractIngredientWithStringDefaultContainingQuotesHook, AbstractIngredientWithTypeScriptKeywordsHook, KeyedTestIngredientData } from "../target/hooks";
 import { AbstractPostfixIngredientHook, PostfixIngredientData } from "../target/hooks/postfix";
 
 use(sinnonChai);
@@ -32,6 +32,10 @@ describe("generation", () => {
 
     it("should generate a data interface for an empty ingredient", () => {
         const data: EmptyIngredientData = {};
+    });
+
+    it("should generate a data interface for a keyed ingredient", () => {
+        let data: KeyedTestIngredientData = {key: "foobar"};
     });
 
     it("should generate a data interface for an ingredient with required params", () => {
