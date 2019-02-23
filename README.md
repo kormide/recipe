@@ -789,7 +789,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 <plugin>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.3.6</version>
+    <version>0.3.7</version>
     <executions>
         <execution>
             <id>generate-ingredients</id>
@@ -815,7 +815,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 <plugin>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.3.6</version>
+    <version>0.3.7</version>
     <executions>
         <execution>
             <id>generate-hooks</id>
@@ -838,7 +838,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 #### Node module
 ```json
 "dependencies": {
-  "recipe-generator-node": "0.3.6"
+  "recipe-generator-node": "0.3.7"
 }
 ```
 
@@ -872,19 +872,19 @@ The run-time libraries contain the core classes required by Recipe.
 <dependency>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-java-runtime</artifactId>
-    <version>0.3.6</version>
+    <version>0.3.7</version>
 </dependency>
 ```
 #### JavaScript
 ```json
 "dependencies": {
-  "recipe-js-runtime": "0.3.6"
+  "recipe-js-runtime": "0.3.7"
 }
 ```
 #### TypeScript
 ```json
 "dependencies": {
-  "recipe-ts-runtime": "0.3.6"
+  "recipe-ts-runtime": "0.3.7"
 }
 ```
 

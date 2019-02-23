@@ -1,3 +1,9 @@
+<a name="0.3.7"></a>
+## 0.3.7 (2019-02-23)
+
+* allow keys to be manually set on generated ingredient data classes
+* update jackson dependency to 2.9.8
+
 <a name="0.3.6"></a>
 ## 0.3.6 (2018-12-14)
 
