@@ -80,10 +80,10 @@ public class Cake {
             return (T)entries.get(candidates.get(0));
         }
         else if (candidates.isEmpty()) {
-            throw new RuntimeException("cake does not contain key '" + fullKey + "'");
+            throw new RuntimeException("cake does not contain key '" + fullKey + "; current keys: " + this.entries.keySet());
         }
         else {
-            throw new RuntimeException("cannot retrieve ambiguous key '" + fullKey + "'");
+            throw new RuntimeException("cannot retrieve ambiguous key '" + fullKey + "'; candidates: " + candidates);
         }
     }
 
