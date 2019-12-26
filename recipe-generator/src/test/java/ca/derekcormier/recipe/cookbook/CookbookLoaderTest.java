@@ -23,23 +23,55 @@ public class CookbookLoaderTest {
     loader.load(toStream(ingredients));
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testLoad_throwsOnNoDomain() {
+    String ingredients = "ingredients: []";
+    loader.load(toStream(ingredients));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testLoad_throwsOnEmptyDomain() {
+    String cookbook = String.join("\n", "domain: ''", "ingredients: []");
+
+    String ingredients = "ingredients: []";
+    loader.load(toStream(ingredients));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testLoad_throwsOnWhitespaceDomain() {
+    String cookbook = String.join("\n", "domain: '\t'", "ingredients: []");
+
+    String ingredients = "ingredients: []";
+    loader.load(toStream(ingredients));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testLoad_throwsOnDomainWithTrailingSpaces() {
+    String cookbook = String.join("\n", "domain: ' TestDomain  '", "ingredients: []");
+
+    String ingredients = "ingredients: []";
+    loader.load(toStream(ingredients));
+  }
+
   @Test
   public void testLoad_noIngredients() {
-    String ingredients = "ingredients: []";
+    String ingredients = "domain: 'test'\ningredients: []";
     Cookbook cookbook = loader.load(toStream(ingredients));
     assertEquals(0, cookbook.getIngredients().size());
   }
 
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnIngredientWithoutName() {
-    String ingredients = String.join("\n", "ingredients:", "  - initializers: []");
+    String ingredients =
+        String.join("\n", "domain: 'test'", "ingredients:", "  - initializers: []");
 
     loader.load(toStream(ingredients));
   }
 
   @Test
   public void testLoad_ingredientUnspecifiedFieldsGetDefaultValues() {
-    String ingredients = String.join("\n", "ingredients:", "  - name: 'fooIngredient'");
+    String ingredients =
+        String.join("\n", "domain: 'test'", "ingredients:", "  - name: 'fooIngredient'");
 
     Cookbook cookbook = loader.load(toStream(ingredients));
     assertFalse(cookbook.getIngredients().get(0).isKeyed());
@@ -51,7 +83,12 @@ public class CookbookLoaderTest {
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnDuplicateIngredientNames() {
     String ingredients =
-        String.join("\n", "ingredients:", "  - name: 'fooIngredient'", "  - name: 'fooIngredient'");
+        String.join(
+            "\n",
+            "domain: 'test'",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "  - name: 'fooIngredient'");
 
     loader.load(toStream(ingredients));
   }
@@ -61,6 +98,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -74,6 +112,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -87,6 +126,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -99,7 +139,12 @@ public class CookbookLoaderTest {
   @Test
   public void testLoad_ingredientWithNoInitializers() {
     String ingredients =
-        String.join("\n", "ingredients:", "  - name: 'fooIngredient'", "    initializers: []");
+        String.join(
+            "\n",
+            "domain: 'test'",
+            "ingredients:",
+            "  - name: 'fooIngredient'",
+            "    initializers: []");
 
     Cookbook cookbook = loader.load(toStream(ingredients));
     assertEquals(0, cookbook.getIngredients().get(0).getInitializers().size());
@@ -110,6 +155,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    initializers:",
@@ -125,6 +171,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -142,6 +189,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -164,6 +212,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -184,6 +233,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -201,6 +251,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -215,6 +266,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -234,6 +286,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -249,6 +302,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -265,6 +319,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -278,6 +333,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -291,6 +347,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -305,6 +362,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -324,6 +382,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -338,6 +397,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -353,6 +413,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -370,6 +431,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -387,6 +449,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -405,6 +468,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -419,6 +483,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -443,6 +508,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optionals:",
@@ -461,6 +527,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    keyed: true",
@@ -478,6 +545,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    constants: {KEY_A: 'KEY_A', KEY_B: 'KEY_B'}",
@@ -577,6 +645,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    required:",
@@ -594,6 +663,7 @@ public class CookbookLoaderTest {
     String ingredients =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'fooIngredient'",
             "    optional:",
@@ -610,21 +680,28 @@ public class CookbookLoaderTest {
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnEnumWithoutName() {
     String input =
-        String.join("\n", "enums:", "    values:", "      - 'A'", "      - 'B'", "      - 'C'");
+        String.join(
+            "\n",
+            "domain: 'test'",
+            "enums:",
+            "    values:",
+            "      - 'A'",
+            "      - 'B'",
+            "      - 'C'");
 
     loader.load(toStream(input));
   }
 
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnEnumWithoutValues() {
-    String input = String.join("\n", "enums:", "    name: 'fooEnum'");
+    String input = String.join("\n", "domain: 'test'", "enums:", "    name: 'fooEnum'");
 
     loader.load(toStream(input));
   }
 
   @Test
   public void testLoad_emptyEnums() {
-    String input = String.join("\n", "enums: []");
+    String input = String.join("\n", "domain: 'test'", "enums: []");
 
     Cookbook cookbook = loader.load(toStream(input));
     assertEquals(0, cookbook.getEnums().size());
@@ -635,6 +712,7 @@ public class CookbookLoaderTest {
     String input =
         String.join(
             "\n",
+            "domain: 'test'",
             "enums:",
             "  - name: 'fooEnum'",
             "    values:",
@@ -653,7 +731,8 @@ public class CookbookLoaderTest {
 
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnEmptyEnumValues() {
-    String input = String.join("\n", "enums:", "  - name: 'fooEnum'", "    values: []");
+    String input =
+        String.join("\n", "domain: 'test'", "enums:", "  - name: 'fooEnum'", "    values: []");
 
     loader.load(toStream(input));
   }
@@ -663,6 +742,7 @@ public class CookbookLoaderTest {
     String input =
         String.join(
             "\n",
+            "domain: 'test'",
             "enums:",
             "  - name: 'fooEnum'",
             "    values:",
@@ -678,21 +758,31 @@ public class CookbookLoaderTest {
   public void testLoad_throwsOnEnumWithDuplicateValues() {
     String input =
         String.join(
-            "\n", "enums:", "  - name: 'fooEnum'", "    values:", "      - 'A'", "      - 'A'");
+            "\n",
+            "domain: 'test'",
+            "enums:",
+            "  - name: 'fooEnum'",
+            "    values:",
+            "      - 'A'",
+            "      - 'A'");
 
     loader.load(toStream(input));
   }
 
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnEnumNameThatStartsWithDigit() {
-    String yaml = String.join("\n", "enums:", "  - name: '1myEnum'", "    values:", "      - 'A'");
+    String yaml =
+        String.join(
+            "\n", "domain: 'test'", "enums:", "  - name: '1myEnum'", "    values:", "      - 'A'");
 
     loader.load(toStream(yaml));
   }
 
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnEnumNameWithSpecialCharacter() {
-    String yaml = String.join("\n", "enums:", "  - name: 'My@Enum'", "    values:", "      - 'A'");
+    String yaml =
+        String.join(
+            "\n", "domain: 'test'", "enums:", "  - name: 'My@Enum'", "    values:", "      - 'A'");
 
     loader.load(toStream(yaml));
   }
@@ -702,6 +792,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -716,6 +807,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -730,6 +822,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -744,6 +837,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -762,6 +856,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -780,6 +875,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    required:",
@@ -798,6 +894,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    required:",
@@ -816,6 +913,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -834,6 +932,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -852,6 +951,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -866,6 +966,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -880,6 +981,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -894,6 +996,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -908,6 +1011,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    optionals:",
@@ -920,7 +1024,12 @@ public class CookbookLoaderTest {
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnEmptyConstantName() {
     String yaml =
-        String.join("\n", "ingredients:", "  - name: 'ingredient'", "    constants: {'': 'foo'}");
+        String.join(
+            "\n",
+            "domain: 'test'",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    constants: {'': 'foo'}");
 
     loader.load(toStream(yaml));
   }
@@ -928,7 +1037,12 @@ public class CookbookLoaderTest {
   @Test(expected = RuntimeException.class)
   public void testLoad_throwsOnNullConstant() {
     String yaml =
-        String.join("\n", "ingredients:", "  - name: 'ingredient'", "    constants: {null: 'foo'}");
+        String.join(
+            "\n",
+            "domain: 'test'",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    constants: {null: 'foo'}");
 
     loader.load(toStream(yaml));
   }
@@ -937,7 +1051,11 @@ public class CookbookLoaderTest {
   public void testLoad_throwsOnInvalidVariableNameConstant() {
     String yaml =
         String.join(
-            "\n", "ingredients:", "  - name: 'ingredient'", "    constants: {'12foo':'foo'}");
+            "\n",
+            "domain: 'test'",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    constants: {'12foo':'foo'}");
 
     loader.load(toStream(yaml));
   }
@@ -946,7 +1064,11 @@ public class CookbookLoaderTest {
   public void testLoad_throwsOnDuplicateConstant() {
     String yaml =
         String.join(
-            "\n", "ingredients:", "  - name: 'ingredient'", "    constants: [A:'foo',A:'bar']");
+            "\n",
+            "domain: 'test'",
+            "ingredients:",
+            "  - name: 'ingredient'",
+            "    constants: [A:'foo',A:'bar']");
 
     loader.load(toStream(yaml));
   }
@@ -956,6 +1078,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    keyed: false",
@@ -969,6 +1092,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    keyed: false",
@@ -982,6 +1106,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    keyed: true",
@@ -995,6 +1120,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    keyed: true",
@@ -1012,6 +1138,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    keyed: true",
@@ -1025,6 +1152,7 @@ public class CookbookLoaderTest {
     String yaml =
         String.join(
             "\n",
+            "domain: 'test'",
             "ingredients:",
             "  - name: 'ingredient'",
             "    keyed: true",

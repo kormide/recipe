@@ -6,7 +6,6 @@ const { exec } = require("child_process");
 const { FILEPATH } = require("./vars");
 
 const REQUIRED_ARGS = [
-    {name: "domain", help: "name of ingredient domain"},
     {name: "flavour", help: "type of generation to perform; valid options: java-ingredient, java-hook, js-ingredient, js-hook, ts-ingredient, ts-hook"},
     {name: "cookbook", help: "path to the yaml cookbook definition file"},
     {name: "targetDir", help: "directory to output generated files"}

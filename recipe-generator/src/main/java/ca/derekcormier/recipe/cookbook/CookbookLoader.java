@@ -26,8 +26,19 @@ public class CookbookLoader {
   }
 
   private void validate(Cookbook cookbook) {
+    validateDomain(cookbook);
     validateIngredients(cookbook);
     validateEnums(cookbook);
+  }
+
+  private void validateDomain(Cookbook cookbook) {
+    if (cookbook.getDomain() == null || cookbook.getDomain().trim().length() == 0) {
+      throw new RuntimeException("domain must be specified");
+    }
+
+    if (cookbook.getDomain().trim().length() != cookbook.getDomain().length()) {
+      throw new RuntimeException("domain cannot have trailing whitespace");
+    }
   }
 
   private void validateIngredients(Cookbook cookbook) {

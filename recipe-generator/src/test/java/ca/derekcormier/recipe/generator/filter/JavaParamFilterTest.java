@@ -21,7 +21,7 @@ public class JavaParamFilterTest {
 
   @Test
   public void testApply_combinesTypeAndNameFromFilters() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JavaParamFilter(cookbook, javaTypeFilter, javaIdentifierFilter);
 
     Map param = new HashMap();
@@ -36,7 +36,7 @@ public class JavaParamFilterTest {
 
   @Test
   public void testApply_passesCollapseVarargOptionToTypeFilter() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JavaParamFilter(cookbook, javaTypeFilter, javaIdentifierFilter);
 
     Map param = new HashMap();

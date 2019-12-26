@@ -12,7 +12,7 @@ public class CookbookGeneratorFactoryTest {
   public void testGetGenerator_forJavaIngredients() {
     assertTrue(
         GeneratorFactory.getGenerator(
-                Flavour.JAVA_INGREDIENT, new Cookbook(new ArrayList<>(), new ArrayList<>()))
+                Flavour.JAVA_INGREDIENT, new Cookbook("test", new ArrayList<>(), new ArrayList<>()))
             instanceof JavaIngredientGenerator);
   }
 
@@ -20,7 +20,7 @@ public class CookbookGeneratorFactoryTest {
   public void testGetGenerator_forJavaHooks() {
     assertTrue(
         GeneratorFactory.getGenerator(
-                Flavour.JAVA_HOOK, new Cookbook(new ArrayList<>(), new ArrayList<>()))
+                Flavour.JAVA_HOOK, new Cookbook("test", new ArrayList<>(), new ArrayList<>()))
             instanceof JavaHookGenerator);
   }
 
@@ -28,7 +28,8 @@ public class CookbookGeneratorFactoryTest {
   public void testGetGenerator_forTypeScriptIngredients() {
     assertTrue(
         GeneratorFactory.getGenerator(
-                Flavour.TYPESCRIPT_INGREDIENT, new Cookbook(new ArrayList<>(), new ArrayList<>()))
+                Flavour.TYPESCRIPT_INGREDIENT,
+                new Cookbook("test", new ArrayList<>(), new ArrayList<>()))
             instanceof TypeScriptIngredientGenerator);
   }
 
@@ -36,7 +37,7 @@ public class CookbookGeneratorFactoryTest {
   public void testGetGenerator_forTypeScriptHooks() {
     assertTrue(
         GeneratorFactory.getGenerator(
-                Flavour.TYPESCRIPT_HOOK, new Cookbook(new ArrayList<>(), new ArrayList<>()))
+                Flavour.TYPESCRIPT_HOOK, new Cookbook("test", new ArrayList<>(), new ArrayList<>()))
             instanceof TypeScriptHookGenerator);
   }
 
@@ -44,7 +45,8 @@ public class CookbookGeneratorFactoryTest {
   public void testGetGenerator_forJavaScriptIngredients() {
     assertTrue(
         GeneratorFactory.getGenerator(
-                Flavour.JAVASCRIPT_INGREDIENT, new Cookbook(new ArrayList<>(), new ArrayList<>()))
+                Flavour.JAVASCRIPT_INGREDIENT,
+                new Cookbook("test", new ArrayList<>(), new ArrayList<>()))
             instanceof JavaScriptIngredientGenerator);
   }
 
@@ -52,7 +54,7 @@ public class CookbookGeneratorFactoryTest {
   public void testGetGenerator_forJavaScriptHooks() {
     assertTrue(
         GeneratorFactory.getGenerator(
-                Flavour.JAVASCRIPT_HOOK, new Cookbook(new ArrayList<>(), new ArrayList<>()))
+                Flavour.JAVASCRIPT_HOOK, new Cookbook("test", new ArrayList<>(), new ArrayList<>()))
             instanceof JavaScriptHookGenerator);
   }
 }

@@ -11,20 +11,17 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 public class Main {
-  @Argument(index = 0, usage = "name of ingredient domain", metaVar = "domain")
-  private String domain;
-
   @Argument(
-      index = 1,
+      index = 0,
       usage =
           "type of generation to perform; valid options: java-ingredient, java-hook, js-ingredient, js-hook, ts-ingredient, ts-hook",
       metaVar = "flavour")
   private String flavour;
 
-  @Argument(index = 2, usage = "path to the yaml cookbook definition file", metaVar = "cookbook")
+  @Argument(index = 1, usage = "path to the yaml cookbook definition file", metaVar = "cookbook")
   private String cookbook;
 
-  @Argument(index = 3, usage = "directory to output generated files", metaVar = "targetDir")
+  @Argument(index = 2, usage = "directory to output generated files", metaVar = "targetDir")
   private String targetDir;
 
   @Option(name = "--javaPackage", usage = "java package for generated classes", metaVar = "package")
@@ -53,7 +50,7 @@ public class Main {
       System.exit(1);
     }
 
-    if (null == domain || null == flavour || null == cookbook || null == targetDir) {
+    if (null == flavour || null == cookbook || null == targetDir) {
       printUsage();
       System.exit(1);
     }
@@ -63,7 +60,7 @@ public class Main {
     try (FileInputStream ingredients = new FileInputStream(cookbook)) {
       Cookbook cookbook = new CookbookLoader().load(ingredients);
       Generator generator = GeneratorFactory.getGenerator(Flavour.fromAlias(flavour), cookbook);
-      generator.generate(domain, targetDir, options);
+      generator.generate(targetDir, options);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

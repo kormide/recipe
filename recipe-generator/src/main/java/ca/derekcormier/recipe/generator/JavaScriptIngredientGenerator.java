@@ -14,7 +14,7 @@ public class JavaScriptIngredientGenerator extends JavaScriptGenerator {
   }
 
   @Override
-  public void generate(String domain, String targetDir, Map<String, Object> options) {
+  public void generate(String targetDir, Map<String, Object> options) {
     String directory = createDirectories(targetDir);
 
     options.putIfAbsent("ingredientPostfix", "");
@@ -35,7 +35,7 @@ public class JavaScriptIngredientGenerator extends JavaScriptGenerator {
 
       Map<String, Object> data = new HashMap<>();
       data.put("ingredient", ingredient);
-      data.put("domain", domain);
+      data.put("domain", cookbook.getDomain());
       data.put("options", options);
       data.put("info", info);
       String rendered = renderTemplate("templates/js/ingredient.liquid", data);
@@ -68,7 +68,7 @@ public class JavaScriptIngredientGenerator extends JavaScriptGenerator {
     System.out.println("\nGenerating index file: " + directory + File.separator + "index.js");
     data.put("ingredients", cookbook.getIngredients());
     data.put("enums", cookbook.getEnums());
-    data.put("domain", domain);
+    data.put("domain", cookbook.getDomain());
     data.put("options", options);
     String rendered = renderTemplate("templates/js/ingredient-index.liquid", data);
     String filepath = directory + File.separator + "index.js";
