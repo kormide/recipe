@@ -66,6 +66,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>28.1-jre</version>
+            <scope>runtime</scope> <!-- Used by google java format -->
         </dependency>
 
         <!-- Test dependencies -->
