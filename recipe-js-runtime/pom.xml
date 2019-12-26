@@ -45,6 +45,7 @@
                                 <include>Ingredient.js</include>
                                 <include>KeyedIngredient.js</include>
                                 <include>Oven.js</include>
+                                <include>DirectDispatchOven.js</include>
                                 <include>Payload.js</include>
                                 <include>Recipe.js</include>
                             </includes>

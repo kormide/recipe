@@ -6,8 +6,8 @@ import { Ingredient } from "./Ingredient";
 import { Recipe } from "./Recipe";
 
 export class BackendOven extends AbstractOven {
-    private hooks: {[name: string]: BaseIngredientHook<any>} = {};
-    private ingredientTypes: {[name: string]: Function} = {};
+    private readonly hooks: {[name: string]: BaseIngredientHook<any>} = {};
+    private readonly ingredientTypes: {[name: string]: Function} = {};
 
     public bake(json: string): string {
         const payload = Payload.fromJSON(JSON.parse(json), this.ingredientTypes);

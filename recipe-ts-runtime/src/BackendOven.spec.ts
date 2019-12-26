@@ -153,7 +153,6 @@ describe("BackendOven", () => {
             replace(TestIngredientASnapshot, "fromJSON", fromJSON);
 
             oven.bake(`{"recipe":{"Recipe":{"ingredients":[{"TestIngredientA":{"foo": "bar", "moo": 5}}]}}}`);
-            console.log((hook.bake as SinonSpy).args[0][0]);
             expect((hook.bake as SinonSpy).args[0][0]).to.deep.equal({foo: "bar", moo: 5});
 
             restore();
