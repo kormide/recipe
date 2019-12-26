@@ -1,6 +1,6 @@
 {
   "name": "recipe-js-runtime",
-  "version": "0.3.7",
+  "version": "0.4.0",
   "description": "JavaScript run-time library for the Recipe framework",
   "author": "Derek Cormier",
   "homepage": "https://github.com/kormide/recipe",

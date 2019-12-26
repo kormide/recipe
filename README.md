@@ -2,25 +2,24 @@
 
 # Recipe
 
-Recipe is a framework that makes it easy to set up data fixtures dynamically prior to running integration tests. Recipe generates ingredients based on your application's domain, which you combine into recipes that describe what data to prepare.
+Recipe is a multi-language framework multi-makes it easy to set up fine-grained data fixtures dynamically prior to running integration tests. It generates ingredients based on your application's domain, which you combine into recipes that describe what data to prepare.
 
-e.g., set up preconditions for an e-commerce test in  Java
+E.g., a Java integration test
 ```java
-Recipe myRecipe = Recipe.prepare(
+Cake cake = oven.bake(Recipe.prepare(
     new Customer("Jim"),
     new Product("Cat Slippers", "#01234", 14.99)
         .withAvailability(Region.CANADA, Region.TAIWAN),
     new PurchaseOrder("Jim", "Cat Slippers", 2)
         .withExpressShipping(true)
-);
+));
 
-Cake cake = oven.bake(myRecipe);
-
-/* run test logic */
+/* fetch what was prepared and run test logic */
 String customerId = cake.get("Jim");
 ...
  ```
-Recipes can be re-used, combined, or added to for fine-grained data setup. You can bake recipes with ingredients belonging to different services, so it is compatible with distributed architectures. Ingredients can be generated in any of the [supported languages](#lang-support) and behave the same because they invoke a single implementation hook, giving you a consistent, cross-language interface for setting up data.
+
+Recipe is compatible with monolithic and distributed architectures. You can combine ingredients that set up data across different services into a single recipe, which you can declare in any of the [supported languages](#lang-support) to perform the exact same setup.
 
 Overall, recipe makes it easier to read, write, and maintain your tests. It is an alternative to pre-loading snapshots or making API calls to set up data (see [static vs dynamic](#static-vs-dynamic) data setup).
 
@@ -59,15 +58,15 @@ I will add new languages in response to demand. Please create an issue if you ne
 
 ## Getting started
 
-Recipe applies the metaphor of baking cakes to setting up data fixtures. Let's go over the main concepts using Java examples (other supported languages will have the same or similar interfaces).
+Recipe applies the metaphor of baking cakes to setting up data fixtures. The following examples use Java, but the supported languages have similar interfaces.
 
 <a name="concepts"/>
 
 ### Concepts
 
-A **recipe** is an all-in-one declaration of a test's data preconditions. It describes what state you want to exist across all of your service datastores before your test runs. Baking a recipe will instantiate a fresh copy of all of the described data at run-time. Here's what a typical recipe test looks like:
+A **recipe** is an all-in-one declaration of a test's data preconditions. It describes what state should exist across all of your service datastores before your test runs. Baking a recipe instantiates a fresh copy of the described data at run-time. Here's what a typical test using recipe looks like:
 ```java
-/* 1. declare a recipe */
+// Step 1: declare a recipe
 Recipe recipe = Recipe.prepare(
     new IngredientA()
         .withFoo("abc")
@@ -76,41 +75,46 @@ Recipe recipe = Recipe.prepare(
     new IngredientC()
 );
 
-/* 2. persist the data  */
+// Step 2: bake it
 Cake cake = oven.bake(recipe);
 
-/* 3. run your test logic */
+// Step 3: run your test logic
+...
 ```
 
-Recipes are made up of **ingredients**—builder-style objects that describe the corresponding entities in your domain (see [domain-driven design](https://en.wikipedia.org/wiki/Domain-driven_design))—or other recipes. Ingredients are generated from a **cookbook**—a yaml description of the entities—in your [language of choice](#lang-support). While ingredients may be owned by different services, they can all be baked together in a single recipe.
+Recipes are made up of **ingredients**—builder-style generated objects that describe the the entities or operations that you want to set up. Recipes may also include other sub-recipes.
+
+Ingredients are generated from a **cookbook**—a yaml description of the entities—in your [language of choice](#lang-support). While different services might be responsible for setting up the ingredients, they can all be baked together in a single recipe.
 
 Recipes are composable and extendable. You can create a library of recipes that encapsulate common scenarios and share them between tests to avoid duplicated code and effort.
 
 ```java
 Recipe recipe = Recipe.prepare(
-    new CommonScenarioRecipe(), // a shared recipe with other ingredients
+    new MyCommonScenarioFixture(), // a custom recipe subclass
     new IngredientA(),
     new IngredientB(),
     ...
 )
 ```
 
-You bake recipes in an **oven**. The oven dispatches each ingredient to it's owning service which persists the ingredient by invoking its corresponding implementation **hook**. Like ingredients, hooks are generated, but only partially: you must subclass them to actually carry out the persistence logic. Baking a recipe creates a *new* copy of all of the described data; baking the same recipe twice would set up two sets of data.
+Recipes are baked in an **oven**. The oven serializes and dispatches each ingredient to a **backend oven** that knows how to instantiate it. The backend oven may live in the same project, or it may exist within the owning service. The backend oven deserializes the ingredient an invokes its corresponding implementation **hook**. Like ingredients, hooks are generated, but only partially: you must subclass them to actually carry out the persistence logic.
 
-The result of baking is a **cake**—a sophisticated key-value dictionary that gets passed between ingredients during baking and gives the test writer access to information about what was persisted. The cake is a little complicated; don't worry about it quite yet..
+The result of baking is a **cake**—a sophisticated key-value dictionary that gets passed between ingredients during baking and gives the test writer context about what was persisted (e.g., the ids of created entities).
 
-The power of Recipe is that it *decouples test fixture declaration from language and artchitecture*. This means that your recipes for your backend integration tests in Java will look and behave the same as the recipes for your end-to-end protractor tests written in TypeScript, giving your team a consistent and simple "language" to describe test setup.
-
+Recipe's key strength is that it decouples test fixture declaration from language and artchitecture. This means that your recipes for your backend integration tests in Java will look and behave the same as the recipes for your end-to-end protractor tests written in TypeScript, giving your team a consistent and simple language to declare data preconditions.
 <a name="first-cookbook"/>
 
 ### Your first cookbook
 
-A *cookbook.yaml* file describes your ingredients. Think of an ingredient as a loose representation of one of your domain entities whose purpose is to collect just enough information to set up the entitiy.
+*For a more complete specification, see the [cookbook spec](#cookbook-spec).*
 
-Let's say we're making a MOBA and we have an entity called a Hero. All heroes have a *name*, *level*, and *intelligence*. They may also have a set of *abilities* in their repertoire along with a weapon. A hero without a level can be assumed to be at level 1. We can describe the Hero ingredient in a cookbook as follows:
+A *cookbook.yaml* file describes your ingredients. Think of an ingredient as a loose representation of one of your domain entities (or operations) whose purpose is to collect just enough information to set up the entity or perform an action.
 
+In this example, we have a MOBA and an entity called Hero. All heroes have a *name*, *level*, and *intelligence*. They may also have a set of *abilities* in their repertoire along with a weapon. A hero without a level can be assumed to be at level 1. We can describe the Hero ingredient in a cookbook as follows:
+
+_cookbook.yaml_
 ```yaml
-//cookbook.yaml
+domain: "com.mycompany.moba"
 
 ingredients:
   - name: Hero
@@ -145,7 +149,7 @@ enums:
       - STUN    
 ```
 
-If we run the above cookbook through a java [generator](#recipe-generator), you would get the following ingredient: 
+If we run the above cookbook through the [generator](#recipe-generator), you would get the following ingredient: 
 ```java
 new Hero("Jim", 20.0f)
     .withAbilities(Ability.FIREBALL, Ability.STUN)
@@ -154,21 +158,21 @@ new Hero("Jim", 20.0f)
 new Hero("Luke", 86.4f, 5)  // constructor with level
     .withAbilities(Ability.FORCE_PUSH)
 ```
-
 Required properties are instantiated in the constructors (initializers), but can be left out if they have a default value (e.g., `level`). Optional parameters correspond to `withX` builder methods and can take a single typed value or be comprised of several properties (e.g., the optional `weapon` has a name, damage, and ranged flag). Recipe supports a variety of property types; see the [cookbook spec](#cookbook-spec) for more details. 
 
-Ingredients are simple builder objects that just record what you do with them. They are generated in the project and language of the test suite, which may be different from the project that owns the data, so they contain no instantiation logic. To actually create the domain entity, you need to write implementation hooks, which take information from the ingredients to instantiate your domain objects. 
+Ingredients are simple builder objects that just record what you do with them. They are generated in the project and language of the test suite, which may be different from the project that owns the data, so they contain no instantiation logic. To actually perform the instantiation logic, you need to write implementation hooks. 
 
-In general, you should have one cookbook per service.
+_As a rule of thumb, if you have different services responsible for different entities, you should have one cookbook per service._
 
 <a name="hooks"/>
 
 ### Writing hooks
 
-Hooks take the information supplied by ingredients and instantiate the underlying domain object(s) that they represent. Hooks should live in one place. While an ingredient can be generated in different test projects in different languages, all usages of the ingredient should invoke the same hook. You generate base hooks using the [generator](#recipe-generator) and extend them to provide an implementation.
+Hooks take the information supplied by ingredients and perform the instantiation. Your hooks could be written in a different language than the ingredients, for example, if you have a Java backend that contains the hooks but you're generating the ingredients in TypeScript to run end-to-end tests from the browser. You generate base hooks using the [generator](#recipe-generator) and extend them to provide an implementation.
 
 Let's look at an example of a hook using our Hero ingredient from above:
 
+_HeroHook.java_
 ```java
 @Component
 public HeroHook extends AbstractHeroHook {  /* AbstractHeroHook is generated */
@@ -205,23 +209,17 @@ public HeroHook extends AbstractHeroHook {  /* AbstractHeroHook is generated */
 
 The extended class must override the `bake` method, which in this case simply invokes the existing hero service to perform validation and persist the hero to the database.
 
-#### Where should hooks live?
-
-Now that we know how to write a hook, where should we put it? This really depends on how you wish to integrate recipe into your system.
-
-Hooks could be classes that live within your service and have direct access to service/controller needed to set up data (as in the above example). This requires creating a special recipe endpoint within your service to receive recipe payloads that are dispatched by the oven (discussed in detail later). If you take this approach, you should disable the recipe endpoint in production. I recommend setting up the data such that it goes through service validation, whether this means instantiating it from a service or controller class or some higher layer. This approach is ideal when there is some data (for example, initial database state) that cannot be set up via an exposed API.
-
-If your service exposes an API that is capable of setting up all of the required data, you could move all hooks into a separate project. The hooks could just make API calls to your service to set up the appropriate data.
+In this case, the hook was generated directly in the backend service and a Java domain service was autowired to perform the logic. It's just as valid to implement the hook sit of the backend or in the test project and have it invoke some API call. If you have logic that cannot be executed from an API, your hook may need to live within the backend service.
 
 <a name="configure-oven"/>
 
 ### Configuring the oven
 
-Ovens are the persistence engines that bake recipes and deliver ingredients to hooks across services for persistence. There are two types of ovens: an `Oven`, which exists in the same project as your tests, and a `BackendOven` which exists in the same project as your hooks.
+Ovens bake recipes by dispatching ingredients to backend ovens (possibly in diffferent services) that can invoke their implementation hooks. There are two types of ovens: an `Oven`, which exists in the same project as your tests, and a `BackendOven` which exists in the same project as your hooks.
 
 #### Oven
 
-An Oven is what you call to bake a recipe in your tests. Internally, the baking process produces json payloads that must be delivered to the services that own ingredients. Recipe makes no assumptions about which delivery mechanisms you use, so you must configure **dispatchers** for each domain to perform the delivery.
+An Oven is what you call to bake a recipe in your tests. Internally, the baking process produces json payloads that must be dispatched to a backend oven that can bake them. Recipe makes no assumptions about which delivery mechanisms you use, so you must configure **dispatchers** for each domain to perform the delivery.
  
 ```java
 Oven oven = new Oven(); // our oven instance
@@ -244,9 +242,7 @@ A dispatcher accepts a json payload, delivers it, and returns the response paylo
 
 #### Backend oven
 
-A backend oven is at the receiving end of the payloads produced by the oven above. As such, your project must provide some endpoint capable of receiving the json payload using your own transport mechanism.
-
-Upon receiving a payload, the endpoint should pass the payload to the backend oven instance. The backend oven interprets the payload, invokes the appropriate hook(s), and returns a response payload that must then be returned to the calling test service. This response is the payload that gets returned in the previous section.
+A backend oven is at the receiving end of the payloads produced by an oven. The backend oven interprets the payload, invokes the appropriate hook(s), and returns a response payload that must then be returned to the calling test service. This response is the payload that must be returned to the dispatching oven.
 
 ```java
 public HttpResponse myRecipeEndpoint(String payload) {
@@ -257,7 +253,7 @@ public HttpResponse myRecipeEndpoint(String payload) {
 }
 ```
 
-A backend oven needs to be told about each hook implemented in the service.
+A backend oven needs to be told about the hook for each ingredient it can bake.
 
 ```java
 BackendOven backendOven = new BackendOven(); // our backend oven instance
@@ -765,8 +761,6 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 #### Arguments
 
 ##### Required args
-`domain` - name of the domain represented by the cookbook
-
 `flavour` - generation type; one of: `java-ingredient`, `java-hook`, `js-ingredient`, `js-hook`, `ts-ingredient`, `ts-hook`
 
 `cookbook` - path to the cookbook; defaults to `cookbook.yaml` in the project directory
@@ -789,7 +783,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 <plugin>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.3.7</version>
+    <version>0.4.0</version>
     <executions>
         <execution>
             <id>generate-ingredients</id>
@@ -798,7 +792,6 @@ The recipe generator is an executable jar that generates ingredients and hooks i
                 <goal>generate</goal>
             </goals>
             <configuration>
-                <domain>MyDomain</domain>
                 <flavour>java-ingredient</flavour>
                 <cookbook>${project.basedir}/cookbook.yaml</cookbook>
                 <targetDir>${project.build.directory}/generated-test-sources/recipe</targetDir>
@@ -815,7 +808,7 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 <plugin>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-generator-maven-plugin</artifactId>
-    <version>0.3.7</version>
+    <version>0.4.0</version>
     <executions>
         <execution>
             <id>generate-hooks</id>
@@ -824,7 +817,6 @@ The recipe generator is an executable jar that generates ingredients and hooks i
                 <goal>generate</goal>
             </goals>
             <configuration>
-                <domain>MyDomain</domain>
                 <flavour>java-hook</flavour>
                 <cookbook>${project.basedir}/cookbook.yaml</cookbook>
                 <targetDir>${project.build.directory}/generated-sources/recipe</targetDir>
@@ -838,14 +830,14 @@ The recipe generator is an executable jar that generates ingredients and hooks i
 #### Node module
 ```json
 "dependencies": {
-  "recipe-generator-node": "0.3.7"
+  "recipe-generator-node": "0.4.0"
 }
 ```
 
 ##### Example: generate ingredients
 ```json
 "scripts": {
-  "generate": "recipe-generator MyDomain ts-ingredient cookbook.yaml ./target/ingredients --ingredientPostfix Ingredient"
+  "generate": "recipe-generator ts-ingredient cookbook.yaml ./target/ingredients --ingredientPostfix Ingredient"
 }
 ```
 
@@ -872,25 +864,32 @@ The run-time libraries contain the core classes required by Recipe.
 <dependency>
     <groupId>ca.derekcormier.recipe</groupId>
     <artifactId>recipe-java-runtime</artifactId>
-    <version>0.3.7</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 #### JavaScript
 ```json
 "dependencies": {
-  "recipe-js-runtime": "0.3.7"
+  "recipe-js-runtime": "0.4.0"
 }
 ```
 #### TypeScript
 ```json
 "dependencies": {
-  "recipe-ts-runtime": "0.3.7"
+  "recipe-ts-runtime": "0.4.0"
 }
 ```
 
 <a name="cookbook-spec"/>
 
 ## Cookbook spec
+
+### Domain
+Every cookbook must declare a domain. This is a unique identifier that ovens use to dispatch ingredients to the correct backend oven for baking.
+
+```yaml
+domain: "com.mycompany.myservice".ingredients"
+```
 
 ### Required parameters and initializers
 

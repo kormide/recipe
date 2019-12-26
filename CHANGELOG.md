@@ -1,3 +1,12 @@
+<a name="0.4.0"></a>
+## 0.4.0 (2019-12-26)
+
+* \[breaking change\] domain is now specified in the cookbook
+* added DirectDispatchOven for simpler test setup cases where payloads are dispatched directly to a backend oven without a network hop
+* added the ability to set default dispatchers on an oven
+* now targeting Java 11
+* generated java code now uses 2-space indents
+
 <a name="0.3.7"></a>
 ## 0.3.7 (2019-02-23)
 
