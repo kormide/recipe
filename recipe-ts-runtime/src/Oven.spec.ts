@@ -47,7 +47,7 @@ describe("Oven", () => {
 
     describe("bake", () => {
         it("should not call dispatcher for empty recipe", () => {
-            const dispatcher = spy((payload: string) => "{}");
+            const dispatcher = spy((payload: string) => Promise.resolve("{}"));
             oven.addDispatcher("A", dispatcher);
 
             oven.bake(Recipe.prepare());
@@ -56,7 +56,7 @@ describe("Oven", () => {
         });
 
         it("should not call dispatcher for empty nested recipes", () => {
-            const dispatcher = spy((payload: string) => "{}");
+            const dispatcher = spy((payload: string) => Promise.resolve("{}"));
             oven.addDispatcher("A", dispatcher);
 
             oven.bake(Recipe.prepare(Recipe.prepare()));

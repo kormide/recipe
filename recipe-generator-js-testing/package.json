@@ -9,11 +9,11 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "chai": "4.1.2",
-    "eslint": "5.9.0",
-    "mocha": "4.0.1",
-    "sinon": "7.1.1",
-    "sinon-chai": "3.3.0"
+    "chai": "4.2.0",
+    "eslint": "6.8.0",
+    "mocha": "6.2.2",
+    "sinon": "8.0.1",
+    "sinon-chai": "3.4.0"
   },
   "scripts": {
     "lint": "eslint -c ./.eslintrc.json ./src/**/*.js",
