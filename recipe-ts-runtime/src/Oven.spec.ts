@@ -82,6 +82,39 @@ describe("Oven", () => {
             });
         });
 
+        it("should call the default dispatcher when no other dispatchers are found", () => {
+            const defaultDispatcher = spy((payload: string) => Promise.resolve("{}"));
+            oven.setDefaultDispatcher(defaultDispatcher);
+
+            return oven.bake(Recipe.prepare(new TestIngredientA1())).then(() => {
+                expect(defaultDispatcher).callCount(1);
+            });
+        });
+
+        it("should call the default dispatcher when no matching dispatchers are found", () => {
+            const dispatcher = spy((payload: string) => Promise.resolve("{}"));
+            const defaultDispatcher = spy((payload: string) => Promise.resolve("{}"));
+            oven.setDefaultDispatcher(defaultDispatcher);
+            oven.addDispatcher("SomeDomain", dispatcher);
+
+            return oven.bake(Recipe.prepare(new TestIngredientA1())).then(() => {
+                expect(defaultDispatcher).callCount(1);
+                expect(dispatcher).callCount(0);
+            });
+        });
+
+        it("should call NOT call the default dispatcher when a matching dispatcher is found", () => {
+            const dispatcher = spy((payload: string) => Promise.resolve("{}"));
+            const defaultDispatcher = spy((payload: string) => Promise.resolve("{}"));
+            oven.setDefaultDispatcher(defaultDispatcher);
+            oven.addDispatcher("A", dispatcher);
+
+            return oven.bake(Recipe.prepare(new TestIngredientA1())).then(() => {
+                expect(defaultDispatcher).callCount(0);
+                expect(dispatcher).callCount(1);
+            });
+        });
+
         it("should call the dispatcher for different domains in order", () => {
             const dispatcherA = spy((payload: string) => Promise.resolve("{}"));
             const dispatcherB = spy((payload: string) => Promise.resolve("{}"));
