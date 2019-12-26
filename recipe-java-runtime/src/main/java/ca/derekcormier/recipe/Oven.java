@@ -62,6 +62,10 @@ public class Oven extends AbstractOven {
   }
 
   public void setDefaultDispatcher(Dispatcher dispatcher) {
+    _setDefaultDispatcher(dispatcher);
+  }
+
+  protected void _setDefaultDispatcher(Dispatcher dispatcher) {
     this.defaultDispatcher = dispatcher;
   }
 
