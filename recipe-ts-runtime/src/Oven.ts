@@ -7,18 +7,25 @@ export type Dispatcher = (payload: string) => Promise<string>;
 
 export class Oven extends AbstractOven {
     private readonly dispatchers: {[key: string]: Dispatcher} = {};
+    private defaultDispatcher?: Dispatcher;
 
     public bake(recipe: Recipe): Promise<Cake> {
         let promise: Promise<Cake> = Promise.resolve(this.createCake());
 
         for (const segment of recipe.segment()) {
-            if (!(segment.domain! in this.dispatchers)) {
+            let dispatcher: Dispatcher;
+            if (segment.domain! in this.dispatchers) {
+                dispatcher = this.dispatchers[segment.domain!];
+            }
+            else if (this.defaultDispatcher) {
+                dispatcher = this.defaultDispatcher;
+            }
+            else {
                 throw new Error(`cannot dispatch ingredient; no dispatcher registered for domain '${segment.domain}'`);
             }
-
             promise = promise.then(cake => {
                 const payload = new Payload(segment.recipe, cake);
-                return this.dispatchers[segment.domain!](JSON.stringify(payload)).then(jsonCake => Cake.fromJSON(JSON.parse(jsonCake)));
+                return dispatcher(JSON.stringify(payload)).then(jsonCake => Cake.fromJSON(JSON.parse(jsonCake)));
             });
         }
 
@@ -31,5 +38,9 @@ export class Oven extends AbstractOven {
         }
 
         this.dispatchers[domain] = dispatcher;
+    }
+
+    public setDefaultDispatcher(dispatcher?: Dispatcher) {
+        this.defaultDispatcher = dispatcher;
     }
 }

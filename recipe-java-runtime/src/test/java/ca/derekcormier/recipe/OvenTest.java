@@ -20,6 +20,66 @@ public class OvenTest {
     oven = new Oven();
   }
 
+  @Test(expected = RuntimeException.class)
+  public void testAddDispatcher_alreadyExistsForDomain() {
+    oven.addDispatcher("FooDomain", payload -> "{}");
+    oven.addDispatcher("FooDomain", payload -> "{}");
+  }
+
+  @Test
+  public void testAddDispatcher_callsForIngredientWithSameDomain() {
+    Ingredient ingredient = new Ingredient("FooIngredient", "FooDomain") {};
+
+    Dispatcher dispatcher = Mockito.spy(Dispatcher.class);
+    when(dispatcher.dispatch(anyString())).thenReturn("{}}");
+    oven.addDispatcher("FooDomain", dispatcher);
+
+    oven.bake(Recipe.prepare(ingredient));
+
+    verify(dispatcher).dispatch(anyString());
+  }
+
+  @Test
+  public void testSetDefaultDispatcher_notCalledIfDomainDispatcherExists() {
+    Ingredient ingredient = new Ingredient("FooIngredient", "FooDomain") {};
+
+    Dispatcher defaultDispatcher = Mockito.spy(Dispatcher.class);
+    when(defaultDispatcher.dispatch(anyString())).thenReturn("{}}");
+    oven.setDefaultDispatcher(defaultDispatcher);
+    oven.addDispatcher("FooDomain", payload -> "{}");
+
+    oven.bake(Recipe.prepare(ingredient));
+
+    verify(defaultDispatcher, never()).dispatch(anyString());
+  }
+
+  @Test
+  public void testSetDefaultDispatcher_calledIfNoDomainDispatchers() {
+    Ingredient ingredient = new Ingredient("FooIngredient", "FooDomain") {};
+
+    Dispatcher defaultDispatcher = Mockito.spy(Dispatcher.class);
+    when(defaultDispatcher.dispatch(anyString())).thenReturn("{}}");
+    oven.setDefaultDispatcher(defaultDispatcher);
+
+    oven.bake(Recipe.prepare(ingredient));
+
+    verify(defaultDispatcher).dispatch(anyString());
+  }
+
+  @Test
+  public void testSetDefaultDispatcher_calledIfNoMatchingDomainDispatchers() {
+    Ingredient ingredient = new Ingredient("FooIngredient", "FooDomain") {};
+
+    Dispatcher defaultDispatcher = Mockito.spy(Dispatcher.class);
+    when(defaultDispatcher.dispatch(anyString())).thenReturn("{}}");
+    oven.setDefaultDispatcher(defaultDispatcher);
+    oven.addDispatcher("BarDomain", payload -> "{}");
+
+    oven.bake(Recipe.prepare(ingredient));
+
+    verify(defaultDispatcher).dispatch(anyString());
+  }
+
   @Test
   public void testBake_doesNotCallDispatcherForEmptyRecipe() {
     Dispatcher spy = setupDispatcherSpy("A");

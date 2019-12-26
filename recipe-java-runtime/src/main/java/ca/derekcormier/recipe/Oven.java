@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Oven extends AbstractOven {
+  private Dispatcher defaultDispatcher;
   private Map<String, Dispatcher> dispatchers = new HashMap<>();
   private ObjectMapper objectMapper;
   private SubtypeResolver subtypeResolver;
@@ -33,15 +34,18 @@ public class Oven extends AbstractOven {
       for (Recipe.Segment segment : segments) {
         String payload = serializePayload(segment.recipe, cake);
 
-        if (!dispatchers.containsKey(segment.domain)) {
+        if (dispatchers.containsKey(segment.domain)) {
+          String jsonCake = dispatchers.get(segment.domain).dispatch(payload);
+          cake = deserializeCake(jsonCake);
+        } else if (defaultDispatcher != null) {
+          String jsonCake = defaultDispatcher.dispatch(payload);
+          cake = deserializeCake(jsonCake);
+        } else {
           throw new RuntimeException(
               "cannot dispatch ingredient; no dispatcher registered for domain '"
                   + segment.domain
                   + "'");
         }
-
-        String jsonCake = dispatchers.get(segment.domain).dispatch(payload);
-        cake = deserializeCake(jsonCake);
       }
       return cake;
     } catch (Exception e) {
@@ -55,6 +59,10 @@ public class Oven extends AbstractOven {
     }
 
     dispatchers.put(domain, dispatcher);
+  }
+
+  public void setDefaultDispatcher(Dispatcher dispatcher) {
+    this.defaultDispatcher = dispatcher;
   }
 
   private String serializePayload(Recipe recipe, Cake cake) throws JsonProcessingException {
