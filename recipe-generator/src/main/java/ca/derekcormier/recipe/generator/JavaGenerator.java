@@ -9,6 +9,7 @@ import ca.derekcormier.recipe.generator.filter.JavaValueFilter;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,7 @@ public abstract class JavaGenerator extends Generator {
     String generatedJava = super.renderTemplate(templatePath, data);
 
     // make the generated java pretty
-    Formatter formatter =
-        new Formatter(
-            JavaFormatterOptions.builder().style(JavaFormatterOptions.Style.AOSP).build());
+    Formatter formatter = new Formatter(JavaFormatterOptions.builder().style(Style.GOOGLE).build());
     try {
       return formatter.formatSource(generatedJava);
     } catch (FormatterException e) {
