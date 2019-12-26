@@ -13,14 +13,14 @@ public class JavaScriptHookGenerator extends JavaScriptGenerator {
   }
 
   @Override
-  public void generate(String domain, String targetDir, Map<String, Object> options) {
+  public void generate(String targetDir, Map<String, Object> options) {
     options.putIfAbsent("ingredientPostfix", "");
     options.putIfAbsent("runtimeLibrary", "recipe-js-runtime");
 
     String directory = createDirectories(targetDir);
 
     generateAbstractHooks(directory, options);
-    generateIngredientDataSnapshots(directory, options, domain);
+    generateIngredientDataSnapshots(directory, options, getCookbook().getDomain());
     generateEnums(directory, options);
     generateIndex(directory);
   }

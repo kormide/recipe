@@ -69,7 +69,6 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <domain>TestDomain</domain>
                             <flavour>ts-ingredient</flavour>
                             <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook.yaml</cookbook>
                             <targetDir>${project.build.directory}/ingredients</targetDir>
@@ -82,7 +81,6 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <domain>PostfixDomain</domain>
                             <flavour>ts-ingredient</flavour>
                             <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook-postfix.yaml</cookbook>
                             <targetDir>${project.build.directory}/ingredients/postfix</targetDir>
@@ -105,7 +103,6 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <domain>TestDomain</domain>
                             <flavour>ts-hook</flavour>
                             <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook.yaml</cookbook>
                             <targetDir>${project.build.directory}/hooks</targetDir>
@@ -118,7 +115,6 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <domain>PostfixDomain</domain>
                             <flavour>ts-hook</flavour>
                             <cookbook>${project.basedir}/../recipe-generator-java-testing/cookbook-postfix.yaml</cookbook>
                             <targetDir>${project.build.directory}/hooks/postfix</targetDir>

@@ -1,3 +1,4 @@
+domain: "PostfixDomain"
 ingredients:
   - name: "PostfixIngredient"
 enums:

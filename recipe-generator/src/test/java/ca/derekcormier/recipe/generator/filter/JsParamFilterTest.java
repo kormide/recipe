@@ -19,7 +19,7 @@ public class JsParamFilterTest {
 
   @Test
   public void testApply_outputsParamNameFromIdentifierFilter() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsParamFilter(cookbook, identifierFilter);
     when(identifierFilter.apply("foo")).thenReturn("bar");
 
@@ -28,7 +28,7 @@ public class JsParamFilterTest {
 
   @Test
   public void testApply_outputsEllipsesWhenParamTypeIsVararg() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsParamFilter(cookbook, identifierFilter);
     when(identifierFilter.apply("foo")).thenReturn("foo");
 

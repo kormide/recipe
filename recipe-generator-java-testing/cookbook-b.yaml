@@ -1,2 +1,3 @@
+domain: "TestDomainB"
 ingredients:
   - name: "DomainBIngredient"

@@ -26,7 +26,7 @@ public abstract class Generator {
     this.cookbook = cookbook;
   }
 
-  public abstract void generate(String domain, String targetDir, Map<String, Object> options);
+  public abstract void generate(String targetDir, Map<String, Object> options);
 
   protected String renderTemplate(String templatePath, Map<String, Object> data) {
     InputStream inputStream =

@@ -20,7 +20,7 @@ public class TsParamFilterTest {
 
   @Test
   public void testApply_combinesNameAndTypeFromFilters() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new TsParamFilter(cookbook, typeFilter, identifierFilter);
     when(typeFilter.apply("int[]")).thenReturn("number[]");
     when(identifierFilter.apply("foo")).thenReturn("bar");
@@ -30,7 +30,7 @@ public class TsParamFilterTest {
 
   @Test
   public void testApply_addsEllipsisToNameWhenVararg() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new TsParamFilter(cookbook, typeFilter, identifierFilter);
     when(typeFilter.apply("int...")).thenReturn("number[]");
     when(identifierFilter.apply("foo")).thenReturn("foo");

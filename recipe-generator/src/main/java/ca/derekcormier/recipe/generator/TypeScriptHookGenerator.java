@@ -13,14 +13,14 @@ public class TypeScriptHookGenerator extends TypeScriptGenerator {
   }
 
   @Override
-  public void generate(String domain, String targetDir, Map<String, Object> options) {
+  public void generate(String targetDir, Map<String, Object> options) {
     options.put("runtimeLibrary", "recipe-ts-runtime");
     String directory = createDirectories(targetDir);
 
-    new JavaScriptHookGenerator(getCookbook()).generate(domain, targetDir, options);
+    new JavaScriptHookGenerator(getCookbook()).generate(targetDir, options);
 
     generateAbstractHookTypes(directory, options);
-    generateIngredientDataSnapshotTypes(directory, options, domain);
+    generateIngredientDataSnapshotTypes(directory, options, getCookbook().getDomain());
     generateEnumTypes(directory, options);
     generateIndexTypes(directory);
   }

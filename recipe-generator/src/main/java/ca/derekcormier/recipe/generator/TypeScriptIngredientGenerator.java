@@ -13,7 +13,7 @@ public class TypeScriptIngredientGenerator extends TypeScriptGenerator {
   }
 
   @Override
-  public void generate(String domain, String targetDir, Map<String, Object> options) {
+  public void generate(String targetDir, Map<String, Object> options) {
     String directory = createDirectories(targetDir);
 
     options.putIfAbsent("ingredientPostfix", "");
@@ -21,7 +21,7 @@ public class TypeScriptIngredientGenerator extends TypeScriptGenerator {
 
     // generate all of the javascript stuff
     JavaScriptIngredientGenerator jsGenerator = new JavaScriptIngredientGenerator(getCookbook());
-    jsGenerator.generate(domain, targetDir, options);
+    jsGenerator.generate(targetDir, options);
 
     Cookbook cookbook = getCookbook();
 
@@ -37,7 +37,7 @@ public class TypeScriptIngredientGenerator extends TypeScriptGenerator {
 
       Map<String, Object> data = new HashMap<>();
       data.put("ingredient", ingredient);
-      data.put("domain", domain);
+      data.put("domain", cookbook.getDomain());
       data.put("options", options);
       data.put("info", info);
       String rendered = renderTemplate("templates/ts/ingredient-types.liquid", data);
@@ -72,7 +72,7 @@ public class TypeScriptIngredientGenerator extends TypeScriptGenerator {
         "\nGenerating index definition file: " + directory + File.separator + "index.d.ts");
     data.put("ingredients", cookbook.getIngredients());
     data.put("enums", cookbook.getEnums());
-    data.put("domain", domain);
+    data.put("domain", cookbook.getDomain());
     data.put("options", options);
     String rendered = renderTemplate("templates/ts/ingredient-index-types.liquid", data);
     String filepath = directory + File.separator + "index.d.ts";

@@ -13,7 +13,7 @@ public class JavaHookGenerator extends JavaGenerator {
   }
 
   @Override
-  public void generate(String domain, String targetDir, Map<String, Object> options) {
+  public void generate(String targetDir, Map<String, Object> options) {
     if (!options.containsKey("javaPackage")) {
       options.put("javaPackage", "");
     }
@@ -51,7 +51,7 @@ public class JavaHookGenerator extends JavaGenerator {
       Map<String, Object> data = new HashMap<>();
       data.put("ingredient", ingredient);
       data.put("options", options);
-      data.put("domain", domain);
+      data.put("domain", cookbook.getDomain());
       String rendered = renderTemplate("templates/java/ingredient-data.liquid", data);
       String filepath = directory + File.separator + ingredient.getName() + "Data.java";
       writeToFile(filepath, rendered);

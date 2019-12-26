@@ -12,7 +12,7 @@ import org.junit.Test;
 public class TsValueFilterTest {
   @Test(expected = IllegalArgumentException.class)
   public void testApply_throwsOnMissingTypeParam() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     filter.apply("foobar");
@@ -20,7 +20,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsString() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("\"foobar\"", filter.apply("foobar", "string"));
@@ -28,7 +28,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsStringWithQuotes() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("\"\\\"foobar\"", filter.apply("\"foobar", "string"));
@@ -36,7 +36,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsNullString() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("null", filter.apply(null, "string"));
@@ -44,7 +44,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsInt() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("5", filter.apply(new Integer(5), "int"));
@@ -53,7 +53,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsNegativeInt() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("-1", filter.apply(new Integer(-1), "int"));
@@ -62,7 +62,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsFloat() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("5.0", filter.apply(new Float(5.0), "float"));
@@ -71,7 +71,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsNegativeFloat() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("-5.0", filter.apply(new Float(-5.0), "float"));
@@ -80,7 +80,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsBoolean() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("true", filter.apply(new Boolean(true), "boolean"));
@@ -89,7 +89,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsFlag() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("true", filter.apply(new Boolean(true), "flag"));
@@ -100,7 +100,9 @@ public class TsValueFilterTest {
   public void testApply_convertsEnum() {
     Cookbook cookbook =
         new Cookbook(
-            new ArrayList<>(), Lists.newArrayList(new Enum("MyEnum", Lists.newArrayList("A"))));
+            "test",
+            new ArrayList<>(),
+            Lists.newArrayList(new Enum("MyEnum", Lists.newArrayList("A"))));
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("MyEnum.A", filter.apply("A", "MyEnum"));
@@ -108,7 +110,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsArrayOfStrings() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals(
@@ -117,7 +119,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsArrayOfInts() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals("[1, 2, 3]", filter.apply(Lists.newArrayList(1, 2, 3), "int[]"));
@@ -127,6 +129,7 @@ public class TsValueFilterTest {
   public void testApply_convertsArrayOfEnums() {
     Cookbook cookbook =
         new Cookbook(
+            "test",
             new ArrayList<>(),
             Lists.newArrayList(new Enum("MyEnum", Lists.newArrayList("A", "B", "C"))));
     Filter filter = new JsValueFilter(cookbook);
@@ -138,7 +141,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsVarargOfStrings() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals(
@@ -147,7 +150,7 @@ public class TsValueFilterTest {
 
   @Test
   public void testApply_convertsVarargOfArraysOfStrings() {
-    Cookbook cookbook = new Cookbook(new ArrayList<>(), new ArrayList<>());
+    Cookbook cookbook = new Cookbook("test", new ArrayList<>(), new ArrayList<>());
     Filter filter = new JsValueFilter(cookbook);
 
     assertEquals(

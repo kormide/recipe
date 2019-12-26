@@ -13,7 +13,7 @@ public class JavaIngredientGenerator extends JavaGenerator {
   }
 
   @Override
-  public void generate(String domain, String targetDir, Map<String, Object> options) {
+  public void generate(String targetDir, Map<String, Object> options) {
     if (!options.containsKey("javaPackage")) {
       options.put("javaPackage", "");
     }
@@ -37,7 +37,7 @@ public class JavaIngredientGenerator extends JavaGenerator {
 
       Map<String, Object> data = new HashMap<>();
       data.put("ingredient", ingredient);
-      data.put("domain", domain);
+      data.put("domain", cookbook.getDomain());
       data.put("options", options);
       data.put("info", info);
 
