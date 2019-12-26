@@ -7,15 +7,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class KeyedIngredientTest {
-    @Test
-    public void testKeyed_setsKey() {
-        KeyedIngredient ingredient = new KeyedIngredient("KeyedIngredient", "A") {};
+  @Test
+  public void testKeyed_setsKey() {
+    KeyedIngredient ingredient = new KeyedIngredient("KeyedIngredient", "A") {};
 
-        assertFalse(ingredient.hasKey());
+    assertFalse(ingredient.hasKey());
 
-        ingredient.keyed("foo");
+    ingredient.keyed("foo");
 
-        assertEquals("foo", ingredient.getKey());
-        assertTrue(ingredient.hasKey());
-    }
+    assertEquals("foo", ingredient.getKey());
+    assertTrue(ingredient.hasKey());
+  }
 }
