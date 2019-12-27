@@ -2,7 +2,7 @@
 
 # Recipe
 
-Recipe is a multi-language framework multi-makes it easy to set up fine-grained data fixtures dynamically prior to running integration tests. It generates ingredients based on your application's domain, which you combine into recipes that describe what data to prepare.
+Recipe is a multi-language framework that makes it easy to set up fine-grained data fixtures dynamically prior to running integration tests. It generates ingredients based on your application's domain, which you combine into recipes that describe what data to prepare.
 
 E.g., a Java integration test
 ```java
